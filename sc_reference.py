@@ -7,7 +7,7 @@ import pandas as pd
 
 
 def initialization(adata_sc: anndata.AnnData, adata_st: anndata.AnnData, min_genes: int = 200, min_cells: int = 200,
-                   min_std: float = 80, normalize_st=False):
+                   min_std: float = 80, normalize_st=None):
     """
     Filter single cell data and spatial data, and normalize the data to count per million (CPM).
     Args:
@@ -27,7 +27,7 @@ def initialization(adata_sc: anndata.AnnData, adata_st: anndata.AnnData, min_gen
 
     # CPM normalization
     adata_sc.X = adata_sc.X * 1e6 / adata_sc.X.sum(axis=1, keepdims=True)
-    if not normalize_st:
+    if normalize_st is None:
         adata_st.X = adata_st.X * 1e6 / adata_st.X.sum(axis=1, keepdims=True)
     else:
         assert np.shape(normalize_st) == (len(adata_st),)
@@ -48,13 +48,13 @@ def initialization(adata_sc: anndata.AnnData, adata_st: anndata.AnnData, min_gen
     return adata_sc, adata_st
 
 
-def marker_selection(adata_sc: anndata.AnnData, type_key: str, R: float = 2, threshold_cover=0.6, threshold_z=0,
+def marker_selection(adata_sc: anndata.AnnData, key_type: str, R: float = 2, threshold_cover=0.6, threshold_z=0,
                      n_select=40, verbose=0, return_dict=False):
     """
     Find marker genes based on pairwise ratio test.
     Args:
         adata_sc: scRNA data (Anndata).
-        type_key: The key that is used to extract cell type information from adata_sc.obs.
+        key_type: The key that is used to extract cell type information from adata_sc.obs.
         R: Ratio in hypothesis test
         threshold_cover: Minimum proportion of non-zero reads of a marker gene in assigned cell type.
         threshold_z: Minimum z-score in ratio tests for a gene to be marker gene.
@@ -71,14 +71,14 @@ def marker_selection(adata_sc: anndata.AnnData, type_key: str, R: float = 2, thr
         X = adata_sc.X.toarray()
 
     # Derive mean and std matrix
-    type_list = sorted(list(adata_sc.obs[type_key].unique()))  # list of the cell type.
+    type_list = sorted(list(adata_sc.obs[key_type].unique()))  # list of the cell type.
     n_gene, n_type = adata_sc.shape[1], len(type_list)
     expression_mu = np.zeros((n_type, n_gene))  # Mean expression of each gene in each cell type.
     expression_sd = np.zeros((n_type, n_gene))  # Standard deviation of expression of each gene in each cell type.
     n_cell_by_type = np.zeros(n_type)
     data_type = []  # The expression data categorized by cell types.
     for i in range(n_type):
-        data_type.append(X[adata_sc.obs[type_key] == type_list[i]])
+        data_type.append(X[adata_sc.obs[key_type] == type_list[i]])
         expression_mu[i] = np.mean(data_type[i], axis=0)
         expression_sd[i] = np.std(data_type[i], axis=0)
         n_cell_by_type[i] = len(data_type[i])
@@ -114,20 +114,20 @@ def marker_selection(adata_sc: anndata.AnnData, type_key: str, R: float = 2, thr
     return marker_gene
 
 
-def construct_sc_ref(adata_sc: anndata.AnnData, type_key: str):
+def construct_sc_ref(adata_sc: anndata.AnnData, key_type: str):
     """
     Construct the scRNA reference from scRNA data.
     Args:
         adata_sc: scRNA data.
-        type_key: The key that is used to extract cell type information from adata_sc.obs.
+        key_type: The key that is used to extract cell type information from adata_sc.obs.
     Returns:
         sc_ref: scRNA reference. Numpy assay with dimension n_type*n_gene
     """
-    type_list = sorted(list(adata_sc.obs[type_key].unique()))
+    type_list = sorted(list(adata_sc.obs[key_type].unique()))
     n_gene, n_type = adata_sc.shape[1], len(type_list)
     sc_ref = np.zeros((n_type, n_gene))
     for i, cell_type in enumerate(type_list):
-        sc_X_temp = np.sum(adata_sc.X[adata_sc.obs[type_key]==cell_type], axis=0)
+        sc_X_temp = np.sum(adata_sc.X[adata_sc.obs[key_type]==cell_type], axis=0)
         sc_ref[i] = sc_X_temp/np.sum(sc_X_temp)
     return sc_ref
 
@@ -138,10 +138,11 @@ def plot_sc_ref(sc_ref, type_list, fig_size=(10, 4), dpi=300):
     Args:
         sc_ref: scRNA reference. np.ndarray n_type*n_gene.
         type_list: List of the cell types.
-        fig_size: Size of the figure.
+        fig_size: Initial size of the figure.
         dpi: Dots per inch (DPI) of the figure.
     """
-    plt.figure(figsize=fig_size, dpi=dpi)
+    fig_size_adjust = (fig_size[0], fig_size[1]*sc_ref.shape[0]/20)
+    plt.figure(figsize=fig_size_adjust, dpi=dpi)
     sc_ref_df = pd.DataFrame(sc_ref, index=type_list)
     sns.heatmap(sc_ref_df, robust=True)
     plt.show()

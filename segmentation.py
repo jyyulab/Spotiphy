@@ -12,7 +12,7 @@ os.environ['CUDA_LAUNCH_BLOCKING'] = '1'
 
 class Segmentation:
     def __init__(self, Img, spot_center: np.ndarray, out_dir: str = '', prob_thresh: float = 0.2,
-                 nms_thresh: float = 0.5, spot_radius: float = 36.5):
+                 nms_thresh: float = 0.5, spot_radius: float = 36.5, n_tiles=(8, 8, 1)):
         """
         Args:
             Img: Array(_*_*3). Three channel stained image. In default, it should be hematoxylin and eosin (H&E) stained image.
@@ -21,6 +21,7 @@ class Segmentation:
             Prob_thresh, nms_thresh: Two thresholds used in Stardist. User should adjust these two threshold based on
                                     the segmentation results.
             spot_radius: Radius of the spots. In 10X Visium, it should be 36.5.
+
         """
         self.Img = Img
         self.spot_center = np.array(spot_center)
@@ -35,12 +36,13 @@ class Segmentation:
         self.label, self.nucleus_boundary, self.nucleus_center, self.probability = None, None, None, None
         self.n_cell_df = None
         self.is_segmented = False  # Whether we have conducted segmentation or not.
+        self.n_tiles = n_tiles
         if version.parse(tf.__version__) >= version.parse("2.9.0"):
             tf.keras.Model.predict = change_predict_defaults(tf.keras.Model.predict)
             print(f"Suppress the output of tensorflow prediction for tensorflow version {tf.version.VERSION}>=2.9.0.")
 
     @staticmethod
-    def stardist_2D_versatile_he(Img, prob_thresh: float = 0.2, nms_thresh: float = 0.5, n_tiles=(4, 4, 1),
+    def stardist_2D_versatile_he(Img, prob_thresh: float = 0.2, nms_thresh: float = 0.5, n_tiles=(8, 8, 1),
                                  verbose: bool = True):
         """
         Segmentation function provided by Stardist..
@@ -51,7 +53,7 @@ class Segmentation:
             n_tiles: Out of memory (OOM) errors can occur if the input image is too large.
                      To avoid this problem, the input image is broken up into (overlapping) tiles that are processed
                      independently and re-assembled. (Copied from stardist document).
-                     In default, we break the image into 4*4 tiles.
+                     In default, we break the image into 8*8 tiles.
             verbose: Whether to print segmentation progress.
         Returns:
             label: 2D np.ndarray represents the segmented image. Background pixels has value 0 and nucleus pixels has
@@ -84,12 +86,12 @@ class Segmentation:
                        Column 'centers' represents the coordinates of the nucleus centers.
         """
         n_spot = len(spot_center)
-        n_cell_df = pd.DataFrame({'cell_count': [0] * n_spot, 'centers': None})
+        n_cell_df = pd.DataFrame({'cell_count': [0] * n_spot, 'Nucleus centers': None})
         distance = np.sum((spot_center[:, :, np.newaxis] - nucleus_center.T) ** 2, axis=1)
         for i in range(n_spot):
             nucleus_index = np.where(distance[i] < spot_radius ** 2)[0]
             n_cell_df.iloc[i, 0] = len(nucleus_index)
-            n_cell_df.at[i, 'centers'] = nucleus_center[nucleus_index] if len(nucleus_index) else np.array([])
+            n_cell_df.at[i, 'Nucleus centers'] = nucleus_center[nucleus_index] if len(nucleus_index) else np.array([])
         return n_cell_df
 
     def segment_nucleus(self, save=True):
@@ -99,7 +101,7 @@ class Segmentation:
             save: Whether to save the segmentation results.
         """
         self.label, details = self.stardist_2D_versatile_he(self.Img, nms_thresh=self.nms_thresh,
-                                                            prob_thresh=self.prob_thresh)
+                                                            prob_thresh=self.prob_thresh, n_tiles=self.n_tiles)
         nucleus_boundary, nucleus_center, self.probability = details['coord'], details['points'], details['prob']
         nucleus_boundary = np.transpose(nucleus_boundary, [0, 2, 1])
         self.nucleus_boundary = nucleus_boundary[:, :, [1, 0]]
