@@ -7,7 +7,7 @@ import pandas as pd
 
 
 def initialization(adata_sc: anndata.AnnData, adata_st: anndata.AnnData, min_genes: int = 200, min_cells: int = 200,
-                   min_std: float = 80, normalize_st=None):
+                   min_std: float = 80, normalize_st=None, filtering=True):
     """
     Filter single cell data and spatial data, and normalize the data to count per million (CPM).
     Args:
@@ -19,6 +19,7 @@ def initialization(adata_sc: anndata.AnnData, adata_st: anndata.AnnData, min_gen
         normalize_st: If False, spatial data is also normalized to one million. Otherwise, normalized_st should be
                       np.ndarray, representing the number of cells in each spot, and the expression of each spot is
                       normalized to n_cell million.
+        filtering: Whether filter the genes in adata_sc.
     """
     if type(adata_sc.X) is not np.ndarray:
         adata_sc.X = adata_sc.X.toarray()
@@ -35,11 +36,12 @@ def initialization(adata_sc: anndata.AnnData, adata_st: anndata.AnnData, min_gen
     # Initial filtering
     # One can also achieve the same result by using sc.pp.filter_cells(adata_sc1, min_genes=min_genes) and
     # sc.pp.filter_genes(adata_sc1, min_cells=min_cells). However, the code below is faster based on our test.
-    gene_sum = np.sum(adata_sc.X > 0, axis=1)
-    adata_sc = adata_sc[gene_sum > min_genes]
-    cell_sum = np.sum(adata_sc.X > 0, axis=0)
-    adata_sc = adata_sc[:, cell_sum > min_cells]
-    adata_sc = adata_sc[:, np.std(adata_sc.X, axis=0) > min_std]
+    if filtering:
+        gene_sum = np.sum(adata_sc.X > 0, axis=1)
+        adata_sc = adata_sc[gene_sum > min_genes]
+        cell_sum = np.sum(adata_sc.X > 0, axis=0)
+        adata_sc = adata_sc[:, cell_sum > min_cells]
+        adata_sc = adata_sc[:, np.std(adata_sc.X, axis=0) > min_std]
 
     # Find the intersection of genes
     common_genes = list(set(adata_st.var_names).intersection(set(adata_sc.var_names)))
@@ -103,7 +105,8 @@ def marker_selection(adata_sc: anndata.AnnData, key_type: str, R: float = 2, thr
         cover_fraction = np.sum(data_type[i][:, type_index_max == i] > 0, axis=0) / n_cell_by_type[i]
         gene_name_temp = gene_name[type_index_max == i][cover_fraction > threshold_cover]
         z_score_temp = z_score_sort[2, type_index_max == i][cover_fraction > threshold_cover]  # second smallest z-score
-        selected_gene_idx = np.argsort(z_score_temp)[-n_select:]
+        n_pass_threshold = np.sum(z_score_temp >= threshold_z)
+        selected_gene_idx = np.argsort(z_score_temp)[-min(n_select, n_pass_threshold):]
         selected_gene = gene_name_temp[selected_gene_idx]
         if return_dict:
             marker_gene[type_list[i]] = list(selected_gene)

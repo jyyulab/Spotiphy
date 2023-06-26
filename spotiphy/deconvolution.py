@@ -12,8 +12,9 @@ import pyro.distributions as dist
 import pyro.distributions.constraints as constraints
 from pyro.optim import Adam
 from pyro.infer import SVI, Trace_ELBO
-
 from scipy.spatial.distance import jensenshannon
+
+from . import sc_reference
 
 
 def deconvolute(X, sc_ref, device='cuda', n_epoch=8000, adam_params=None, plot=False, fig_size=(4.8, 3.6), dpi=200):
@@ -120,7 +121,7 @@ def simulation(adata_st: anndata.AnnData, adata_sc: anndata.AnnData, key_type: s
         save: If True, save the generated adata_st as a file.
         out_dir: Output directory.
     Returns:
-
+        Simulated ST Anndata.
     """
     # Construct ground truth
     type_list = sorted(list(adata_sc.obs[key_type].unique()))  # list of the cell type.
@@ -176,6 +177,7 @@ def simulation(adata_st: anndata.AnnData, adata_sc: anndata.AnnData, key_type: s
     additive_noise = np.random.lognormal(0, additive_noise_sigma, size=X.shape)
     X = X * additive_noise
     adata_st.X = X
+    adata_st.uns['batch_effect'] = batch_effect
 
     if save:
         if out_dir and not os.path.exists(out_dir):
@@ -187,7 +189,7 @@ def simulation(adata_st: anndata.AnnData, adata_sc: anndata.AnnData, key_type: s
 
 
 class Evaluation:
-    def __init__(self, proportion_truth, proportion_estimated_list, methods, out_dir="", cluster=None):
+    def __init__(self, proportion_truth, proportion_estimated_list, methods, out_dir="", cluster=None, type_list=None):
         """
         Args:
             proportion_truth: Ground truth of the cell proportion.
@@ -195,6 +197,7 @@ class Evaluation:
             methods: List of methods names.
             out_dir: Output directory.
             cluster: Cluster label of each spot.
+            type_list: List of cell types
         """
         self.proportion_truth = proportion_truth
         self.proportion_estimated_list = proportion_estimated_list
@@ -211,10 +214,14 @@ class Evaluation:
         if not os.path.exists(out_dir+'figures'):
             os.mkdir(out_dir+'figures')
         self.cluster = cluster
-        self.function_map = {'Cosine similarity': self.cosine, 'Absolute error': self.absolute_error,
-                             'Square error': self.square_error, 'JSD': self.JSD, 'Correlation': self.correlation_coef,
-                             'Fraction of cells correctly mapped': self.correct_fraction}
-        self.spot_metric_names = {'Cosine similarity', 'Absolute error', 'Square error', 'JSD'}
+        self.type_list = type_list
+        self.function_map = {'Cosine similarity': self.cosine, 'Absolute error spot': self.absolute_error_spot,
+                             'Square error spot': self.square_error_spot, 'JSD': self.JSD,
+                             'Correlation': self.correlation_coef,
+                             'Fraction of cells correctly mapped': self.correct_fraction,
+                             'Absolute error': self.absolute_error}
+        self.spot_metric_names = {'Cosine similarity', 'Absolute error spot', 'Square error spot', 'JSD'}
+        self.general_metric_names = {'Absolute error', 'Square error'}
         assert len(proportion_estimated_list) == self.n_method
 
     @staticmethod
@@ -235,14 +242,14 @@ class Evaluation:
         return cosine_similarity
 
     @staticmethod
-    def absolute_error(proportion_truth: np.ndarray, proportion_estimated: np.ndarray):
+    def absolute_error_spot(proportion_truth: np.ndarray, proportion_estimated: np.ndarray):
         """[spot metric]"""
         assert proportion_truth.shape == proportion_estimated.shape
         error = np.sum(np.abs(proportion_truth-proportion_estimated), axis=1)
         return error
 
     @staticmethod
-    def square_error(proportion_truth: np.ndarray, proportion_estimated: np.ndarray):
+    def square_error_spot(proportion_truth: np.ndarray, proportion_estimated: np.ndarray):
         """[spot metric]"""
         assert proportion_truth.shape == proportion_estimated.shape
         error = np.sum((proportion_truth-proportion_estimated)**2, axis=1)
@@ -278,6 +285,13 @@ class Evaluation:
         correct_proportion = np.minimum(proportion_truth, proportion_estimated)
         return np.sum(correct_proportion, axis=0)/np.sum(proportion_truth, axis=0)
 
+    @staticmethod
+    def absolute_error(proportion_truth: np.ndarray, proportion_estimated: np.ndarray):
+        """[general metric]"""
+        assert proportion_truth.shape == proportion_estimated.shape
+        error = np.abs(proportion_truth-proportion_estimated)
+        return error
+
     def evaluate_metric(self, metric='Cosine similarity'):
         metric_values = []
         func = self.function_map.get(metric)
@@ -286,7 +300,11 @@ class Evaluation:
         self.metric_dict[metric] = metric_values
         return metric_values
 
-    def plot_metric(self, save=False, region=None, metric='Cosine similarity'):
+    def plot_metric_spot(self, save=False, region=None, metric='Cosine similarity'):
+        """
+        Plot the box plot of each method based on the metric. Each value in box plot represents a spot.
+        Box number equals to the number of methods.
+        """
         assert metric in self.spot_metric_names
         plt.figure(dpi=300)
         if metric not in self.metric_dict.keys():
@@ -315,18 +333,17 @@ class Evaluation:
         for patch in ax.patches:
             r, g, b, a = patch.get_facecolor()
             patch.set_facecolor((r, g, b, .7))
-        ax = sns.stripplot(data=df, y=metric, x='Method', ax=ax, jitter=0.2, palette='Dark2',
-                           size=2)
+        ax = sns.stripplot(data=df, y=metric, x='Method', ax=ax, jitter=0.2, palette='Dark2', size=2)
         ax.set(xlabel='')
         if save:
-            plt.savefig(f'{self.out_dir}figures/{metric}{region_name}.jpg', dpi=500)
+            plt.savefig(f'{self.out_dir}figures/{metric}{region_name}.jpg', dpi=500, bbox_inches = 'tight')
         plt.show()
 
     def plot_metric_type(self, save=False, metric="Correlation"):
         """
-        Same to plot_metric, but metric values are calculated for cell types.
+        Same to plot_metric_spot, but each value in box plot represents a cell type. Box number equals to the number of methods.
         """
-        assert metric not in self.spot_metric_names
+        assert metric not in self.spot_metric_names and metric in self.function_map.keys()
         if metric not in self.metric_dict.keys():
             self.evaluate_metric(metric=metric)
         sns.set_palette("Dark2")
@@ -340,5 +357,157 @@ class Evaluation:
         ax = sns.stripplot(data=df, y=metric, x='Method', ax=ax, jitter=True, color='black', size=2)
         ax.set(xlabel='')
         if save:
-            plt.savefig(f'{self.out_dir}figures/{metric}.jpg', dpi=500)
+            plt.savefig(f'{self.out_dir}figures/{metric}.jpg', dpi=500, bbox_inches = 'tight')
         plt.show()
+
+    def plot_metric_spot_type(self, save=False, metric='Absolute error'):
+        """
+        Similar to plot_metric_spot, but the figures are separated for each cell type.
+        """
+        """
+        Plot the box plot of each method based on the metric. Each value in box plot represents a spot.
+        Box number equals to the number of methods.
+        """
+        assert metric in self.general_metric_names
+        plt.figure(dpi=300)
+        if metric not in self.metric_dict.keys():
+            self.evaluate_metric(metric=metric)
+        sns.set_palette("Dark2")
+        n_spot = len(self.proportion_truth)
+        metric_values = np.vstack(self.metric_dict[metric])
+        metric_values = metric_values.flatten('F')
+        methods_name = np.repeat(self.methods, n_spot)
+        methods_name = np.tile(methods_name, self.n_type)
+        cell_type = np.repeat(self.type_list, n_spot*self.n_method)
+
+        df = pd.DataFrame({'metric': metric_values, 'Method': methods_name, 'Cell type': cell_type})
+
+        for cell_type in self.type_list:
+            ax = sns.boxplot(data=df[df['Cell type'] == cell_type], y='metric', x='Method', showfliers=False)
+            for patch in ax.patches:
+                r, g, b, a = patch.get_facecolor()
+                patch.set_facecolor((r, g, b, .7))
+            ax = sns.stripplot(data=df[df['Cell type'] == cell_type], y='metric', x='Method', ax=ax, jitter=0.2, palette='Dark2', size=2)
+            ax.set(xlabel='')
+            if save:
+                cell_type = "".join(x for x in cell_type if x.isalnum())
+                plt.savefig(f'{self.out_dir}figures/{metric} {cell_type}.jpg', dpi=500, bbox_inches='tight')
+            plt.show()
+            del ax
+
+    def plot_metric_all(self, save=False, metric="Absolute error", region=None):
+        assert metric in self.general_metric_names
+        plt.figure(figsize=(self.n_method*self.n_type/4, 5), dpi=300)
+        if metric not in self.metric_dict.keys():
+            self.evaluate_metric(metric=metric)
+        sns.set_palette("Dark2")
+        region_name = ''
+        if region is None:
+            metric_values = np.vstack(self.metric_dict[metric])
+            metric_values = metric_values.flatten('F')
+            n_spot = len(self.proportion_truth)
+        else:
+            if isinstance(region, list):
+                select = np.array([i in region for i in self.cluster])
+                region_name = '_' + '+'.join(region)
+            else:
+                select = np.array([i == region for i in self.cluster])
+                region_name = '_' + region
+            if not any(select):
+                raise ValueError('Region must exist.')
+            metric_values = [x[select] for x in self.metric_dict[metric]]
+            metric_values = np.vstack(metric_values)
+            metric_values = metric_values.flatten('F')
+            n_spot = np.sum(select)
+
+        methods_name = np.repeat(self.methods, n_spot)
+        methods_name = np.tile(methods_name, self.n_type)
+        cell_type = np.repeat(self.type_list, n_spot*self.n_method)
+
+        df = pd.DataFrame({metric:metric_values, 'Method':methods_name, 'Cell type':cell_type})
+        ax = sns.boxplot(data=df, y=metric, hue='Method', x='Cell type', flierprops={"marker": "o"}, dodge=True,
+                         linewidth=0.6, fliersize=0.5)
+        # sns.violinplot(data=df, y=metric, hue='Method', x='Cell type')
+        # ax = sns.catplot(data=df, y=metric, hue='Method', x='Cell type', kind='boxen')
+        # for patch in ax.patches:
+        #     r, g, b, a = patch.get_facecolor()
+        #     patch.set_facecolor((r, g, b, .7))
+        # ax = sns.stripplot(data=df, y=metric, x='Method', hue='Cell type', ax=ax, jitter=0.2, palette='Dark2', size=2)
+        # ax.set(xlabel='')
+        if save:
+            plt.savefig(f'{self.out_dir}figures/{metric}{region_name}.tiff', dpi=800, bbox_inches='tight')
+        plt.show()
+
+
+def decomposition(adata_st: anndata.AnnData, adata_sc: anndata.AnnData, key_type: str, cell_proportion: np.ndarray,
+                  save=True, out_dir='', threshold=0.1, n_cell=None, spot_location: np.ndarray = None,
+                  filtering_gene=False, filename="ST_decomposition.h5ad"):
+    """
+    Decompose ST.
+
+    Args:
+        adata_st: Original spatial transcriptomics data.
+        adata_sc: Original single-cell data.
+        key_type: The key that is used to extract cell type information from adata_sc.obs.
+        cell_proportion: Proportion of each cell type obtained by the deconvolution.
+        save: If True, save the generated adata_st as a file.
+        out_dir: Output directory.
+        threshold: If n_cell is none, discard cell types with proportion less than threshold.
+        n_cell: Number of cells in each spot.
+        spot_location: Coordinates of the spots.
+        filtering_gene: Whether filter the genes in sc_reference.initialization.
+        filename: Name of the saved file.
+    Returns:
+        adata_st_decomposed: Anndata similar to scRNA, but obtained by decomposing ST.
+    """
+    type_list = sorted(list(adata_sc.obs[key_type].unique()))  # list of the cell type.
+    assert len(type_list) == cell_proportion.shape[1]
+    assert len(cell_proportion) == len(adata_st)
+    if spot_location is not None:
+        assert len(spot_location) == len(adata_st)
+    n_type = len(type_list)
+
+    cell_proportion_temp = cell_proportion.copy()
+    if n_cell is None:
+        select = cell_proportion_temp >= threshold
+        cell_proportion_temp[cell_proportion_temp < threshold] = 0
+        cell_proportion_temp = cell_proportion_temp/(np.sum(cell_proportion_temp, axis=1, keepdims=True)+1e-6)
+    else:
+        cell_count = proportion_to_count(cell_proportion_temp, n_cell)
+        select = cell_count > 0.9
+        cell_proportion_temp = cell_count/(np.sum(cell_count, axis=1, keepdims=True)+1e-6)
+
+    adata_sc_temp, adata_st_temp = sc_reference.initialization(adata_sc, adata_st, filtering=filtering_gene)
+    sc_ref = sc_reference.construct_sc_ref(adata_sc_temp, key_type=key_type)
+    if type(adata_st_temp.X) is not np.ndarray:
+        X = adata_st_temp.X.toarray().copy()
+    else:
+        X = adata_st.X.copy()
+    Y = cell_proportion_temp[:, np.newaxis, :] * sc_ref.T
+    Y = Y/(np.sum(Y, axis=2, keepdims=True)+1e-10)
+    Y = Y * X[:, :, np.newaxis]  # n_spot*n_gene*n_type
+
+    cell_type = []
+    ST_decompose = []
+    for i in range(n_type):
+        ST_decompose += [Y[select[:, i], :, i]]
+        cell_type += [type_list[i]]*np.sum(select[:, i])
+    ST_decompose = np.vstack(ST_decompose)
+    ST_decompose = ST_decompose/(np.sum(ST_decompose, axis=1, keepdims=True)+1e-10)*1e6
+    adata_st_decomposed = anndata.AnnData(ST_decompose)
+    adata_st_decomposed.var_names = adata_st_temp.var_names
+    adata_st_decomposed.obs['cell_type'] = cell_type
+
+    if spot_location is not None:
+        location = [spot_location[select[:, i], :] for i in range(n_type)]
+        location = np.vstack(location)
+        adata_st_decomposed.obs['location_x'] = location[:, 0]
+        adata_st_decomposed.obs['location_y'] = location[:, 1]
+
+    if save:
+        if out_dir and not os.path.exists(out_dir):
+            os.mkdir(out_dir)
+        out_dir = out_dir + '/' if out_dir else ''
+        adata_st_decomposed.write(out_dir + filename)
+
+    return adata_st_decomposed
