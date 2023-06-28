@@ -13,11 +13,13 @@ import pyro.distributions.constraints as constraints
 from pyro.optim import Adam
 from pyro.infer import SVI, Trace_ELBO
 from scipy.spatial.distance import jensenshannon
+import time
 
 from . import sc_reference
 
 
-def deconvolute(X, sc_ref, device='cuda', n_epoch=8000, adam_params=None, plot=False, fig_size=(4.8, 3.6), dpi=200):
+def deconvolute(X, sc_ref, device='cuda', n_epoch=8000, adam_params=None, batch_prior=2,
+                plot=False, fig_size=(4.8, 3.6), dpi=200):
     """
     Deconvolution of the proportion of genes contributed by each cell type.
 
@@ -28,6 +30,7 @@ def deconvolute(X, sc_ref, device='cuda', n_epoch=8000, adam_params=None, plot=F
         plot: Whether to plot the ELBO loss.
         n_epoch: Number of training epochs.
         adam_params: Parameters for the adam optimizer.
+        batch_prior: Parameter of the prior Dirichlet distribution of the batch effect: exp(Uniform(0, batch_prior))
         fig_size: Size of the figure.
         dpi: Dots per inch (DPI) of the figure.
 
@@ -39,29 +42,50 @@ def deconvolute(X, sc_ref, device='cuda', n_epoch=8000, adam_params=None, plot=F
     max_exp = int(np.max(np.sum(X, axis=1)))
     X = torch.tensor(X, device=device, dtype=torch.int32)
     sc_ref = torch.tensor(sc_ref, device=device)
+    batch_prior = torch.tensor(batch_prior, device=device, dtype=torch.float64)
     assert X.shape[1] == sc_ref.shape[1], "Spatial data and SC reference data must have the same number of genes."
 
-    def model(sc_ref, X):
+    def model(sc_ref, X, batch_prior):
         n_spot = len(X)
         n_type, n_gene = sc_ref.shape
-        alpha = pyro.sample("Batch effect", dist.Dirichlet(torch.full((n_gene,), 2., device=device,
-                                                                      dtype=torch.float64)))
+        # alpha = pyro.sample("Batch effect", dist.Dirichlet(torch.full((n_gene,), batch_prior, device=device,
+        #                                                               dtype=torch.float64)))
+        alpha = pyro.sample("Batch effect", dist.Uniform(torch.tensor(0., device=device),
+                                                         torch.tensor(1., device=device)).expand([n_gene]).to_event(1))
+        alpha_exp = torch.exp2(alpha*batch_prior)
         with pyro.plate("spot", n_spot, dim=-1):
             q = pyro.sample("Proportion", dist.Dirichlet(torch.full((n_type,), 3., device=device, dtype=torch.float64)))
             rho = torch.matmul(q, sc_ref)
-            rho = rho * alpha
+            rho = rho * alpha_exp
+            # print(torch.min(rho.sum(dim=-1).unsqueeze(-1)))
             rho = rho / rho.sum(dim=-1).unsqueeze(-1)
+            if torch.any(torch.isnan(rho)):
+                print('rho contains NaN at')
+                print(torch.where(torch.isnan(rho)))
             pyro.sample("Spatial RNA", dist.Multinomial(total_count=max_exp, probs=rho), obs=X)
 
-    def guide(sc_ref, X):
+    def guide(sc_ref, X, batch_prior):
         n_spot = len(X)
         n_type, n_gene = sc_ref.shape
-        pi = pyro.param('pi', lambda: torch.full((n_gene,), 2., device=device, dtype=torch.float64),
-                        constraint=constraints.positive)
-        alpha = pyro.sample("Batch effect", dist.Dirichlet(pi))
+        # pi = pyro.param('pi', lambda: torch.full((n_gene,), 10, device=device, dtype=torch.float64),
+        #                 constraint=constraints.positive)
+        # alpha = pyro.sample("Batch effect", dist.Dirichlet(pi))
+        alpha_loc = pyro.param("alpha_loc", torch.zeros(n_gene, device=device, dtype=torch.float64))
+        alpha_scale = pyro.param("alpha_scale", torch.ones(n_gene, device=device, dtype=torch.float64),
+                                 constraint=constraints.positive)
+        base_dist = dist.Normal(alpha_loc, alpha_scale)
+        sigmoid_trans = dist.transforms.SigmoidTransform()  # Transforms to [0, 1]
+
+        alpha_dist = pyro.distributions.TransformedDistribution(base_dist, [sigmoid_trans])
+
+        alpha = pyro.sample("Batch effect", alpha_dist.to_event(1))
         with pyro.plate("spot", n_spot):
-            sigma = pyro.param('sigma', lambda: torch.full((n_spot, n_type), 2., device=device, dtype=torch.float64),
+            sigma = pyro.param('sigma', lambda: torch.full((n_spot, n_type), 3., device=device, dtype=torch.float64),
                                constraint=constraints.positive)
+            if torch.any(torch.isnan(sigma)):
+                print('sigma contains NaN at')
+                print(torch.where(torch.isnan(sigma)))
+            # print(torch.min(sigma))
             q = pyro.sample("Proportion", dist.Dirichlet(sigma))
 
     pyro.clear_param_store()
@@ -69,7 +93,7 @@ def deconvolute(X, sc_ref, device='cuda', n_epoch=8000, adam_params=None, plot=F
     svi = SVI(model, guide, optimizer, loss=Trace_ELBO())
     loss_history = []
     for _ in tqdm(range(n_epoch)):
-        loss = svi.step(sc_ref, X)
+        loss = svi.step(sc_ref, X, batch_prior)
         loss_history.append(loss)
     if plot:
         plt.figure(figsize=fig_size, dpi=dpi)
@@ -441,7 +465,7 @@ class Evaluation:
 
 def decomposition(adata_st: anndata.AnnData, adata_sc: anndata.AnnData, key_type: str, cell_proportion: np.ndarray,
                   save=True, out_dir='', threshold=0.1, n_cell=None, spot_location: np.ndarray = None,
-                  filtering_gene=False, filename="ST_decomposition.h5ad"):
+                  filtering_gene=False, filename="ST_decomposition.h5ad", verbose=0):
     """
     Decompose ST.
 
@@ -457,9 +481,11 @@ def decomposition(adata_st: anndata.AnnData, adata_sc: anndata.AnnData, key_type
         spot_location: Coordinates of the spots.
         filtering_gene: Whether filter the genes in sc_reference.initialization.
         filename: Name of the saved file.
+        verbose: Whether print the time spend.
     Returns:
         adata_st_decomposed: Anndata similar to scRNA, but obtained by decomposing ST.
     """
+    time_start = time.time()
     type_list = sorted(list(adata_sc.obs[key_type].unique()))  # list of the cell type.
     assert len(type_list) == cell_proportion.shape[1]
     assert len(cell_proportion) == len(adata_st)
@@ -476,16 +502,32 @@ def decomposition(adata_st: anndata.AnnData, adata_sc: anndata.AnnData, key_type
         cell_count = proportion_to_count(cell_proportion_temp, n_cell)
         select = cell_count > 0.9
         cell_proportion_temp = cell_count/(np.sum(cell_count, axis=1, keepdims=True)+1e-6)
+    if verbose:
+        print('Prepared proportion data. Time use {:.2f}'.format(time.time()-time_start))
+        time_start = time.time()
 
     adata_sc_temp, adata_st_temp = sc_reference.initialization(adata_sc, adata_st, filtering=filtering_gene)
+    if verbose:
+        print('Initialized scRNA and ST data. Time use {:.2f}'.format(time.time()-time_start))
+        time_start = time.time()
     sc_ref = sc_reference.construct_sc_ref(adata_sc_temp, key_type=key_type)
-    if type(adata_st_temp.X) is not np.ndarray:
-        X = adata_st_temp.X.toarray().copy()
-    else:
-        X = adata_st.X.copy()
+    print(time.time()-time_start)
+    time_start = time.time()
+    # if type(adata_st_temp.X) is not np.ndarray:
+    #     X = adata_st_temp.X.toarray()
+    # else:
+    #     X = adata_st_temp.X
+    X = np.array(adata_st_temp.X)
+    if verbose:
+        print('Processed scRNA and ST data. Time use {:.2f}'.format(time.time()-time_start))
+        time_start = time.time()
+
     Y = cell_proportion_temp[:, np.newaxis, :] * sc_ref.T
     Y = Y/(np.sum(Y, axis=2, keepdims=True)+1e-10)
     Y = Y * X[:, :, np.newaxis]  # n_spot*n_gene*n_type
+    if verbose:
+        print('Decomposition complete. Time use {:.2f}'.format(time.time()-time_start))
+        time_start = time.time()
 
     cell_type = []
     ST_decompose = []
@@ -497,17 +539,21 @@ def decomposition(adata_st: anndata.AnnData, adata_sc: anndata.AnnData, key_type
     adata_st_decomposed = anndata.AnnData(ST_decompose)
     adata_st_decomposed.var_names = adata_st_temp.var_names
     adata_st_decomposed.obs['cell_type'] = cell_type
-
     if spot_location is not None:
         location = [spot_location[select[:, i], :] for i in range(n_type)]
         location = np.vstack(location)
         adata_st_decomposed.obs['location_x'] = location[:, 0]
         adata_st_decomposed.obs['location_y'] = location[:, 1]
+    if verbose:
+        print('Constructed ST decomposition data file. Time use {:.2f}'.format(time.time()-time_start))
+        time_start = time.time()
 
     if save:
         if out_dir and not os.path.exists(out_dir):
             os.mkdir(out_dir)
         out_dir = out_dir + '/' if out_dir else ''
         adata_st_decomposed.write(out_dir + filename)
+        if verbose:
+            print('Saved file to output folder. Time use {:.2f}'.format(time.time()-time_start))
 
     return adata_st_decomposed

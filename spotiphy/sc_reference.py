@@ -4,6 +4,7 @@ import scanpy as sc
 import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
+from tqdm import tqdm
 
 
 def initialization(adata_sc: anndata.AnnData, adata_st: anndata.AnnData, min_genes: int = 200, min_cells: int = 200,
@@ -129,8 +130,9 @@ def construct_sc_ref(adata_sc: anndata.AnnData, key_type: str):
     type_list = sorted(list(adata_sc.obs[key_type].unique()))
     n_gene, n_type = adata_sc.shape[1], len(type_list)
     sc_ref = np.zeros((n_type, n_gene))
-    for i, cell_type in enumerate(type_list):
-        sc_X_temp = np.sum(adata_sc.X[adata_sc.obs[key_type]==cell_type], axis=0)
+    X = np.array(adata_sc.X)
+    for i, cell_type in tqdm(enumerate(type_list)):
+        sc_X_temp = np.sum(X[adata_sc.obs[key_type] == cell_type], axis=0)
         sc_ref[i] = sc_X_temp/np.sum(sc_X_temp)
     return sc_ref
 
