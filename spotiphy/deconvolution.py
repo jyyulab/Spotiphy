@@ -128,7 +128,7 @@ def proportion_to_count(p, n):
 
 def simulation(adata_st: anndata.AnnData, adata_sc: anndata.AnnData, key_type: str, cell_proportion: np.ndarray,
                n_cell=10, batch_effect_sigma=0.1, zero_proportion=0.3, additive_noise_sigma=0.05, save=True,
-               out_dir=''):
+               out_dir='', filename="ST_Simulated.h5ad", verbose=0):
     """
     Simulation of the spatial transcriptomics data based on a real spatial sample and deconvolution results of Spotiphy.
 
@@ -144,9 +144,12 @@ def simulation(adata_st: anndata.AnnData, adata_sc: anndata.AnnData, key_type: s
         additive_noise_sigma: Sigma of the log-normal distribution when generate additive noise.
         save: If True, save the generated adata_st as a file.
         out_dir: Output directory.
+        filename: Name of the saved file.
+        verbose: Whether print the time spend.
     Returns:
         Simulated ST Anndata.
     """
+    time_start = time.time()
     # Construct ground truth
     type_list = sorted(list(adata_sc.obs[key_type].unique()))  # list of the cell type.
     assert len(type_list) == cell_proportion.shape[1]
@@ -166,6 +169,9 @@ def simulation(adata_st: anndata.AnnData, adata_sc: anndata.AnnData, key_type: s
     adata_st.obsm['ground_truth'] = cell_count
     adata_st.obs['cell_count'] = n_cell
     adata_st.uns['type_list'] = type_list
+    if verbose:
+        print('Prepared the ground truth. Time use {:.2f}'.format(time.time()-time_start))
+        time_start = time.time()
 
     # Construct expression matrix
     common_genes = list(set(adata_st.var_names).intersection(set(adata_sc.var_names)))
@@ -173,10 +179,7 @@ def simulation(adata_st: anndata.AnnData, adata_sc: anndata.AnnData, key_type: s
     adata_st = adata_st[:, common_genes]
     n_gene = len(common_genes)
     X = np.zeros(adata_st.shape)
-    if type(adata_sc.X) is np.ndarray:
-        Y = adata_sc.X
-    else:
-        Y = adata_sc.X.toarray()
+    Y = np.array(adata_sc.X)
     Y = Y * 1e6 / np.sum(Y, axis=1, keepdims=True)
     type_index = []
     for i in range(n_type):
@@ -189,6 +192,9 @@ def simulation(adata_st: anndata.AnnData, adata_sc: anndata.AnnData, key_type: s
                     X[i] += X_temp[0]
                 else:
                     X[i] += X_temp
+    if verbose:
+        print('Constructed the ground truth. Time use {:.2f}'.format(time.time()-time_start))
+        time_start = time.time()
 
     # Add noise
     # Batch effect
@@ -202,12 +208,17 @@ def simulation(adata_st: anndata.AnnData, adata_sc: anndata.AnnData, key_type: s
     X = X * additive_noise
     adata_st.X = X
     adata_st.uns['batch_effect'] = batch_effect
+    if verbose:
+        print('Added batch effect, zero reads, and additive noise. Time use {:.2f}'.format(time.time()-time_start))
+        time_start = time.time()
 
     if save:
         if out_dir and not os.path.exists(out_dir):
             os.mkdir(out_dir)
         out_dir = out_dir + '/' if out_dir else ''
-        adata_st.write(out_dir + "Simulated_ST.h5ad")
+        adata_st.write(out_dir + filename)
+        if verbose:
+            print('Saved the simulated data to file. Time use {:.2f}'.format(time.time()-time_start))
 
     return adata_st
 
@@ -499,7 +510,9 @@ def decomposition(adata_st: anndata.AnnData, adata_sc: anndata.AnnData, key_type
         cell_proportion_temp[cell_proportion_temp < threshold] = 0
         cell_proportion_temp = cell_proportion_temp/(np.sum(cell_proportion_temp, axis=1, keepdims=True)+1e-6)
     else:
-        cell_count = proportion_to_count(cell_proportion_temp, n_cell)
+        cell_count = np.zeros((len(spot_location), n_type))
+        for i in range(len(spot_location)):
+            cell_count[i] = proportion_to_count(cell_proportion_temp[i], n_cell[i])
         select = cell_count > 0.9
         cell_proportion_temp = cell_count/(np.sum(cell_count, axis=1, keepdims=True)+1e-6)
     if verbose:
@@ -511,8 +524,6 @@ def decomposition(adata_st: anndata.AnnData, adata_sc: anndata.AnnData, key_type
         print('Initialized scRNA and ST data. Time use {:.2f}'.format(time.time()-time_start))
         time_start = time.time()
     sc_ref = sc_reference.construct_sc_ref(adata_sc_temp, key_type=key_type)
-    print(time.time()-time_start)
-    time_start = time.time()
     # if type(adata_st_temp.X) is not np.ndarray:
     #     X = adata_st_temp.X.toarray()
     # else:
@@ -531,14 +542,24 @@ def decomposition(adata_st: anndata.AnnData, adata_sc: anndata.AnnData, key_type
 
     cell_type = []
     ST_decompose = []
+    spot_name = []
+    n_cell_represent = []
     for i in range(n_type):
         ST_decompose += [Y[select[:, i], :, i]]
         cell_type += [type_list[i]]*np.sum(select[:, i])
+        spot_name += list(np.array(adata_st.obs_names)[select[:, i]])
+        if n_cell is not None:
+            n_cell_represent += list(cell_count[select[:, i], i])
     ST_decompose = np.vstack(ST_decompose)
     ST_decompose = ST_decompose/(np.sum(ST_decompose, axis=1, keepdims=True)+1e-10)*1e6
     adata_st_decomposed = anndata.AnnData(ST_decompose)
+    adata_st_decomposed.uns = adata_st.uns
     adata_st_decomposed.var_names = adata_st_temp.var_names
     adata_st_decomposed.obs['cell_type'] = cell_type
+    adata_st_decomposed.obs['spot_name'] = spot_name
+    if n_cell is not None:
+        adata_st_decomposed.obs['n_cell'] = n_cell_represent
+        adata_st_decomposed.uns['cell_count'] = cell_count
     if spot_location is not None:
         location = [spot_location[select[:, i], :] for i in range(n_type)]
         location = np.vstack(location)

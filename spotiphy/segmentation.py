@@ -7,6 +7,7 @@ from csbdeep.utils import normalize
 import tensorflow as tf
 from packaging import version
 import os
+import cv2 as cv
 os.environ['CUDA_LAUNCH_BLOCKING'] = '1'
 
 
@@ -122,7 +123,7 @@ class Segmentation:
         np.save(f'{self.out_dir}segmentation_probability.npy', self.probability)
         self.n_cell_df.to_csv(f'{self.out_dir}n_cell_df.csv')
 
-    def plot(self, fig_size=(10, 4), dpi=300, crop=None, cmap_segmented='hot'):
+    def plot(self, fig_size=(10, 4), dpi=300, crop=None, cmap_segmented='hot', save=False, path=None):
         """
         Plot the segmentation results.
         It is recommended to adjust the stardist parameters nms_thresh and prob_thresh based on this plot.
@@ -132,6 +133,8 @@ class Segmentation:
             crop: If None, show the full image.
                   Otherwise, crop should be
             cmap_segmented: Color map of the segmented image.
+            save: If true, save the figure.
+            path: Path to the save figure.
         """
         assert self.is_segmented, "Please conduct segmentation first."
         fig, ax = plt.subplots(1, 2, figsize=fig_size, dpi=dpi)
@@ -145,7 +148,12 @@ class Segmentation:
         ax[0].set_title("Original image")
         ax[1].imshow(img_segmented, cmap=cmap_segmented)
         ax[1].set_title("Segmented image")
+        if save:
+            plt.savefig(path, bbox_inches='tight')
         plt.show()
+
+
+
 
 
 def change_predict_defaults(predict_function):
