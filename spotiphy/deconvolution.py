@@ -1,7 +1,8 @@
 import anndata
 import os
-import matplotlib as mpl
+# import matplotlib as mpl
 import matplotlib.pyplot as plt
+from matplotlib.ticker import MaxNLocator
 import pandas as pd
 import seaborn as sns
 import numpy as np
@@ -14,7 +15,8 @@ from pyro.optim import Adam
 from pyro.infer import SVI, Trace_ELBO
 from scipy.spatial.distance import jensenshannon
 import time
-
+from sklearn.gaussian_process import GaussianProcessRegressor
+from sklearn.gaussian_process.kernels import RBF, ConstantKernel as C
 from . import sc_reference
 
 
@@ -30,7 +32,7 @@ def deconvolute(X, sc_ref, device='cuda', n_epoch=8000, adam_params=None, batch_
         plot: Whether to plot the ELBO loss.
         n_epoch: Number of training epochs.
         adam_params: Parameters for the adam optimizer.
-        batch_prior: Parameter of the prior Dirichlet distribution of the batch effect: exp(Uniform(0, batch_prior))
+        batch_prior: Parameter of the prior Dirichlet distribution of the batch effect: 2^(Uniform(0, batch_prior))
         fig_size: Size of the figure.
         dpi: Dots per inch (DPI) of the figure.
 
@@ -52,7 +54,7 @@ def deconvolute(X, sc_ref, device='cuda', n_epoch=8000, adam_params=None, batch_
         #                                                               dtype=torch.float64)))
         alpha = pyro.sample("Batch effect", dist.Uniform(torch.tensor(0., device=device),
                                                          torch.tensor(1., device=device)).expand([n_gene]).to_event(1))
-        alpha_exp = torch.exp2(alpha*batch_prior)
+        alpha_exp = torch.exp2(alpha * batch_prior)
         with pyro.plate("spot", n_spot, dim=-1):
             q = pyro.sample("Proportion", dist.Dirichlet(torch.full((n_type,), 3., device=device, dtype=torch.float64)))
             rho = torch.matmul(q, sc_ref)
@@ -104,25 +106,32 @@ def deconvolute(X, sc_ref, device='cuda', n_epoch=8000, adam_params=None, batch_
     return pyro.get_param_store()
 
 
-def proportion_to_count(p, n):
+def proportion_to_count(p, n, multiple_spots=False):
     """
     Convert the cell proportion to the absolute cell number.
 
     Args:
         p: Cell proportion.
         n: Number of cells.
+        multiple_spots: If the data is related to multiple spots
 
     Returns:
         Cell count of each cell type.
     """
-    assert (np.abs(np.sum(p) - 1) < 1e-5)
-    c0 = p * n
-    count = np.floor(c0)
-    r = c0 - count
-    if np.sum(count) == n:
-        return count
-    idx = np.argsort(r)[-int(np.round(n - np.sum(count))):]
-    count[idx] += 1
+    if multiple_spots:
+        assert len(p) == len(n)
+        count = np.zeros(p.shape)
+        for i in range(len(p)):
+            count[i] = proportion_to_count(p[i], n[i])
+    else:
+        assert (np.abs(np.sum(p) - 1) < 1e-5)
+        c0 = p * n
+        count = np.floor(c0)
+        r = c0 - count
+        if np.sum(count) == n:
+            return count
+        idx = np.argsort(r)[-int(np.round(n - np.sum(count))):]
+        count[idx] += 1
     return count
 
 
@@ -170,7 +179,7 @@ def simulation(adata_st: anndata.AnnData, adata_sc: anndata.AnnData, key_type: s
     adata_st.obs['cell_count'] = n_cell
     adata_st.uns['type_list'] = type_list
     if verbose:
-        print('Prepared the ground truth. Time use {:.2f}'.format(time.time()-time_start))
+        print('Prepared the ground truth. Time use {:.2f}'.format(time.time() - time_start))
         time_start = time.time()
 
     # Construct expression matrix
@@ -179,7 +188,7 @@ def simulation(adata_st: anndata.AnnData, adata_sc: anndata.AnnData, key_type: s
     adata_st = adata_st[:, common_genes]
     n_gene = len(common_genes)
     X = np.zeros(adata_st.shape)
-    Y = np.array(adata_sc.X)
+    Y = adata_sc.X if type(adata_sc.X) is np.ndarray else adata_sc.X.toarray()
     Y = Y * 1e6 / np.sum(Y, axis=1, keepdims=True)
     type_index = []
     for i in range(n_type):
@@ -193,7 +202,7 @@ def simulation(adata_st: anndata.AnnData, adata_sc: anndata.AnnData, key_type: s
                 else:
                     X[i] += X_temp
     if verbose:
-        print('Constructed the ground truth. Time use {:.2f}'.format(time.time()-time_start))
+        print('Constructed the ground truth. Time use {:.2f}'.format(time.time() - time_start))
         time_start = time.time()
 
     # Add noise
@@ -209,7 +218,7 @@ def simulation(adata_st: anndata.AnnData, adata_sc: anndata.AnnData, key_type: s
     adata_st.X = X
     adata_st.uns['batch_effect'] = batch_effect
     if verbose:
-        print('Added batch effect, zero reads, and additive noise. Time use {:.2f}'.format(time.time()-time_start))
+        print('Added batch effect, zero reads, and additive noise. Time use {:.2f}'.format(time.time() - time_start))
         time_start = time.time()
 
     if save:
@@ -218,13 +227,14 @@ def simulation(adata_st: anndata.AnnData, adata_sc: anndata.AnnData, key_type: s
         out_dir = out_dir + '/' if out_dir else ''
         adata_st.write(out_dir + filename)
         if verbose:
-            print('Saved the simulated data to file. Time use {:.2f}'.format(time.time()-time_start))
+            print('Saved the simulated data to file. Time use {:.2f}'.format(time.time() - time_start))
 
     return adata_st
 
 
 class Evaluation:
-    def __init__(self, proportion_truth, proportion_estimated_list, methods, out_dir="", cluster=None, type_list=None):
+    def __init__(self, proportion_truth, proportion_estimated_list, methods, out_dir="", cluster=None, type_list=None,
+                 colors=None, coordinates=None, min_spot_distance=112):
         """
         Args:
             proportion_truth: Ground truth of the cell proportion.
@@ -237,162 +247,212 @@ class Evaluation:
         self.proportion_truth = proportion_truth
         self.proportion_estimated_list = proportion_estimated_list
         self.methods = methods
-        self.metric_dict = dict()  # Save the metric values.
+        self.metric_dict = dict()  # Saved metric values.
         self.n_method = len(methods)
+        self.coordinates = coordinates
+        self.min_spot_distance = min_spot_distance
+        self.cluster = cluster
+        self.type_list = type_list
         self.n_type = proportion_truth.shape[1]
+
+        self.function_map = {'Absolute error': self.absolute_error, 'Square error': self.square_error,
+                             'Cosine similarity': self.cosine, 'Correlation': self.correlation,
+                             'JSD': self.JSD, 'Fraction of cells correctly mapped': self.correct_fraction}
+        self.metric_type_dict = {'Spot': {'Cosine similarity', 'Absolute error', 'Square error', 'JSD', 'Correlation',
+                                          'Fraction of cells correctly mapped'},
+                                 'Cell type': {'Cosine similarity', 'Absolute error', 'Square error', 'JSD',
+                                               'Fraction of cells correctly mapped', 'Correlation'},
+                                 'Individual': {'Absolute error', 'Square error'}}
+        if colors is None:
+            self.colors = ["#3c93c2", "#089099", "#7ccba2", "#fcde9c", "#f0746e", "#dc3977", "#7c1d6f"]
+        else:
+            self.colors = colors
+        self.colors = self.colors[:len(self.methods)]
+
         if out_dir:
             self.out_dir = out_dir if out_dir[-1] == '/' else out_dir + '/'
         else:
             self.out_dir = ''
         if self.out_dir and not os.path.exists(self.out_dir):
             os.mkdir(self.out_dir)
-        if not os.path.exists(out_dir+'figures'):
-            os.mkdir(out_dir+'figures')
-        self.cluster = cluster
-        self.type_list = type_list
-        self.function_map = {'Cosine similarity': self.cosine, 'Absolute error spot': self.absolute_error_spot,
-                             'Square error spot': self.square_error_spot, 'JSD': self.JSD,
-                             'Correlation': self.correlation_coef,
-                             'Fraction of cells correctly mapped': self.correct_fraction,
-                             'Absolute error': self.absolute_error}
-        self.spot_metric_names = {'Cosine similarity', 'Absolute error spot', 'Square error spot', 'JSD'}
-        self.general_metric_names = {'Absolute error', 'Square error'}
+        if not os.path.exists(out_dir + 'figures'):
+            os.mkdir(out_dir + 'figures')
         assert len(proportion_estimated_list) == self.n_method
 
     @staticmethod
-    def cosine(proportion_truth: np.ndarray, proportion_estimated: np.ndarray):
-        """
-        [spot metric]Calculate the cosine similarity between the true proportion and estimated proportion of each spot.
-
-        Args:
-            proportion_truth: Ground truth of the cell proportion.
-            proportion_estimated: Estimated cell proportion.
-
-        Returns:
-            Cosine similarity of each spot.
-        """
+    def absolute_error(proportion_truth: np.ndarray, proportion_estimated: np.ndarray, metric_type='Spot'):
         assert proportion_truth.shape == proportion_estimated.shape
-        cosine_similarity = np.sum(proportion_truth * proportion_estimated, axis=1) / \
-                            np.linalg.norm(proportion_estimated, axis=1) / np.linalg.norm(proportion_truth, axis=1)
-        return cosine_similarity
+        error = np.abs(proportion_truth - proportion_estimated)
+        if metric_type == 'Individual':
+            return error
+        elif metric_type == 'Spot':
+            return np.sum(error, axis=1)
+        elif metric_type == 'Cell type':
+            return np.sum(error, axis=0)
+        else:
+            raise ValueError(f"Invalid metric type {metric_type}")
 
     @staticmethod
-    def absolute_error_spot(proportion_truth: np.ndarray, proportion_estimated: np.ndarray):
-        """[spot metric]"""
+    def square_error(proportion_truth: np.ndarray, proportion_estimated: np.ndarray, metric_type='Spot'):
         assert proportion_truth.shape == proportion_estimated.shape
-        error = np.sum(np.abs(proportion_truth-proportion_estimated), axis=1)
-        return error
+        error = (proportion_truth - proportion_estimated) ** 2
+        if metric_type == 'Individual':
+            return error
+        elif metric_type == 'Spot':
+            return np.sum(error, axis=1)
+        elif metric_type == 'Cell type':
+            return np.sum(error, axis=0)
+        else:
+            raise ValueError(f"Invalid metric type {metric_type}")
 
     @staticmethod
-    def square_error_spot(proportion_truth: np.ndarray, proportion_estimated: np.ndarray):
-        """[spot metric]"""
+    def cosine(proportion_truth: np.ndarray, proportion_estimated: np.ndarray, metric_type='Spot'):
         assert proportion_truth.shape == proportion_estimated.shape
-        error = np.sum((proportion_truth-proportion_estimated)**2, axis=1)
-        return error
+        if metric_type == 'Spot':
+            cosine_similarity = np.sum(proportion_truth * proportion_estimated, axis=1) / \
+                                np.linalg.norm(proportion_estimated, axis=1) / np.linalg.norm(proportion_truth, axis=1)
+            return cosine_similarity
+        elif metric_type == 'Cell type':
+            cosine_similarity = np.sum(proportion_truth * proportion_estimated, axis=0) / \
+                                np.linalg.norm(proportion_estimated, axis=0) / np.linalg.norm(proportion_truth, axis=0)
+            return cosine_similarity
+        else:
+            raise ValueError(f"Invalid metric type {metric_type}")
 
     @staticmethod
-    def JSD(proportion_truth: np.ndarray, proportion_estimated: np.ndarray):
-        """
-        [spot metric]Jensen–Shannon divergence.
-        """
+    def correlation(proportion_truth: np.ndarray, proportion_estimated: np.ndarray, metric_type='Spot'):
         assert proportion_truth.shape == proportion_estimated.shape
-        return jensenshannon(proportion_truth, proportion_estimated, axis=1)
+        if metric_type == 'Cell type':
+            proportion_truth_centered = proportion_truth - np.mean(proportion_truth, axis=0)
+            proportion_estimated_centered = proportion_estimated - np.mean(proportion_estimated, axis=0)
+            correlation_values = np.sum(proportion_truth_centered * proportion_estimated_centered, axis=0) / \
+                                 np.sqrt(np.sum(proportion_truth_centered ** 2, axis=0) *
+                                         np.sum(proportion_estimated_centered ** 2, axis=0))
+            return correlation_values
+        elif metric_type == 'Spot':
+            proportion_truth_centered = proportion_truth - np.mean(proportion_truth, axis=1, keepdims=True)
+            proportion_estimated_centered = proportion_estimated - np.mean(proportion_estimated, axis=1, keepdims=True)
+            correlation_values = np.sum(proportion_truth_centered * proportion_estimated_centered, axis=1) / \
+                                 np.sqrt(np.sum(proportion_truth_centered ** 2, axis=1) *
+                                         np.sum(proportion_estimated_centered ** 2, axis=1))
+            return correlation_values
+        else:
+            raise ValueError(f"Invalid metric type {metric_type}")
 
     @staticmethod
-    def correlation_coef(proportion_truth: np.ndarray, proportion_estimated: np.ndarray):
-        """
-        [cell type metric]Pearson correlation coefficient.
-        """
-        assert proportion_truth.shape == proportion_estimated.shape
-        proportion_truth_centered = proportion_truth - np.mean(proportion_truth, axis=0)
-        proportion_estimated_centered = proportion_estimated - np.mean(proportion_estimated, axis=0)
-        correlations = np.sum(proportion_truth_centered * proportion_estimated_centered, axis=0) / \
-                       np.sqrt(np.sum(proportion_truth_centered**2, axis=0) *
-                               np.sum(proportion_estimated_centered**2, axis=0))
-        return correlations
-
-    @staticmethod
-    def correct_fraction(proportion_truth: np.ndarray, proportion_estimated: np.ndarray):
-        """
-        [cell type metric]Jensen–Shannon divergence.
-        """
+    def correct_fraction(proportion_truth: np.ndarray, proportion_estimated: np.ndarray, metric_type='Spot'):
         assert proportion_truth.shape == proportion_estimated.shape
         correct_proportion = np.minimum(proportion_truth, proportion_estimated)
-        return np.sum(correct_proportion, axis=0)/np.sum(proportion_truth, axis=0)
+        if metric_type == 'Cell type':
+            return np.sum(correct_proportion, axis=0) / np.sum(proportion_truth, axis=0)
+        elif metric_type == 'Spot':
+            return np.sum(correct_proportion, axis=1)
+        else:
+            raise ValueError(f"Invalid metric type {metric_type}")
 
     @staticmethod
-    def absolute_error(proportion_truth: np.ndarray, proportion_estimated: np.ndarray):
-        """[general metric]"""
+    def JSD(proportion_truth: np.ndarray, proportion_estimated: np.ndarray, metric_type='Spot'):
+        """
+        Jensen–Shannon divergence
+        Args:
+            proportion_truth: Ground truth of the cell proportion.
+            proportion_estimated: Estimated proportion.
+            metric_type: How the metric is calculated.
+        """
         assert proportion_truth.shape == proportion_estimated.shape
-        error = np.abs(proportion_truth-proportion_estimated)
-        return error
+        if metric_type == 'Spot':
+            return jensenshannon(proportion_truth, proportion_estimated, axis=1)
+        elif metric_type == 'Cell type':
+            return jensenshannon(proportion_truth, proportion_estimated, axis=0)
+        else:
+            raise ValueError(f"Invalid metric type {metric_type}")
 
-    def evaluate_metric(self, metric='Cosine similarity'):
+    def evaluate_metric(self, metric='Cosine similarity', metric_type='Spot', region=None):
+        """
+        Evaluate the proportions based on the metric.
+        Args:
+            metric: Name of the metric.
+            metric_type: How the metric is calculated. 'Spot': metric is calculated for each spot; 'Cell type',
+                         metric is calculated for each cell type; 'Individual': metric is calculated for each individual
+                         proportion estimation.
+            region: The region that is being evaluated.
+        """
+        assert metric in self.metric_type_dict[metric_type]
         metric_values = []
         func = self.function_map.get(metric)
+        if region is None:
+            select = np.array([True]*len(self.proportion_truth))
+        elif isinstance(region, list):
+            select = np.array([i in region for i in self.cluster])
+        else:
+            select = np.array([i == region for i in self.cluster])
+
+        if not any(select):
+            raise ValueError(f'Region {region} do/does not exist.')
+        elif metric_type == 'Cell type' and np.sum(select) == 1:
+            raise ValueError(f'Region {region} only contain(s) one spot.')
         for i in range(self.n_method):
-            metric_values.append(func(self.proportion_truth, self.proportion_estimated_list[i]))
-        self.metric_dict[metric] = metric_values
+            metric_values.append(func(self.proportion_truth[select], self.proportion_estimated_list[i][select],
+                                      metric_type))
+        self.metric_dict[metric+' '+metric_type] = metric_values
         return metric_values
 
-    def plot_metric_spot(self, save=False, region=None, metric='Cosine similarity'):
+    def plot_metric(self, save=False, region=None, metric='Cosine similarity', metric_type='Spot', cell_types=None,
+                    suffix=''):
         """
-        Plot the box plot of each method based on the metric. Each value in box plot represents a spot.
+        Plot the box plot of each method based on the metric.
         Box number equals to the number of methods.
+        Args:
+            save: If true, save the figure.
+            region: Regions of the tissue.
+            metric: Name of the metric.
+            metric_type: How the metric is calculated. 'Spot': metric is calculated for each spot; 'Cell type',
+                         metric is calculated for each cell type; 'Individual': metric is calculated for each individual
+                         proportion estimation.
+            cell_types: If metric_type is 'Cell type' and cell_types is not None, then only plot the results
+                        corresponding to the cell_types.
+            suffix: suffix of the save file.
         """
-        assert metric in self.spot_metric_names
-        plt.figure(dpi=300)
-        if metric not in self.metric_dict.keys():
-            self.evaluate_metric(metric=metric)
-        sns.set_palette("Dark2")
-        n_spot = len(self.proportion_truth)
+        assert metric_type == 'Spot' or metric_type == 'Cell type'
+        assert metric in self.metric_type_dict[metric_type]
+        if metric+' '+metric_type not in self.metric_dict.keys():
+            self.evaluate_metric(metric=metric, metric_type=metric_type, region=region)
         region_name = ''
-        if region is None:
-            metric_values = np.concatenate(self.metric_dict[metric])
-            methods_name = np.repeat(self.methods, n_spot)
-        else:
-            if isinstance(region, list):
-                select = np.array([i in region for i in self.cluster])
-                region_name = '_' + '+'.join(region)
-            else:
-                select = np.array([i == region for i in self.cluster])
-                region_name = '_' + region
-            if not any(select):
-                raise ValueError('Region must exist.')
-            metric_values = [x[select] for x in self.metric_dict[metric]]
+        if region is not None:
+            region_name = '_' + '+'.join(region) if isinstance(region, list) else '_' + region
+
+        if metric_type == 'Cell type' and cell_types is not None:
+            idx = np.array([np.where(self.type_list == type_)[0][0] for type_ in cell_types])
+            metric_values = self.metric_dict[metric+' '+metric_type]
+            metric_values = [m[idx] for m in metric_values]
             metric_values = np.concatenate(metric_values)
-            methods_name = np.repeat(self.methods, np.sum(select))
+            methods_name = np.repeat(self.methods, len(idx))
+        else:
+            metric_values = np.concatenate(self.metric_dict[metric+' '+metric_type])
+            methods_name = np.repeat(self.methods, len(self.metric_dict[metric+' '+metric_type][0]))
 
-        df = pd.DataFrame({metric:metric_values, 'Method':methods_name})
-        ax = sns.boxplot(data=df, y=metric, x='Method', showfliers=False)
+        df = pd.DataFrame({metric: metric_values, 'Method': methods_name})
+        plt.figure(dpi=300)
+        palette = self.colors if len(self.methods) <= len(self.colors) else 'Dark2'
+        ax = sns.boxplot(data=df, y=metric, x='Method', showfliers=False, palette=palette)
+        if metric_type == 'Spot':
+            ax = sns.stripplot(data=df, y=metric, x='Method', ax=ax, jitter=0.2, palette=palette, size=1)
+        else:
+            ax = sns.stripplot(data=df, y=metric, x='Method', ax=ax, jitter=True, color='black', size=1.5)
         for patch in ax.patches:
             r, g, b, a = patch.get_facecolor()
-            patch.set_facecolor((r, g, b, .7))
-        ax = sns.stripplot(data=df, y=metric, x='Method', ax=ax, jitter=0.2, palette='Dark2', size=2)
+            patch.set_facecolor((r, g, b, .8))
         ax.set(xlabel='')
+        sns.despine(top=True, right=True)
+        plt.gca().yaxis.grid(False)
+        plt.gca().xaxis.grid(False)
+        plt.gca().spines['left'].set_color('black')
+        plt.gca().spines['bottom'].set_color('black')
+        plt.gca().tick_params(left=True, axis='y', colors='black')
+        plt.gca().yaxis.set_major_locator(MaxNLocator(nbins=6))
         if save:
-            plt.savefig(f'{self.out_dir}figures/{metric}{region_name}.jpg', dpi=500, bbox_inches = 'tight')
-        plt.show()
-
-    def plot_metric_type(self, save=False, metric="Correlation"):
-        """
-        Same to plot_metric_spot, but each value in box plot represents a cell type. Box number equals to the number of methods.
-        """
-        assert metric not in self.spot_metric_names and metric in self.function_map.keys()
-        if metric not in self.metric_dict.keys():
-            self.evaluate_metric(metric=metric)
-        sns.set_palette("Dark2")
-        metric_values = np.concatenate(self.metric_dict[metric])
-        methods_name = np.repeat(self.methods, self.n_type)
-        df = pd.DataFrame({metric:metric_values, 'Method':methods_name})
-        ax = sns.boxplot(data=df, y=metric, x='Method', showfliers=False)
-        for patch in ax.patches:
-            r, g, b, a = patch.get_facecolor()
-            patch.set_facecolor((r, g, b, .7))
-        ax = sns.stripplot(data=df, y=metric, x='Method', ax=ax, jitter=True, color='black', size=2)
-        ax.set(xlabel='')
-        if save:
-            plt.savefig(f'{self.out_dir}figures/{metric}.jpg', dpi=500, bbox_inches = 'tight')
+            plt.savefig(f'{self.out_dir}figures/{metric}_{metric_type}{region_name}{suffix}.jpg', dpi=500,
+                        bbox_inches='tight')
         plt.show()
 
     def plot_metric_spot_type(self, save=False, metric='Absolute error'):
@@ -413,8 +473,9 @@ class Evaluation:
         metric_values = metric_values.flatten('F')
         methods_name = np.repeat(self.methods, n_spot)
         methods_name = np.tile(methods_name, self.n_type)
-        cell_type = np.repeat(self.type_list, n_spot*self.n_method)
+        cell_type = np.repeat(self.type_list, n_spot * self.n_method)
 
+        # print(np.shape(metric_values), np.shape(methods_name), np.shape(cell_type))
         df = pd.DataFrame({'metric': metric_values, 'Method': methods_name, 'Cell type': cell_type})
 
         for cell_type in self.type_list:
@@ -422,7 +483,8 @@ class Evaluation:
             for patch in ax.patches:
                 r, g, b, a = patch.get_facecolor()
                 patch.set_facecolor((r, g, b, .7))
-            ax = sns.stripplot(data=df[df['Cell type'] == cell_type], y='metric', x='Method', ax=ax, jitter=0.2, palette='Dark2', size=2)
+            ax = sns.stripplot(data=df[df['Cell type'] == cell_type], y='metric', x='Method', ax=ax, jitter=0.2,
+                               palette='Dark2', size=2)
             ax.set(xlabel='')
             if save:
                 cell_type = "".join(x for x in cell_type if x.isalnum())
@@ -432,7 +494,7 @@ class Evaluation:
 
     def plot_metric_all(self, save=False, metric="Absolute error", region=None):
         assert metric in self.general_metric_names
-        plt.figure(figsize=(self.n_method*self.n_type/4, 5), dpi=300)
+        plt.figure(figsize=(self.n_method * self.n_type / 4, 5), dpi=300)
         if metric not in self.metric_dict.keys():
             self.evaluate_metric(metric=metric)
         sns.set_palette("Dark2")
@@ -457,9 +519,9 @@ class Evaluation:
 
         methods_name = np.repeat(self.methods, n_spot)
         methods_name = np.tile(methods_name, self.n_type)
-        cell_type = np.repeat(self.type_list, n_spot*self.n_method)
+        cell_type = np.repeat(self.type_list, n_spot * self.n_method)
 
-        df = pd.DataFrame({metric:metric_values, 'Method':methods_name, 'Cell type':cell_type})
+        df = pd.DataFrame({metric: metric_values, 'Method': methods_name, 'Cell type': cell_type})
         ax = sns.boxplot(data=df, y=metric, hue='Method', x='Cell type', flierprops={"marker": "o"}, dodge=True,
                          linewidth=0.6, fliersize=0.5)
         # sns.violinplot(data=df, y=metric, hue='Method', x='Cell type')
@@ -508,65 +570,78 @@ def decomposition(adata_st: anndata.AnnData, adata_sc: anndata.AnnData, key_type
     if n_cell is None:
         select = cell_proportion_temp >= threshold
         cell_proportion_temp[cell_proportion_temp < threshold] = 0
-        cell_proportion_temp = cell_proportion_temp/(np.sum(cell_proportion_temp, axis=1, keepdims=True)+1e-6)
+        cell_proportion_temp = cell_proportion_temp / (np.sum(cell_proportion_temp, axis=1, keepdims=True) + 1e-6)
     else:
         cell_count = np.zeros((len(spot_location), n_type))
         for i in range(len(spot_location)):
             cell_count[i] = proportion_to_count(cell_proportion_temp[i], n_cell[i])
-        select = cell_count > 0.9
-        cell_proportion_temp = cell_count/(np.sum(cell_count, axis=1, keepdims=True)+1e-6)
+        cell_count = cell_count.astype(np.int32)
+        select = []
+        for i in range(n_type):
+            select_temp = []
+            for j in range(len(cell_count)):
+                if cell_count[j, i] > 0:
+                    select_temp += [j]*cell_count[j, i]
+            select += [np.array(select_temp)]
+        cell_proportion_temp = cell_count / (np.sum(cell_count, axis=1, keepdims=True) + 1e-6)
     if verbose:
-        print('Prepared proportion data. Time use {:.2f}'.format(time.time()-time_start))
+        print('Prepared proportion data. Time use {:.2f}'.format(time.time() - time_start))
         time_start = time.time()
 
     adata_sc_temp, adata_st_temp = sc_reference.initialization(adata_sc, adata_st, filtering=filtering_gene)
     if verbose:
-        print('Initialized scRNA and ST data. Time use {:.2f}'.format(time.time()-time_start))
+        print('Initialized scRNA and ST data. Time use {:.2f}'.format(time.time() - time_start))
         time_start = time.time()
     sc_ref = sc_reference.construct_sc_ref(adata_sc_temp, key_type=key_type)
-    # if type(adata_st_temp.X) is not np.ndarray:
-    #     X = adata_st_temp.X.toarray()
-    # else:
-    #     X = adata_st_temp.X
-    X = np.array(adata_st_temp.X)
+    X = adata_st_temp.X if type(adata_st_temp.X) is np.ndarray else adata_st_temp.X.toarray()
+    # X = np.array(adata_st_temp.X)
     if verbose:
-        print('Processed scRNA and ST data. Time use {:.2f}'.format(time.time()-time_start))
+        print('Processed scRNA and ST data. Time use {:.2f}'.format(time.time() - time_start))
         time_start = time.time()
 
     Y = cell_proportion_temp[:, np.newaxis, :] * sc_ref.T
-    Y = Y/(np.sum(Y, axis=2, keepdims=True)+1e-10)
+    Y = Y / (np.sum(Y, axis=2, keepdims=True) + 1e-10)
     Y = Y * X[:, :, np.newaxis]  # n_spot*n_gene*n_type
     if verbose:
-        print('Decomposition complete. Time use {:.2f}'.format(time.time()-time_start))
+        print('Decomposition complete. Time use {:.2f}'.format(time.time() - time_start))
         time_start = time.time()
 
     cell_type = []
     ST_decompose = []
     spot_name = []
-    n_cell_represent = []
+    n_cell_duplicate = []
     for i in range(n_type):
-        ST_decompose += [Y[select[:, i], :, i]]
-        cell_type += [type_list[i]]*np.sum(select[:, i])
-        spot_name += list(np.array(adata_st.obs_names)[select[:, i]])
         if n_cell is not None:
-            n_cell_represent += list(cell_count[select[:, i], i])
+            if len(select[i])>0:
+                n_cell_duplicate += list(cell_count[select[i], i])
+                ST_decompose += [Y[select[i], :, i]]
+                cell_type += [type_list[i]] * np.sum(cell_count[:, i])
+                spot_name += list(np.array(adata_st.obs_names)[select[i]])
+        else:
+            ST_decompose += [Y[select[:, i], :, i]]
+            cell_type += [type_list[i]] * np.sum(select[:, i])
+            spot_name += list(np.array(adata_st.obs_names)[select[:, i]])
     ST_decompose = np.vstack(ST_decompose)
-    ST_decompose = ST_decompose/(np.sum(ST_decompose, axis=1, keepdims=True)+1e-10)*1e6
+    ST_decompose = ST_decompose / (np.sum(ST_decompose, axis=1, keepdims=True) + 1e-10) * 1e6
     adata_st_decomposed = anndata.AnnData(ST_decompose)
     adata_st_decomposed.uns = adata_st.uns
     adata_st_decomposed.var_names = adata_st_temp.var_names
     adata_st_decomposed.obs['cell_type'] = cell_type
     adata_st_decomposed.obs['spot_name'] = spot_name
     if n_cell is not None:
-        adata_st_decomposed.obs['n_cell'] = n_cell_represent
+        adata_st_decomposed.obs['n_cell'] = n_cell_duplicate
         adata_st_decomposed.uns['cell_count'] = cell_count
     if spot_location is not None:
-        location = [spot_location[select[:, i], :] for i in range(n_type)]
-        location = np.vstack(location)
+        if n_cell is not None:
+            select = np.concatenate(select).astype(np.int32)
+            location = spot_location[select]
+        else:
+            location = [spot_location[select[:, i], :] for i in range(n_type)]
+            location = np.vstack(location)
         adata_st_decomposed.obs['location_x'] = location[:, 0]
         adata_st_decomposed.obs['location_y'] = location[:, 1]
     if verbose:
-        print('Constructed ST decomposition data file. Time use {:.2f}'.format(time.time()-time_start))
+        print('Constructed ST decomposition data file. Time use {:.2f}'.format(time.time() - time_start))
         time_start = time.time()
 
     if save:
@@ -575,6 +650,129 @@ def decomposition(adata_st: anndata.AnnData, adata_sc: anndata.AnnData, key_type
         out_dir = out_dir + '/' if out_dir else ''
         adata_st_decomposed.write(out_dir + filename)
         if verbose:
-            print('Saved file to output folder. Time use {:.2f}'.format(time.time()-time_start))
+            print('Saved file to output folder. Time use {:.2f}'.format(time.time() - time_start))
 
     return adata_st_decomposed
+
+
+def assign_type_spot(nucleus_df, n_cell_df, cell_number, type_list):
+    """
+    Assign the cell type to the cells inside the spot.
+
+    Args:
+        nucleus_df: Dataframe of the nucleus. Part of spotiphy.segmentation.Segmentation.
+        n_cell_df: Dataframe of the number of cells in each spot. Part of spotiphy.segmentation.Segmentation.
+        cell_number: Number of each cell type in each spot.
+        type_list: List of the cell types.
+    Returns:
+        nucleus_df with assigned spot
+    """
+    assert len(type_list) == cell_number.shape[1]
+    assert len(n_cell_df) == len(cell_number)
+    cell_number = cell_number.astype(np.int32)
+    if 'cell_type' not in nucleus_df.columns:
+        nucleus_df['cell_type'] = 'unknown'
+    for i in range(len(n_cell_df)):
+        if n_cell_df.loc[i, 'cell_count'] > 0:
+            index = n_cell_df.loc[i, 'Nucleus indices']
+            np.random.shuffle(index)
+            j1 = 0
+            for j2, n in enumerate(cell_number[i]):
+                if n > 0:
+                    nucleus_df.loc[index[j1:j1+n], 'cell_type'] = type_list[j2]
+                    j1 += n
+    return nucleus_df
+
+
+def assign_type_out(nucleus_df, cell_proportion, spot_centers, type_list, max_distance=100, band_width=100):
+    """
+    Assign the cell type to the cells inside the spot.
+
+    Args:
+        nucleus_df: Dataframe of the nucleus. Part of spotiphy.segmentation.Segmentation.
+        spot_centers: Centers of the spots.
+        cell_proportion: Proportion of each cell type in each spot.
+        type_list: List of the cell types.
+        max_distance: If the distance between a nucleus and the closest spot is larger than max_distance, the cell type
+                      will not be assigned to this nucleus.
+        return_gp: If return the fitted GP models.
+    Returns:
+        nucleus_df with assigned spot
+    """
+    assert len(type_list) == cell_proportion.shape[1]
+    assert len(cell_proportion) == len(spot_centers)
+    if 'cell_type' not in nucleus_df.columns:
+        nucleus_df['cell_type'] = 'unknown'
+    nucleus_centers = nucleus_df[['x', 'y']].values
+    d = np.sum((nucleus_centers[:, :, np.newaxis] - spot_centers.T)**2, axis=1)
+    d_min = np.min(d, axis=1)
+    weights = np.exp(-d/band_width**2)
+    smooth = np.sum(weights[:, :, np.newaxis] * cell_proportion, axis=1) / np.sum(weights, axis=1, keepdims=True)
+
+    r = np.random.random(len(nucleus_centers))
+    for i in range(len(nucleus_centers)):
+        if d_min[i] > max_distance**2 or nucleus_df.loc[i, 'in_spot']:
+            continue
+        j = 0
+        t_temp = r[i]
+        while t_temp - smooth[i, j] > 0:
+            t_temp -= smooth[i, j]
+            j += 1
+        nucleus_df.loc[i, 'cell_type'] = type_list[j]
+    return nucleus_df, smooth
+
+
+def assign_type_out_gp(nucleus_df, cell_proportion, spot_centers, type_list, max_distance=100, return_gp=False):
+    """
+    Assign the cell type to the cells inside the spot.
+
+    Args:
+        nucleus_df: Dataframe of the nucleus. Part of spotiphy.segmentation.Segmentation.
+        spot_centers: Centers of the spots.
+        cell_proportion: Proportion of each cell type in each spot.
+        type_list: List of the cell types.
+        max_distance: If the distance between a nucleus and the closest spot is larger than max_distance, the cell type
+                      will not be assigned to this nucleus.
+        return_gp: If return the fitted GP models.
+    Returns:
+        nucleus_df with assigned spot
+    """
+    assert len(type_list) == cell_proportion.shape[1]
+    assert len(cell_proportion) == len(spot_centers)
+    if 'cell_type' not in nucleus_df.columns:
+        nucleus_df['cell_type'] = 'unknown'
+    nucleus_centers = nucleus_df[['x', 'y']].values
+    d = np.sum((nucleus_centers[:, :, np.newaxis] - spot_centers.T)**2, axis=1)
+    d = np.min(d, axis=1)
+
+    gp_list = []
+    interpolation = np.zeros((len(nucleus_centers), len(type_list)))
+    mean, std = np.mean(cell_proportion, axis=0), np.std(cell_proportion, axis=0)
+    cell_proportion_trans = (cell_proportion-mean)/std
+    print('Fitting the GP models.')
+    for i in tqdm(range(len(type_list))):
+        kernel = C(1.0, (1e-3, 1e3)) * RBF(100.0, (1e-1, 1e3))
+        gp = GaussianProcessRegressor(kernel=kernel, n_restarts_optimizer=1)
+        gp.fit(spot_centers, cell_proportion_trans[:, i])
+        gp_list += [gp]
+        interpolation[:, i] = gp_list[i].predict(nucleus_centers, return_std=False)*std[i] + mean[i]
+    interpolation[interpolation < 0] = 0
+    interpolation += 1e-8
+    interpolation = interpolation/np.sum(interpolation, axis=1, keepdims=True)
+
+    print('Assigning the cell types.')
+    r = np.random.random(len(nucleus_centers))
+    for i in tqdm(range(len(nucleus_centers))):
+        if d[i] > max_distance**2 or nucleus_df.loc[i, 'in_spot']:
+            continue
+        j = 0
+        t_temp = r[i]
+        while t_temp - interpolation[i, j] > 0:
+            t_temp -= interpolation[i, j]
+            j += 1
+        nucleus_df.loc[i, 'cell_type'] = type_list[j]
+    if return_gp:
+        return nucleus_df, gp_list
+    else:
+        return nucleus_df
+
