@@ -7,6 +7,7 @@ from csbdeep.utils import normalize
 import tensorflow as tf
 from packaging import version
 import os
+from scipy.signal import convolve2d
 from tqdm import tqdm
 import cv2 as cv
 os.environ['CUDA_LAUNCH_BLOCKING'] = '1'
@@ -135,7 +136,7 @@ class Segmentation:
         np.save(f'{self.out_dir}segmentation_probability.npy', self.probability)
         self.n_cell_df.to_csv(f'{self.out_dir}n_cell_df.csv')
 
-    def plot(self, fig_size=(10, 4), dpi=300, crop=None, cmap_segmented='hot', save=False, path=None):
+    def plot(self, fig_size=(10, 4.5), dpi=300, crop=None, cmap_segmented='hot', save=False, path=None):
         """
         Plot the segmentation results.
         It is recommended to adjust the stardist parameters nms_thresh and prob_thresh based on this plot.
@@ -160,6 +161,8 @@ class Segmentation:
         ax[0].set_title("Original image")
         ax[1].imshow(img_segmented, cmap=cmap_segmented)
         ax[1].set_title("Segmented image")
+        ax[0].axis('off')
+        ax[1].axis('off')
         if save:
             plt.savefig(path, bbox_inches='tight')
         plt.show()
@@ -232,15 +235,34 @@ def cell_boundary(nucleus_location, img_size, max_dist, max_area, verbose, searc
 
     img_cell_boundaries = np.zeros((img_cell.shape[0], img_cell.shape[1], 3))
     individual_boundary = {i:[] for i in range(n_nuclei+1)}
+    # for x in tqdm(range(len(img_cell))):
+    #     for y in range(len(img_cell[0])):
+    #         idx = img_cell[x, y]
+    #         for k in range(len(search_direction)):
+    #             x1, y1 = x + search_direction[k][0], y + search_direction[k][1]
+    #             if 0 <= x1 <= img_cell.shape[0]-1 and 0 <= y1 <= img_cell.shape[1]-1 and img_cell[x1, y1] != idx:
+    #                 img_cell_boundaries[x, y] = [150, 150, 150]
+    #                 individual_boundary[idx] += [[x, y]]
+    #                 break
+
+    search_direction = np.array(search_direction)
+    boundary_img = np.zeros_like(img_cell)
+    for dx, dy in tqdm(search_direction):
+        d = max([abs(dx), abs(dy)])
+        kernel = np.zeros((2*d+1, 2*d+1))
+        kernel[dy+d, dx+d] = 1
+        kernel[d, d] = -1
+        convolved = convolve2d(img_cell, kernel, mode='same')
+        boundary_img += np.where(convolved != 0, 1, 0)
+    img_cell_boundaries[boundary_img > 0] = [150, 150, 150]
+    # for i in tqdm(range(n_nuclei+1)):
+    #     y, x = np.where((img_cell == i) & (boundary_img > 0))
+    #     individual_boundary[i] += list(zip(x, y))
     for x in tqdm(range(len(img_cell))):
         for y in range(len(img_cell[0])):
-            idx = img_cell[x, y]
-            for k in range(len(search_direction)):
-                x1, y1 = x + search_direction[k][0], y + search_direction[k][1]
-                if 0 <= x1 <= img_cell.shape[0]-1 and 0 <= y1 <= img_cell.shape[1]-1 and img_cell[x1, y1] != idx:
-                    img_cell_boundaries[x, y] = [150, 150, 150]
-                    individual_boundary[idx] += [[x, y]]
-                    break
+            if boundary_img[x, y] > 0:
+                individual_boundary[img_cell[x, y]] += [[x, y]]
+
     img_cell_boundaries = img_cell_boundaries.astype(np.int32)
     individual_boundary = {i: np.array(individual_boundary[i]) for i in range(n_nuclei+1)}
     d = {'img_cell': img_cell, 'cell_boundary': img_cell_boundaries, 'size': n_pixel,

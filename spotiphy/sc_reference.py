@@ -68,7 +68,7 @@ def initialization(adata_sc: anndata.AnnData, adata_st: anndata.AnnData, min_gen
     return adata_sc, adata_st
 
 
-def marker_selection(adata_sc: anndata.AnnData, key_type: str, R: float = 2, threshold_cover=0.6, threshold_z=0,
+def marker_selection_old1(adata_sc: anndata.AnnData, key_type: str, R: float = 2, threshold_cover=0.6, threshold_z=0,
                      n_select=40, verbose=0, return_dict=False):
     """
     Find marker genes based on pairwise ratio test.
@@ -132,7 +132,7 @@ def marker_selection(adata_sc: anndata.AnnData, key_type: str, R: float = 2, thr
     return marker_gene
 
 
-def marker_selection_1(adata_sc: anndata.AnnData, key_type: str, threshold_cover=0.6, threshold_p=0.1,
+def marker_selection_old2(adata_sc: anndata.AnnData, key_type: str, threshold_cover=0.6, threshold_p=0.1,
                        threshold_fold=1.5, n_select=40, verbose=0, return_dict=False, q=0):
     """
     Find marker genes based on pairwise ratio test.
@@ -210,8 +210,8 @@ def marker_selection_1(adata_sc: anndata.AnnData, key_type: str, threshold_cover
     return marker_gene
 
 
-def marker_selection_2(adata_sc: anndata.AnnData, key_type: str, threshold_cover=0.6, threshold_p=0.1,
-                       threshold_fold=1.5, n_select=40, verbose=0, return_dict=False, q=0):
+def marker_selection(adata_sc: anndata.AnnData, key_type: str, threshold_cover=0.6, threshold_p=0.1,
+                     threshold_fold=1.5, n_select=40, verbose=0, return_dict=False, q=0):
     """
     Find marker genes based on pairwise ratio test.
     Args:

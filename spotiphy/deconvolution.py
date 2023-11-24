@@ -1,6 +1,7 @@
 import anndata
 import os
 # import matplotlib as mpl
+import cv2 as cv
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
 import pandas as pd
@@ -106,6 +107,68 @@ def deconvolute(X, sc_ref, device='cuda', n_epoch=8000, adam_params=None, batch_
     return pyro.get_param_store()
 
 
+def plot_proportion(img, proportion, spot_location, radius, cmap_name='viridis', alpha=0.4, save_path='proportion.png',
+                    vmax=0.98, spot_scale=1.3, show_figure=False):
+    """
+    Plot the proportion of a cell type.
+
+    Args:
+        img: 3 channel img with integer values in [0, 255]
+        proportion: Proportion of a cell type.
+        spot_location: Location of the spots.
+        radius: Radius of the spot
+        cmap_name: Name of the camp.
+        alpha: Level of transparency of the background img.
+        save_path: If not none, save the img to the path.
+        vmax: Quantile of the maximum value in the color bar.
+        spot_scale: Scale of the spot in the figure.
+    """
+    def render_to_array(fig):
+        fig.canvas.draw()
+        buf = fig.canvas.tostring_rgb()
+        ncols, nrows = fig.canvas.get_width_height()
+        return np.frombuffer(buf, dtype=np.uint8).reshape(nrows, ncols, 3)
+
+    img = img*alpha + np.ones(img.shape)*255*(1-alpha)
+    img = img.astype(np.int32)
+    vmin = 0
+    vmax = np.quantile(proportion, vmax)
+    if vmax - vmin < 0.03:
+        vmax = vmin + 0.03
+    proportion = (proportion-vmin)/vmax
+    cmap = plt.cm.get_cmap(cmap_name)
+    for i, p in enumerate(proportion):
+        rgb_float = cmap(p)[:3]
+        rgb_int = tuple(int(255 * x) for x in rgb_float)
+        cv.circle(img, spot_location[i], int(radius*spot_scale), rgb_int, -1)
+
+    fig = plt.figure(figsize=(1, 2.5), dpi=1200)
+    cbar_ax = fig.add_axes([0, 0.1, 0.25, 0.85])
+    if vmax >= 0.2:
+        a = int(vmax*10)/20
+    else:
+        a = int(vmax*100)/200
+    ticks=[0, a, a*2]
+    cb1 = plt.colorbar(plt.cm.ScalarMappable(norm=plt.Normalize(vmin, vmax), cmap=cmap), cax=cbar_ax, ticks=ticks)
+    cb1.outline.set_edgecolor("none")
+    for label in cb1.ax.get_yticklabels():
+        label.set_size(13)
+    cbar_array = render_to_array(fig)
+    plt.close(fig)
+
+    c = [5800, 8100]
+    img[c[0]:c[0]+cbar_array.shape[0], c[1]:c[1]+cbar_array.shape[1]][np.sum(cbar_array, axis=2) < 252*3] \
+        = cbar_array[np.sum(cbar_array, axis=2) < 252*3]
+
+    if save_path is not None:
+        print('Saving the image.')
+        img1 = img[:, :, [2, 1, 0]]
+        cv.imwrite(save_path, img1)
+    plt.imshow(img)
+    if not show_figure:
+        plt.close()
+
+
 def proportion_to_count(p, n, multiple_spots=False):
     """
     Convert the cell proportion to the absolute cell number.
@@ -133,6 +196,11 @@ def proportion_to_count(p, n, multiple_spots=False):
         idx = np.argsort(r)[-int(np.round(n - np.sum(count))):]
         count[idx] += 1
     return count
+
+
+def estimation_N(proportion, mean_exp_type, adata_st):
+    sum_exp_spot = np.sum(np.array(adata_st.X))
+
 
 
 def simulation(adata_st: anndata.AnnData, adata_sc: anndata.AnnData, key_type: str, cell_proportion: np.ndarray,
@@ -225,6 +293,7 @@ def simulation(adata_st: anndata.AnnData, adata_sc: anndata.AnnData, key_type: s
         if out_dir and not os.path.exists(out_dir):
             os.mkdir(out_dir)
         out_dir = out_dir + '/' if out_dir else ''
+        adata_st.raw = None
         adata_st.write(out_dir + filename)
         if verbose:
             print('Saved the simulated data to file. Time use {:.2f}'.format(time.time() - time_start))
@@ -398,7 +467,7 @@ class Evaluation:
         return metric_values
 
     def plot_metric(self, save=False, region=None, metric='Cosine similarity', metric_type='Spot', cell_types=None,
-                    suffix=''):
+                    suffix='', show=True):
         """
         Plot the box plot of each method based on the metric.
         Box number equals to the number of methods.
@@ -412,6 +481,7 @@ class Evaluation:
             cell_types: If metric_type is 'Cell type' and cell_types is not None, then only plot the results
                         corresponding to the cell_types.
             suffix: suffix of the save file.
+            show: Whether to show the figure
         """
         assert metric_type == 'Spot' or metric_type == 'Cell type'
         assert metric in self.metric_type_dict[metric_type]
@@ -432,28 +502,30 @@ class Evaluation:
             methods_name = np.repeat(self.methods, len(self.metric_dict[metric+' '+metric_type][0]))
 
         df = pd.DataFrame({metric: metric_values, 'Method': methods_name})
-        plt.figure(dpi=300)
-        palette = self.colors if len(self.methods) <= len(self.colors) else 'Dark2'
-        ax = sns.boxplot(data=df, y=metric, x='Method', showfliers=False, palette=palette)
-        if metric_type == 'Spot':
-            ax = sns.stripplot(data=df, y=metric, x='Method', ax=ax, jitter=0.2, palette=palette, size=1)
-        else:
-            ax = sns.stripplot(data=df, y=metric, x='Method', ax=ax, jitter=True, color='black', size=1.5)
-        for patch in ax.patches:
-            r, g, b, a = patch.get_facecolor()
-            patch.set_facecolor((r, g, b, .8))
-        ax.set(xlabel='')
-        sns.despine(top=True, right=True)
-        plt.gca().yaxis.grid(False)
-        plt.gca().xaxis.grid(False)
-        plt.gca().spines['left'].set_color('black')
-        plt.gca().spines['bottom'].set_color('black')
-        plt.gca().tick_params(left=True, axis='y', colors='black')
-        plt.gca().yaxis.set_major_locator(MaxNLocator(nbins=6))
-        if save:
-            plt.savefig(f'{self.out_dir}figures/{metric}_{metric_type}{region_name}{suffix}.jpg', dpi=500,
-                        bbox_inches='tight')
-        plt.show()
+        if show:
+            plt.figure(dpi=300)
+            palette = self.colors if len(self.methods) <= len(self.colors) else 'Dark2'
+            ax = sns.boxplot(data=df, y=metric, x='Method', showfliers=False, palette=palette)
+            if metric_type == 'Spot':
+                ax = sns.stripplot(data=df, y=metric, x='Method', ax=ax, jitter=0.2, palette=palette, size=1)
+            else:
+                ax = sns.stripplot(data=df, y=metric, x='Method', ax=ax, jitter=True, color='black', size=1.5)
+            for patch in ax.patches:
+                r, g, b, a = patch.get_facecolor()
+                patch.set_facecolor((r, g, b, .8))
+            ax.set(xlabel='')
+            sns.despine(top=True, right=True)
+            plt.gca().yaxis.grid(False)
+            plt.gca().xaxis.grid(False)
+            plt.gca().spines['left'].set_color('black')
+            plt.gca().spines['bottom'].set_color('black')
+            plt.gca().tick_params(left=True, axis='y', colors='black')
+            plt.gca().yaxis.set_major_locator(MaxNLocator(nbins=6))
+            if save:
+                plt.savefig(f'{self.out_dir}figures/{metric}_{metric_type}{region_name}{suffix}.jpg', dpi=500,
+                            bbox_inches='tight')
+            plt.show()
+        return df
 
     def plot_metric_spot_type(self, save=False, metric='Absolute error'):
         """
@@ -538,7 +610,7 @@ class Evaluation:
 
 def decomposition(adata_st: anndata.AnnData, adata_sc: anndata.AnnData, key_type: str, cell_proportion: np.ndarray,
                   save=True, out_dir='', threshold=0.1, n_cell=None, spot_location: np.ndarray = None,
-                  filtering_gene=False, filename="ST_decomposition.h5ad", verbose=0):
+                  filtering_gene=False, filename="ST_decomposition.h5ad", verbose=0, use_original_proportion=False):
     """
     Decompose ST.
 
@@ -555,6 +627,8 @@ def decomposition(adata_st: anndata.AnnData, adata_sc: anndata.AnnData, key_type
         filtering_gene: Whether filter the genes in sc_reference.initialization.
         filename: Name of the saved file.
         verbose: Whether print the time spend.
+        use_original_proportion: If the original proportion is used to estimate the iscRNA. Note that even when the
+                                 original proportion is used, we still filter some cells in iscRNA.
     Returns:
         adata_st_decomposed: Anndata similar to scRNA, but obtained by decomposing ST.
     """
@@ -598,8 +672,10 @@ def decomposition(adata_st: anndata.AnnData, adata_sc: anndata.AnnData, key_type
     if verbose:
         print('Processed scRNA and ST data. Time use {:.2f}'.format(time.time() - time_start))
         time_start = time.time()
-
-    Y = cell_proportion_temp[:, np.newaxis, :] * sc_ref.T
+    if use_original_proportion:
+        Y = cell_proportion[:, np.newaxis, :] * sc_ref.T
+    else:
+        Y = cell_proportion_temp[:, np.newaxis, :] * sc_ref.T
     Y = Y / (np.sum(Y, axis=2, keepdims=True) + 1e-10)
     Y = Y * X[:, :, np.newaxis]  # n_spot*n_gene*n_type
     if verbose:
@@ -686,7 +762,7 @@ def assign_type_spot(nucleus_df, n_cell_df, cell_number, type_list):
 
 def assign_type_out(nucleus_df, cell_proportion, spot_centers, type_list, max_distance=100, band_width=100):
     """
-    Assign the cell type to the cells inside the spot.
+    Assign the cell type to the cells outside the spot.
 
     Args:
         nucleus_df: Dataframe of the nucleus. Part of spotiphy.segmentation.Segmentation.
@@ -722,9 +798,9 @@ def assign_type_out(nucleus_df, cell_proportion, spot_centers, type_list, max_di
     return nucleus_df, smooth
 
 
-def assign_type_out_gp(nucleus_df, cell_proportion, spot_centers, type_list, max_distance=100, return_gp=False):
+def archive_assign_type_out_gp(nucleus_df, cell_proportion, spot_centers, type_list, max_distance=100, return_gp=False):
     """
-    Assign the cell type to the cells inside the spot.
+    Assign the cell type to the cells outside the spot.
 
     Args:
         nucleus_df: Dataframe of the nucleus. Part of spotiphy.segmentation.Segmentation.
