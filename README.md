@@ -17,7 +17,9 @@ conda create -n Spotiphy-env python=3.9
 conda activate Spotiphy-env
 ```
 
-
+Spotiphy is built based on [Pytorch](https://pytorch.org/). Although installing Spotiphy automatically includes PyTorch,
+it is recommended that users manually install PyTorch [(link)](https://pytorch.org/get-started/locally/) to allow for 
+more flexibility, particularly for those who wish to utilize CUDA capabilities.
 We offer two methods for installing the Spotiphy package:
 + **Install from GitHub**: This method allows you to install the latest version directly from the source code hosted on 
 GitHub.
