@@ -1,7 +1,7 @@
 # Spotiphy reveals location-specific cell subtypes through transcriptome profile at single-cell resolution
 
 ## Usage and Tutorials
-Tutorials of spotiphy can be found in folder [Tutorials]().
+Tutorials of spotiphy can be found in folder [Tutorials](https://github.com/jyyulab/Spotiphy/tree/main/tutorials).
 
 ## Installation
 
@@ -12,12 +12,11 @@ Tutorials of spotiphy can be found in folder [Tutorials]().
 
 To install Spotiphy, it is recommended to create a separate conda environment. This approach helps to manage 
 dependencies and avoid conflicts with other packages.
-
-+ set up conda environment for Spotiphy
 ```bash
 conda create -n Spotiphy-env python=3.9
 conda activate Spotiphy-env
 ```
+
 
 We offer two methods for installing the Spotiphy package:
 + **Install from GitHub**: This method allows you to install the latest version directly from the source code hosted on 
@@ -25,11 +24,17 @@ GitHub.
 ```bash
 pip install git+https://github.com/jyyulab/Spotiphy.git
 ```
-+ Install from PyPI using `pip`: This approach is for installing the Spotiphy package from the Python Package Index 
++ **Install from PyPI using `pip`**: This approach is for installing the Spotiphy package from the Python Package Index 
 (PyPI), which is more streamlined for users who prefer standard package installations.
 ```bash
 pip install spotiphy
 ```
+
+To test the Installation, try to import Spotiphy in Python.
+```Python
+import spotiphy
+```
+
 
 
 ## Cite Spotiphy:
