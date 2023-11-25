@@ -29,7 +29,7 @@ pip install git+https://github.com/jyyulab/Spotiphy.git
 + **Install from PyPI using `pip`**: This approach is for installing the Spotiphy package from the Python Package Index 
 (PyPI), which is more streamlined for users who prefer standard package installations.
 ```bash
-pip install spotiphy
+pip install spotiphy==0.1.1
 ```
 
 To test the Installation, try to import Spotiphy in Python.
