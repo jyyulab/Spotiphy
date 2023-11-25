@@ -1,5 +1,8 @@
 # Spotiphy reveals location-specific cell subtypes through transcriptome profile at single-cell resolution
 
+[![Pypi version](https://img.shields.io/pypi/v/spotiphy)](https://pypi.org/project/spotiphy/)
+[![Github star](https://img.shields.io/github/stars/jyyulab/Spotiphy)](https://github.com/jyyulab/Spotiphy/stargazers)
+
 ## Usage and Tutorials
 Tutorials of spotiphy can be found in folder [Tutorials](https://github.com/jyyulab/Spotiphy/tree/main/tutorials).
 
@@ -36,7 +39,11 @@ To test the Installation, try to import Spotiphy in Python.
 ```Python
 import spotiphy
 ```
+## Documentation and API details
 
+
+## FAQ
+See https://github.com/jyyulab/Spotiphy/discussions
 
 
 ## Cite Spotiphy:
