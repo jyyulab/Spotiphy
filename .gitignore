@@ -1,6 +1,8 @@
 .Rhistory
+pyproject.toml
 .idea/
 Simulations/
 archive/
-results/
 Paper/
+dist/
+spotiphy.egg-info/
