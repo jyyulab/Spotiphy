@@ -8,4 +8,5 @@ dist/
 dist archive/
 spotiphy.egg-info/
 tutorials/results/
+tutorials/Prepare tutorial data.ipynb
 spotiphy.egg-info/
