@@ -5,7 +5,11 @@
 
 
 ## Usage and Tutorials
+
+![Spotiphy_overview](https://github.com/jyyulab/Spotiphy/blob/a98aeeb892570ed44a029dd896b21e2b8ec80d89/figures/Spotiphy_overview.png)
+
 Tutorials of spotiphy can be found in folder [Tutorials](https://github.com/jyyulab/Spotiphy/tree/main/tutorials).
+
 
 ## Installation
 
