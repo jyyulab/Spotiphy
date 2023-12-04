@@ -5,4 +5,7 @@ Simulations/
 archive/
 Paper/
 dist/
+dist archive/
+spotiphy.egg-info/
+tutorials/results/
 spotiphy.egg-info/

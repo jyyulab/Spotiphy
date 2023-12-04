@@ -21,7 +21,7 @@ required_packages = [
 
 setup(
     name='spotiphy',
-    version='0.1.1',
+    version='0.1.2',
     packages=['spotiphy'],
     url='https://github.com/jyyulab/Spotiphy',
     license='Apache-2.0',

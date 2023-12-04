@@ -107,6 +107,39 @@ def deconvolute(X, sc_ref, device='cuda', n_epoch=8000, adam_params=None, batch_
     return pyro.get_param_store()
 
 
+def estimation_proportion(X, adata_sc, sc_ref, type_list, key_type, device='cuda', n_epoch=8000, adam_params=None,
+                          batch_prior=2, plot=False, fig_size=(4.8, 3.6), dpi=200):
+    """
+    Estimate the proportion of each cell type in each spot.
+
+    Args:
+        X: Spatial transcriptomics data. n_spot*n_gene.
+        adata_sc: scRNA data (Anndata).
+        sc_ref: Single cell reference. n_type*n_gene.
+        type_list: List of the cell types.
+        key_type: Column name of the cell types in adata_sc.
+        device: The device used for the deconvolution.
+        plot: Whether to plot the ELBO loss.
+        n_epoch: Number of training epochs.
+        adam_params: Parameters for the adam optimizer.
+        batch_prior: Parameter of the prior Dirichlet distribution of the batch effect: 2^(Uniform(0, batch_prior))
+        fig_size: Size of the figure.
+        dpi: Dots per inch (DPI) of the figure.
+
+    Returns:
+        Parameters in the generative model.
+    """
+    pyro_params = deconvolute(X, sc_ref, device=device, n_epoch=n_epoch, adam_params=adam_params,
+                              batch_prior=batch_prior, plot=plot, fig_size=fig_size, dpi=dpi)
+    sigma = pyro_params['sigma'].cpu().detach().numpy()
+    Y = np.array(adata_sc.X)
+    mean_exp = np.array([np.mean(np.sum(Y[adata_sc.obs[key_type]==type_list[i]], axis=1))
+                         for i in range(len(type_list))])
+    cell_proportion = sigma/mean_exp
+    cell_proportion = cell_proportion/np.sum(cell_proportion, axis=1)[:, np.newaxis]
+    return cell_proportion
+
+
 def plot_proportion(img, proportion, spot_location, radius, cmap_name='viridis', alpha=0.4, save_path='proportion.png',
                     vmax=0.98, spot_scale=1.3, show_figure=False):
     """
@@ -724,7 +757,7 @@ def decomposition(adata_st: anndata.AnnData, adata_sc: anndata.AnnData, key_type
         if out_dir and not os.path.exists(out_dir):
             os.mkdir(out_dir)
         out_dir = out_dir + '/' if out_dir else ''
-        adata_st_decomposed.write(out_dir + filename)
+        adata_st_decomposed.write_h5ad(out_dir + filename, compression='gzip')
         if verbose:
             print('Saved file to output folder. Time use {:.2f}'.format(time.time() - time_start))
 
@@ -771,7 +804,7 @@ def assign_type_out(nucleus_df, cell_proportion, spot_centers, type_list, max_di
         type_list: List of the cell types.
         max_distance: If the distance between a nucleus and the closest spot is larger than max_distance, the cell type
                       will not be assigned to this nucleus.
-        return_gp: If return the fitted GP models.
+        band_width: Band width of the kernel.
     Returns:
         nucleus_df with assigned spot
     """

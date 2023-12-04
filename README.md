@@ -3,6 +3,7 @@
 [![Pypi version](https://img.shields.io/pypi/v/spotiphy)](https://pypi.org/project/spotiphy/)
 [![Github star](https://img.shields.io/github/stars/jyyulab/Spotiphy)](https://github.com/jyyulab/Spotiphy/stargazers)
 
+
 ## Usage and Tutorials
 Tutorials of spotiphy can be found in folder [Tutorials](https://github.com/jyyulab/Spotiphy/tree/main/tutorials).
 
@@ -32,7 +33,7 @@ pip install git+https://github.com/jyyulab/Spotiphy.git
 + **Install from PyPI using `pip`**: This approach is for installing the Spotiphy package from the Python Package Index 
 (PyPI), which is more streamlined for users who prefer standard package installations.
 ```bash
-pip install spotiphy==0.1.1
+pip install spotiphy==0.1.2
 ```
 
 To test the Installation, try to import Spotiphy in Python.

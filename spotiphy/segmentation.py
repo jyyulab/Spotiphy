@@ -9,7 +9,6 @@ from packaging import version
 import os
 from scipy.signal import convolve2d
 from tqdm import tqdm
-import cv2 as cv
 os.environ['CUDA_LAUNCH_BLOCKING'] = '1'
 
 
@@ -51,7 +50,7 @@ class Segmentation:
     def stardist_2D_versatile_he(img, prob_thresh: float = 0.2, nms_thresh: float = 0.5, n_tiles=(8, 8, 1),
                                  verbose: bool = True):
         """
-        Segmentation function provided by Stardist..
+        Segmentation function provided by Stardist.
         Args:
             img: Three channel image.
             nms_thresh: Parameter of non-maximum suppression.
@@ -132,7 +131,7 @@ class Segmentation:
         assert self.is_segmented, "Please conduct segmentation first."
         np.save(f'{self.out_dir}segmentation_label.npy', self.label)
         np.save(f'{self.out_dir}segmentation_boundary.npy', self.nucleus_boundary)
-        np.save(f'{self.out_dir}nucleus_df.npy', self.nucleus_df)
+        np.save(f'{self.out_dir}nucleus_df.csv', self.nucleus_df)
         np.save(f'{self.out_dir}segmentation_probability.npy', self.probability)
         self.n_cell_df.to_csv(f'{self.out_dir}n_cell_df.csv')
 
@@ -181,7 +180,7 @@ def change_predict_defaults(predict_function):
     return wrapper
 
 
-def cell_boundary(nucleus_location, img_size, max_dist, max_area, verbose, search_direction, delta=1):
+def cell_boundary(nucleus_location, img_size, max_dist, max_area, search_direction, verbose=0, delta=1):
     """
     Infer the cell boundary.
 

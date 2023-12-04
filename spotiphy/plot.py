@@ -36,28 +36,28 @@ class Plot_Visium:
         self.colors = (self.colors*255).astype(np.int32)
         self.color_dict = {type_: list(self.colors[i]) for i, type_ in enumerate(type_list)}
 
-    def plot(self, background=False, cell='both', shape='cell', circle_size=10, boundary=None, boundary_width=2,
+    def plot(self, background=False, cell='both', shape='cell', circle_size=10, boundary=None,
              save='Visium_plot.png', background_alpha=0.5, spot=True, spot_width=2, spot_color=(0, 0, 255),
-             cell_boundary_color=(100, 100, 100)):
+             cell_boundary_color=(100, 100, 100), dpi=300):
         """
         Args:
             background: If show the background.
-            cell: Which group of cells to plot? [both, in, out]
+            cell: Which group of cell shapes to plot? [both, in, out]
             shape: Which shape to plot? [cell, nucleus, circle]
             circle_size: Size of the nuclei.
-            boundary: Which group of boundary to plot? [both, in, out]
-            boundary_width: Width (extra) of the cell boundary.
+            boundary: Which group of cell boundary to plot? [both, in, out]
             save: If not none, save the figure to the path.
             background_alpha: Opacity of the background figure.
             spot: If plot the spot.
             spot_width: Width of the spot.
             spot_color: Color of the spot.
             cell_boundary_color: Color of the cell boundaries.
+            dpi: DPI of the image plotted.
         """
         img = self.img.copy()*background_alpha if background else np.zeros(self.img.shape)
         img = img.astype(np.int32)
 
-        group_dict = {'both': [True, False], 'in': [True], 'out': [False], None:[]}
+        group_dict = {'both': [True, False], 'in': [True], 'out': [False], None:[], 'None':[]}
         type_annotation = list(self.nucleus_df['cell_type'])
         in_spot = list(self.nucleus_df['in_spot'])
 
@@ -100,11 +100,12 @@ class Plot_Visium:
             print('Saving the image.')
             img1 = img[:, :, [2, 1, 0]]
             cv.imwrite(save, img1)
+        plt.figure(dpi=dpi)
         plt.imshow(img)
 
-    def plot_legend(self, save=None):
-        img = np.zeros((1700, 400, 3))
-        fig, ax = plt.subplots(dpi=600)
+    def plot_legend(self, save=None, dpi=300):
+        img = np.zeros((len(self.type_list)*60+40, 400, 3))
+        fig, ax = plt.subplots(dpi=dpi)
         plt.imshow(img)
         i = 0
         for k, v in self.color_dict.items():
