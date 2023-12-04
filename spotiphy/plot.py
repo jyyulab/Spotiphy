@@ -115,7 +115,7 @@ class Plot_Visium:
             i += 1
         ax.axis('off')
         if save is not None:
-            plt.savefig(save)
+            plt.savefig(save, bbox_inches='tight', pad_inches=0)
         plt.show()
 
 
