@@ -1,8 +1,8 @@
 # Spotiphy reveals location-specific cell subtypes through transcriptome profile at single-cell resolution
 
 [![Pypi version](https://img.shields.io/pypi/v/spotiphy)](https://pypi.org/project/spotiphy/)
+[![Downloads](https://static.pepy.tech/badge/spotiphy)](https://pepy.tech/project/spotiphy)
 [![Github star](https://img.shields.io/github/stars/jyyulab/Spotiphy)](https://github.com/jyyulab/Spotiphy/stargazers)
-
 
 ## Usage and Tutorials
 
@@ -34,7 +34,7 @@ GitHub.
 ```bash
 pip install git+https://github.com/jyyulab/Spotiphy.git
 ```
-+ **Install from PyPI using `pip`**: This approach is for installing the Spotiphy package from the Python Package Index 
++ **Install from PyPI**: This approach is for installing the Spotiphy package from the Python Package Index 
 (PyPI), which is more streamlined for users who prefer standard package installations.
 ```bash
 pip install spotiphy==0.1.2
@@ -44,6 +44,7 @@ To test the Installation, try to import Spotiphy in Python.
 ```Python
 import spotiphy
 ```
+
 ## Documentation and API details
 
 

@@ -3,18 +3,26 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Spotiphy's documentation!
+.. include:: _contributors.rst
+
+Spotiphy!
 ====================================
+|Stars| |PyPI| |PyPI_downloads|
+
+.. |PyPI| image:: https://img.shields.io/pypi/v/spotiphy
+   :target: https://pypi.org/project/spotiphy/
+.. |PyPI_downloads| image:: https://static.pepy.tech/badge/spotiphy
+   :target: https://pepy.tech/project/spotiphy
+.. |Stars| image:: https://img.shields.io/github/stars/jyyulab/Spotiphy
+   :target: https://github.com/jyyulab/Spotiphy/stargazers
+
+
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :hidden:
+   :caption: General
 
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+   getting_started
+   tutorials
+   questions
