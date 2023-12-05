@@ -9,7 +9,7 @@
 project = 'Spotiphy'
 copyright = '2023, Ziqian Zheng, Jiyuan Yang'
 author = 'Ziqian Zheng, Jiyuan Yang'
-release = 'spotiphy 0.1.2'
+release = '0.1.2'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
@@ -17,9 +17,9 @@ release = 'spotiphy 0.1.2'
 extensions = []
 
 templates_path = ['_templates']
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
+exclude_patterns = []
 
-language = 'Python'
+
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
