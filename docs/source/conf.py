@@ -21,7 +21,7 @@ extensions = [
 templates_path = ['_templates']
 exclude_patterns = []
 numpydoc_show_class_members = False
-
+html_build_dir = '/'
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
