@@ -34,4 +34,3 @@ To test the Installation, try to import Spotiphy in Python.
 .. code-block::
 
     import spotiphy
-    

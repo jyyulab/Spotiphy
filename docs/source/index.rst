@@ -16,13 +16,14 @@ Spotiphy!
 .. |Stars| image:: https://img.shields.io/github/stars/jyyulab/Spotiphy
    :target: https://github.com/jyyulab/Spotiphy/stargazers
 
-
+.. image:: _static/figures/Spotiphy_overview.png
+    :align: center
 
 .. toctree::
    :maxdepth: 2
    :hidden:
    :caption: General
 
-   getting_started
+   install
    tutorials
    questions
