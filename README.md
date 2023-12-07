@@ -4,7 +4,7 @@
 [![Downloads](https://static.pepy.tech/badge/spotiphy)](https://pepy.tech/project/spotiphy)
 [![Github star](https://img.shields.io/github/stars/jyyulab/Spotiphy)](https://github.com/jyyulab/Spotiphy/stargazers)
 [![Static Badge](https://img.shields.io/badge/Document-Latest-green)](https://jyyulab.github.io/Spotiphy)
-
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/jyyulab/Spotiphy/blob/main/tutorials/Spotiphy_tutorial_1.ipynb)
 
 ![Spotiphy_overview](https://github.com/jyyulab/Spotiphy/blob/a98aeeb892570ed44a029dd896b21e2b8ec80d89/figures/Spotiphy_overview.png)
 
@@ -49,15 +49,15 @@ To test the Installation, try to import Spotiphy in Python.
 import spotiphy
 ```
 
-## Documentation and API details
-
 
 ## FAQ
-See https://github.com/jyyulab/Spotiphy/discussions
+Answers to frequently asked questions can be found [here](https://jyyulab.github.io/Spotiphy/questions.html).
+
+Should you have any further questions, feel free to start a [discussion](https://github.com/jyyulab/Spotiphy/discussions) or reach out directly to the package authors:
++ Ziqian Zheng - [zzheng92@wisc.edu](mailto:zzheng92@wisc.edu)
++ Jiyuan Yang - [jiyuan.yang@stjude.org](mailto:jiyuan.yang@stjude.org)
 
 
 ## Cite Spotiphy:
 
-If you have questions, please contact the authors of the method:
-+ Ziqian Zheng - zzheng92@wic.edu
-+ Jiyuan Yang - jiyuan.yang@stjude.org
+Pending
