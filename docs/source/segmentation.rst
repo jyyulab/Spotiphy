@@ -1,4 +1,4 @@
-segmentation
+Segmentation
 ==============================
 
 .. automodule:: segmentation

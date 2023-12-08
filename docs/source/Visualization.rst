@@ -1,4 +1,4 @@
-plot
+Visualization
 ==============================
 
 .. automodule:: plot

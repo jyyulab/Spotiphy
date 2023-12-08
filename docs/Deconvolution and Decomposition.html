@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>deconvolution &mdash; Spotiphy 0.1.2 documentation</title>
+  <title>Deconvolution and Decomposition &mdash; Spotiphy 0.1.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=92fd9be5" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
@@ -22,8 +22,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="segmentation" href="segmentation.html" />
-    <link rel="prev" title="sc_reference" href="sc_reference.html" /> 
+    <link rel="next" title="Segmentation" href="Segmentation.html" />
+    <link rel="prev" title="scRNA Reference" href="scRNA%20Reference.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -53,8 +53,8 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="sc_reference.html">sc_reference</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">deconvolution</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="scRNA%20Reference.html">scRNA Reference</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Deconvolution and Decomposition</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#deconvolution.Evaluation"><code class="docutils literal notranslate"><span class="pre">Evaluation</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#deconvolution.Evaluation.JSD"><code class="docutils literal notranslate"><span class="pre">Evaluation.JSD()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#deconvolution.Evaluation.absolute_error"><code class="docutils literal notranslate"><span class="pre">Evaluation.absolute_error()</span></code></a></li>
@@ -79,8 +79,12 @@
 <li class="toctree-l2"><a class="reference internal" href="#deconvolution.simulation"><code class="docutils literal notranslate"><span class="pre">simulation()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="segmentation.html">segmentation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="plot.html">plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Segmentation.html">Segmentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Visualization.html">Visualization</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">About</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="About.html">About the project</a></li>
 </ul>
 
         </div>
@@ -97,9 +101,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">deconvolution</li>
+      <li class="breadcrumb-item active">Deconvolution and Decomposition</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="_sources/deconvolution.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/Deconvolution and Decomposition.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -108,7 +112,7 @@
            <div itemprop="articleBody">
              
   <section id="module-deconvolution">
-<span id="deconvolution"></span><h1>deconvolution<a class="headerlink" href="#module-deconvolution" title="Link to this heading"></a></h1>
+<span id="deconvolution-and-decomposition"></span><h1>Deconvolution and Decomposition<a class="headerlink" href="#module-deconvolution" title="Link to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="deconvolution.Evaluation">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">deconvolution.</span></span><span class="sig-name descname"><span class="pre">Evaluation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">proportion_truth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">proportion_estimated_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">methods</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cluster</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coordinates</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_spot_distance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">112</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deconvolution.html#Evaluation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deconvolution.Evaluation" title="Link to this definition"></a></dt>
@@ -419,14 +423,14 @@ X is already 0, the final proportion of 0 gene read is larger than zero_proporti
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="sc_reference.html" class="btn btn-neutral float-left" title="sc_reference" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="segmentation.html" class="btn btn-neutral float-right" title="segmentation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="scRNA%20Reference.html" class="btn btn-neutral float-left" title="scRNA Reference" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Segmentation.html" class="btn btn-neutral float-right" title="Segmentation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2023, Ziqian Zheng, Jiyuan Yang.</p>
+    <p>&#169; Copyright 2023, Yu Lab, St. Jude Children&#39;s Research Hospital.</p>
   </div>
 
    

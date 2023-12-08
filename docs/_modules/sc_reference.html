@@ -50,10 +50,14 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../sc_reference.html">sc_reference</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../deconvolution.html">deconvolution</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../segmentation.html">segmentation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../plot.html">plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scRNA%20Reference.html">scRNA Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Deconvolution%20and%20Decomposition.html">Deconvolution and Decomposition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Segmentation.html">Segmentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Visualization.html">Visualization</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">About</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../About.html">About the project</a></li>
 </ul>
 
         </div>
@@ -92,7 +96,7 @@
 
 
 <div class="viewcode-block" id="initialization">
-<a class="viewcode-back" href="../sc_reference.html#sc_reference.initialization">[docs]</a>
+<a class="viewcode-back" href="../scRNA%20Reference.html#sc_reference.initialization">[docs]</a>
 <span class="k">def</span> <span class="nf">initialization</span><span class="p">(</span><span class="n">adata_sc</span><span class="p">:</span> <span class="n">anndata</span><span class="o">.</span><span class="n">AnnData</span><span class="p">,</span> <span class="n">adata_st</span><span class="p">:</span> <span class="n">anndata</span><span class="o">.</span><span class="n">AnnData</span><span class="p">,</span> <span class="n">min_genes</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">200</span><span class="p">,</span> <span class="n">min_cells</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">200</span><span class="p">,</span>
                    <span class="n">min_std</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span> <span class="n">normalize_st</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">filtering</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Filter single cell data and spatial data, and normalize the data to count per million (CPM).</span>
@@ -156,7 +160,7 @@
 
 
 <div class="viewcode-block" id="marker_selection">
-<a class="viewcode-back" href="../sc_reference.html#sc_reference.marker_selection">[docs]</a>
+<a class="viewcode-back" href="../scRNA%20Reference.html#sc_reference.marker_selection">[docs]</a>
 <span class="k">def</span> <span class="nf">marker_selection</span><span class="p">(</span><span class="n">adata_sc</span><span class="p">:</span> <span class="n">anndata</span><span class="o">.</span><span class="n">AnnData</span><span class="p">,</span> <span class="n">key_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">threshold_cover</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">threshold_p</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
                      <span class="n">threshold_fold</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">n_select</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">return_dict</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Find marker genes based on pairwise ratio test.</span>
@@ -237,7 +241,7 @@
 
 
 <div class="viewcode-block" id="construct_sc_ref">
-<a class="viewcode-back" href="../sc_reference.html#sc_reference.construct_sc_ref">[docs]</a>
+<a class="viewcode-back" href="../scRNA%20Reference.html#sc_reference.construct_sc_ref">[docs]</a>
 <span class="k">def</span> <span class="nf">construct_sc_ref</span><span class="p">(</span><span class="n">adata_sc</span><span class="p">:</span> <span class="n">anndata</span><span class="o">.</span><span class="n">AnnData</span><span class="p">,</span> <span class="n">key_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Construct the scRNA reference from scRNA data.</span>
@@ -261,7 +265,7 @@
 
 
 <div class="viewcode-block" id="plot_sc_ref">
-<a class="viewcode-back" href="../sc_reference.html#sc_reference.plot_sc_ref">[docs]</a>
+<a class="viewcode-back" href="../scRNA%20Reference.html#sc_reference.plot_sc_ref">[docs]</a>
 <span class="k">def</span> <span class="nf">plot_sc_ref</span><span class="p">(</span><span class="n">sc_ref</span><span class="p">,</span> <span class="n">type_list</span><span class="p">,</span> <span class="n">fig_size</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Plot the heatmap of the single cell reference</span>
@@ -281,7 +285,7 @@
 
 
 <div class="viewcode-block" id="plot_heatmap">
-<a class="viewcode-back" href="../sc_reference.html#sc_reference.plot_heatmap">[docs]</a>
+<a class="viewcode-back" href="../scRNA%20Reference.html#sc_reference.plot_heatmap">[docs]</a>
 <span class="k">def</span> <span class="nf">plot_heatmap</span><span class="p">(</span><span class="n">adata_sc</span><span class="p">,</span> <span class="n">key_type</span><span class="p">,</span> <span class="n">fig_size</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">out_dir</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Plot the heatmap of the mean expression.</span>
@@ -322,7 +326,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2023, Ziqian Zheng, Jiyuan Yang.</p>
+    <p>&#169; Copyright 2023, Yu Lab, St. Jude Children&#39;s Research Hospital.</p>
   </div>
 
    

@@ -1,7 +1,7 @@
-Segmentation
+scRNA Reference
 ==============================
 
-.. automodule:: segmentation
+.. automodule:: sc_reference
     :members:
     :undoc-members:
     :show-inheritance:

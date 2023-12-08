@@ -7,14 +7,14 @@
 
 Spotiphy!
 ====================================
-|Stars| |PyPI| |PyPI_downloads| |Open_in_colab|
+|Github| |PyPI| |PyPI_downloads| |Open_in_colab|
 
+.. |Github| image:: https://img.shields.io/badge/View_in_Github-6C51D4?logo=github&logoColor=white
+   :target: https://github.com/jyyulab/Spotiphy
 .. |PyPI| image:: https://img.shields.io/pypi/v/spotiphy
    :target: https://pypi.org/project/spotiphy/
 .. |PyPI_downloads| image:: https://static.pepy.tech/badge/spotiphy
    :target: https://pepy.tech/project/spotiphy
-.. |Stars| image:: https://img.shields.io/github/stars/jyyulab/Spotiphy
-   :target: https://github.com/jyyulab/Spotiphy/stargazers
 .. |Open_in_colab| image:: https://colab.research.google.com/assets/colab-badge.svg
    :target: https://colab.research.google.com/github/jyyulab/Spotiphy/blob/main/tutorials/Spotiphy_tutorial_1.ipynb
 
@@ -45,7 +45,14 @@ With these outputs, Spotiphy facilitates numerous downstream analyses. For more 
    :hidden:
    :caption: API
 
-   sc_reference
-   deconvolution
-   segmentation
-   plot
+   scRNA Reference
+   Deconvolution and Decomposition
+   Segmentation
+   Visualization
+
+.. toctree::
+   :maxdepth: 1
+   :hidden:
+   :caption: About
+
+   About

@@ -1,7 +1,7 @@
-sc_reference
+Visualization
 ==============================
 
-.. automodule:: sc_reference
+.. automodule:: plot
     :members:
     :undoc-members:
     :show-inheritance:

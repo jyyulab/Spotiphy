@@ -21,3 +21,16 @@ numpydoc_show_class_members = False
 html_theme = 'sphinx_rtd_theme'
 html_static_path = ['_static']
 html_show_sphinx = False
+copyright = "2023, Yu Lab, St. Jude Children's Research Hospital"
+github_url = "https://github.com/jyyulab/Spotiphy"
+# html_context = {
+#     'display_github': True,
+#     'github_repo': 'https://github.com/jyyulab/Spotiphy',
+# }
+html_context = {
+    "display_github": False,  # Integrate GitHub
+    "github_user": "jyyulab",  # Username
+    "github_repo": "Spotiphy",  # Repo name
+    "github_version": "master",  # Version
+    "conf_py_path": "/docs/",  # Path in the checkout to the docs root
+}
