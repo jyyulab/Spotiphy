@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>deconvolution &mdash; Spotiphy 0.1.2 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=92fd9be5" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=92734c54"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="segmentation" href="segmentation.html" />
+    <link rel="prev" title="sc_reference" href="sc_reference.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Spotiphy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">General</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="questions.html">Frequently Asked Questions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="sc_reference.html">sc_reference</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">deconvolution</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#deconvolution.Evaluation"><code class="docutils literal notranslate"><span class="pre">Evaluation</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#deconvolution.Evaluation.JSD"><code class="docutils literal notranslate"><span class="pre">Evaluation.JSD()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#deconvolution.Evaluation.absolute_error"><code class="docutils literal notranslate"><span class="pre">Evaluation.absolute_error()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#deconvolution.Evaluation.correct_fraction"><code class="docutils literal notranslate"><span class="pre">Evaluation.correct_fraction()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#deconvolution.Evaluation.correlation"><code class="docutils literal notranslate"><span class="pre">Evaluation.correlation()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#deconvolution.Evaluation.cosine"><code class="docutils literal notranslate"><span class="pre">Evaluation.cosine()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#deconvolution.Evaluation.evaluate_metric"><code class="docutils literal notranslate"><span class="pre">Evaluation.evaluate_metric()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#deconvolution.Evaluation.plot_metric"><code class="docutils literal notranslate"><span class="pre">Evaluation.plot_metric()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#deconvolution.Evaluation.plot_metric_all"><code class="docutils literal notranslate"><span class="pre">Evaluation.plot_metric_all()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#deconvolution.Evaluation.plot_metric_spot_type"><code class="docutils literal notranslate"><span class="pre">Evaluation.plot_metric_spot_type()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#deconvolution.Evaluation.square_error"><code class="docutils literal notranslate"><span class="pre">Evaluation.square_error()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#deconvolution.archive_assign_type_out_gp"><code class="docutils literal notranslate"><span class="pre">archive_assign_type_out_gp()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#deconvolution.assign_type_out"><code class="docutils literal notranslate"><span class="pre">assign_type_out()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#deconvolution.assign_type_spot"><code class="docutils literal notranslate"><span class="pre">assign_type_spot()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#deconvolution.decomposition"><code class="docutils literal notranslate"><span class="pre">decomposition()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#deconvolution.deconvolute"><code class="docutils literal notranslate"><span class="pre">deconvolute()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#deconvolution.estimation_proportion"><code class="docutils literal notranslate"><span class="pre">estimation_proportion()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#deconvolution.plot_proportion"><code class="docutils literal notranslate"><span class="pre">plot_proportion()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#deconvolution.proportion_to_count"><code class="docutils literal notranslate"><span class="pre">proportion_to_count()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#deconvolution.simulation"><code class="docutils literal notranslate"><span class="pre">simulation()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="segmentation.html">segmentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plot.html">plot</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Spotiphy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">deconvolution</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/deconvolution.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-deconvolution">
+<span id="deconvolution"></span><h1>deconvolution<a class="headerlink" href="#module-deconvolution" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="deconvolution.Evaluation">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">deconvolution.</span></span><span class="sig-name descname"><span class="pre">Evaluation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">proportion_truth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">proportion_estimated_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">methods</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cluster</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coordinates</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_spot_distance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">112</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deconvolution.html#Evaluation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deconvolution.Evaluation" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="deconvolution.Evaluation.JSD">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">JSD</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">proportion_truth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">proportion_estimated</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Spot'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deconvolution.html#Evaluation.JSD"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deconvolution.Evaluation.JSD" title="Link to this definition"></a></dt>
+<dd><p>Jensen–Shannon divergence
+:param proportion_truth: Ground truth of the cell proportion.
+:param proportion_estimated: Estimated proportion.
+:param metric_type: How the metric is calculated.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deconvolution.Evaluation.absolute_error">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">absolute_error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">proportion_truth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">proportion_estimated</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Spot'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deconvolution.html#Evaluation.absolute_error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deconvolution.Evaluation.absolute_error" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deconvolution.Evaluation.correct_fraction">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">correct_fraction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">proportion_truth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">proportion_estimated</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Spot'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deconvolution.html#Evaluation.correct_fraction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deconvolution.Evaluation.correct_fraction" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deconvolution.Evaluation.correlation">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">correlation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">proportion_truth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">proportion_estimated</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Spot'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deconvolution.html#Evaluation.correlation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deconvolution.Evaluation.correlation" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deconvolution.Evaluation.cosine">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cosine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">proportion_truth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">proportion_estimated</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Spot'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deconvolution.html#Evaluation.cosine"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deconvolution.Evaluation.cosine" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deconvolution.Evaluation.evaluate_metric">
+<span class="sig-name descname"><span class="pre">evaluate_metric</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metric</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Cosine</span> <span class="pre">similarity'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Spot'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">region</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deconvolution.html#Evaluation.evaluate_metric"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deconvolution.Evaluation.evaluate_metric" title="Link to this definition"></a></dt>
+<dd><p>Evaluate the proportions based on the metric.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>metric</strong> – Name of the metric.</p></li>
+<li><p><strong>metric_type</strong> – How the metric is calculated. ‘Spot’: metric is calculated for each spot; ‘Cell type’,
+metric is calculated for each cell type; ‘Individual’: metric is calculated for each individual
+proportion estimation.</p></li>
+<li><p><strong>region</strong> – The region that is being evaluated.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deconvolution.Evaluation.plot_metric">
+<span class="sig-name descname"><span class="pre">plot_metric</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">region</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Cosine</span> <span class="pre">similarity'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Spot'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell_types</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deconvolution.html#Evaluation.plot_metric"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deconvolution.Evaluation.plot_metric" title="Link to this definition"></a></dt>
+<dd><p>Plot the box plot of each method based on the metric.</p>
+<p>Box number equals to the number of methods.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>save</strong> – If true, save the figure.</p></li>
+<li><p><strong>region</strong> – Regions of the tissue.</p></li>
+<li><p><strong>metric</strong> – Name of the metric.</p></li>
+<li><p><strong>metric_type</strong> – How the metric is calculated. ‘Spot’: metric is calculated for each spot; ‘Cell type’,
+metric is calculated for each cell type; ‘Individual’: metric is calculated for each individual
+proportion estimation.</p></li>
+<li><p><strong>cell_types</strong> – If metric_type is ‘Cell type’ and cell_types is not None, then only plot the results
+corresponding to the cell_types.</p></li>
+<li><p><strong>suffix</strong> – suffix of the save file.</p></li>
+<li><p><strong>show</strong> – Whether to show the figure</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deconvolution.Evaluation.plot_metric_all">
+<span class="sig-name descname"><span class="pre">plot_metric_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Absolute</span> <span class="pre">error'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">region</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deconvolution.html#Evaluation.plot_metric_all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deconvolution.Evaluation.plot_metric_all" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deconvolution.Evaluation.plot_metric_spot_type">
+<span class="sig-name descname"><span class="pre">plot_metric_spot_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Absolute</span> <span class="pre">error'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deconvolution.html#Evaluation.plot_metric_spot_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deconvolution.Evaluation.plot_metric_spot_type" title="Link to this definition"></a></dt>
+<dd><p>Similar to plot_metric_spot, but the figures are separated for each cell type.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deconvolution.Evaluation.square_error">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">square_error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">proportion_truth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">proportion_estimated</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Spot'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deconvolution.html#Evaluation.square_error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deconvolution.Evaluation.square_error" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deconvolution.archive_assign_type_out_gp">
+<span class="sig-prename descclassname"><span class="pre">deconvolution.</span></span><span class="sig-name descname"><span class="pre">archive_assign_type_out_gp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nucleus_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell_proportion</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spot_centers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_distance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_gp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deconvolution.html#archive_assign_type_out_gp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deconvolution.archive_assign_type_out_gp" title="Link to this definition"></a></dt>
+<dd><p>Assign the cell type to the cells outside the spot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nucleus_df</strong> – Dataframe of the nucleus. Part of spotiphy.segmentation.Segmentation.</p></li>
+<li><p><strong>spot_centers</strong> – Centers of the spots.</p></li>
+<li><p><strong>cell_proportion</strong> – Proportion of each cell type in each spot.</p></li>
+<li><p><strong>type_list</strong> – List of the cell types.</p></li>
+<li><p><strong>max_distance</strong> – If the distance between a nucleus and the closest spot is larger than max_distance, the cell type
+will not be assigned to this nucleus.</p></li>
+<li><p><strong>return_gp</strong> – If return the fitted GP models.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>nucleus_df with assigned spot</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deconvolution.assign_type_out">
+<span class="sig-prename descclassname"><span class="pre">deconvolution.</span></span><span class="sig-name descname"><span class="pre">assign_type_out</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nucleus_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell_proportion</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spot_centers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_distance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">band_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deconvolution.html#assign_type_out"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deconvolution.assign_type_out" title="Link to this definition"></a></dt>
+<dd><p>Assign the cell type to the cells outside the spot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nucleus_df</strong> – Dataframe of the nucleus. Part of spotiphy.segmentation.Segmentation.</p></li>
+<li><p><strong>spot_centers</strong> – Centers of the spots.</p></li>
+<li><p><strong>cell_proportion</strong> – Proportion of each cell type in each spot.</p></li>
+<li><p><strong>type_list</strong> – List of the cell types.</p></li>
+<li><p><strong>max_distance</strong> – If the distance between a nucleus and the closest spot is larger than max_distance, the cell type
+will not be assigned to this nucleus.</p></li>
+<li><p><strong>band_width</strong> – Band width of the kernel.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>nucleus_df with assigned spot</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deconvolution.assign_type_spot">
+<span class="sig-prename descclassname"><span class="pre">deconvolution.</span></span><span class="sig-name descname"><span class="pre">assign_type_spot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nucleus_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_cell_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell_number</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deconvolution.html#assign_type_spot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deconvolution.assign_type_spot" title="Link to this definition"></a></dt>
+<dd><p>Assign the cell type to the cells inside the spot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nucleus_df</strong> – Dataframe of the nucleus. Part of spotiphy.segmentation.Segmentation.</p></li>
+<li><p><strong>n_cell_df</strong> – Dataframe of the number of cells in each spot. Part of spotiphy.segmentation.Segmentation.</p></li>
+<li><p><strong>cell_number</strong> – Number of each cell type in each spot.</p></li>
+<li><p><strong>type_list</strong> – List of the cell types.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>nucleus_df with assigned spot</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deconvolution.decomposition">
+<span class="sig-prename descclassname"><span class="pre">deconvolution.</span></span><span class="sig-name descname"><span class="pre">decomposition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adata_st</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AnnData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">adata_sc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AnnData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell_proportion</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_cell</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spot_location</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filtering_gene</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ST_decomposition.h5ad'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_original_proportion</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deconvolution.html#decomposition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deconvolution.decomposition" title="Link to this definition"></a></dt>
+<dd><p>Decompose ST.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>adata_st</strong> – Original spatial transcriptomics data.</p></li>
+<li><p><strong>adata_sc</strong> – Original single-cell data.</p></li>
+<li><p><strong>key_type</strong> – The key that is used to extract cell type information from adata_sc.obs.</p></li>
+<li><p><strong>cell_proportion</strong> – Proportion of each cell type obtained by the deconvolution.</p></li>
+<li><p><strong>save</strong> – If True, save the generated adata_st as a file.</p></li>
+<li><p><strong>out_dir</strong> – Output directory.</p></li>
+<li><p><strong>threshold</strong> – If n_cell is none, discard cell types with proportion less than threshold.</p></li>
+<li><p><strong>n_cell</strong> – Number of cells in each spot.</p></li>
+<li><p><strong>spot_location</strong> – Coordinates of the spots.</p></li>
+<li><p><strong>filtering_gene</strong> – Whether filter the genes in sc_reference.initialization.</p></li>
+<li><p><strong>filename</strong> – Name of the saved file.</p></li>
+<li><p><strong>verbose</strong> – Whether print the time spend.</p></li>
+<li><p><strong>use_original_proportion</strong> – If the original proportion is used to estimate the iscRNA. Note that even when the
+original proportion is used, we still filter some cells in iscRNA.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Anndata similar to scRNA, but obtained by decomposing ST.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>adata_st_decomposed</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deconvolution.deconvolute">
+<span class="sig-prename descclassname"><span class="pre">deconvolution.</span></span><span class="sig-name descname"><span class="pre">deconvolute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sc_ref</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cuda'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_epoch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">adam_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_prior</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fig_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(4.8,</span> <span class="pre">3.6)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dpi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deconvolution.html#deconvolute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deconvolution.deconvolute" title="Link to this definition"></a></dt>
+<dd><p>Deconvolution of the proportion of genes contributed by each cell type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> – Spatial transcriptomics data. n_spot*n_gene.</p></li>
+<li><p><strong>sc_ref</strong> – Single cell reference. n_type*n_gene.</p></li>
+<li><p><strong>device</strong> – The device used for the deconvolution.</p></li>
+<li><p><strong>plot</strong> – Whether to plot the ELBO loss.</p></li>
+<li><p><strong>n_epoch</strong> – Number of training epochs.</p></li>
+<li><p><strong>adam_params</strong> – Parameters for the adam optimizer.</p></li>
+<li><p><strong>batch_prior</strong> – Parameter of the prior Dirichlet distribution of the batch effect: 2^(Uniform(0, batch_prior))</p></li>
+<li><p><strong>fig_size</strong> – Size of the figure.</p></li>
+<li><p><strong>dpi</strong> – Dots per inch (DPI) of the figure.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Parameters in the generative model.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deconvolution.estimation_proportion">
+<span class="sig-prename descclassname"><span class="pre">deconvolution.</span></span><span class="sig-name descname"><span class="pre">estimation_proportion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">adata_sc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sc_ref</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cuda'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_epoch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">adam_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_prior</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fig_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(4.8,</span> <span class="pre">3.6)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dpi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deconvolution.html#estimation_proportion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deconvolution.estimation_proportion" title="Link to this definition"></a></dt>
+<dd><p>Estimate the proportion of each cell type in each spot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> – Spatial transcriptomics data. n_spot*n_gene.</p></li>
+<li><p><strong>adata_sc</strong> – scRNA data (Anndata).</p></li>
+<li><p><strong>sc_ref</strong> – Single cell reference. n_type*n_gene.</p></li>
+<li><p><strong>type_list</strong> – List of the cell types.</p></li>
+<li><p><strong>key_type</strong> – Column name of the cell types in adata_sc.</p></li>
+<li><p><strong>device</strong> – The device used for the deconvolution.</p></li>
+<li><p><strong>plot</strong> – Whether to plot the ELBO loss.</p></li>
+<li><p><strong>n_epoch</strong> – Number of training epochs.</p></li>
+<li><p><strong>adam_params</strong> – Parameters for the adam optimizer.</p></li>
+<li><p><strong>batch_prior</strong> – Parameter of the prior Dirichlet distribution of the batch effect: 2^(Uniform(0, batch_prior))</p></li>
+<li><p><strong>fig_size</strong> – Size of the figure.</p></li>
+<li><p><strong>dpi</strong> – Dots per inch (DPI) of the figure.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Parameters in the generative model.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deconvolution.plot_proportion">
+<span class="sig-prename descclassname"><span class="pre">deconvolution.</span></span><span class="sig-name descname"><span class="pre">plot_proportion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">proportion</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spot_location</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmap_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'viridis'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'proportion.png'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.98</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spot_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_figure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deconvolution.html#plot_proportion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deconvolution.plot_proportion" title="Link to this definition"></a></dt>
+<dd><p>Plot the proportion of a cell type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>img</strong> – 3 channel img with integer values in [0, 255]</p></li>
+<li><p><strong>proportion</strong> – Proportion of a cell type.</p></li>
+<li><p><strong>spot_location</strong> – Location of the spots.</p></li>
+<li><p><strong>radius</strong> – Radius of the spot</p></li>
+<li><p><strong>cmap_name</strong> – Name of the camp.</p></li>
+<li><p><strong>alpha</strong> – Level of transparency of the background img.</p></li>
+<li><p><strong>save_path</strong> – If not none, save the img to the path.</p></li>
+<li><p><strong>vmax</strong> – Quantile of the maximum value in the color bar.</p></li>
+<li><p><strong>spot_scale</strong> – Scale of the spot in the figure.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deconvolution.proportion_to_count">
+<span class="sig-prename descclassname"><span class="pre">deconvolution.</span></span><span class="sig-name descname"><span class="pre">proportion_to_count</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multiple_spots</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deconvolution.html#proportion_to_count"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deconvolution.proportion_to_count" title="Link to this definition"></a></dt>
+<dd><p>Convert the cell proportion to the absolute cell number.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p</strong> – Cell proportion.</p></li>
+<li><p><strong>n</strong> – Number of cells.</p></li>
+<li><p><strong>multiple_spots</strong> – If the data is related to multiple spots</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Cell count of each cell type.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deconvolution.simulation">
+<span class="sig-prename descclassname"><span class="pre">deconvolution.</span></span><span class="sig-name descname"><span class="pre">simulation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adata_st</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AnnData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">adata_sc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AnnData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell_proportion</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_cell</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_effect_sigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zero_proportion</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">additive_noise_sigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ST_Simulated.h5ad'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deconvolution.html#simulation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deconvolution.simulation" title="Link to this definition"></a></dt>
+<dd><p>Simulation of the spatial transcriptomics data based on a real spatial sample and deconvolution results of Spotiphy.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>adata_st</strong> – Original spatial transcriptomics data.</p></li>
+<li><p><strong>adata_sc</strong> – Original single-cell data.</p></li>
+<li><p><strong>key_type</strong> – The key that is used to extract cell type information from adata_sc.obs.</p></li>
+<li><p><strong>cell_proportion</strong> – Proportion of each cell type obtained by the deconvolution.</p></li>
+<li><p><strong>n_cell</strong> – Number of cells in each spot, either a key of adata_st.obs or a positive integer.</p></li>
+<li><p><strong>batch_effect_sigma</strong> – Sigma of the log-normal distribution when generate batch effect.</p></li>
+<li><p><strong>zero_proportion</strong> – Proportion of gene expression set to 0. Note that since some gene expression in the original
+X is already 0, the final proportion of 0 gene read is larger than zero_proportion.</p></li>
+<li><p><strong>additive_noise_sigma</strong> – Sigma of the log-normal distribution when generate additive noise.</p></li>
+<li><p><strong>save</strong> – If True, save the generated adata_st as a file.</p></li>
+<li><p><strong>out_dir</strong> – Output directory.</p></li>
+<li><p><strong>filename</strong> – Name of the saved file.</p></li>
+<li><p><strong>verbose</strong> – Whether print the time spend.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Simulated ST Anndata.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="sc_reference.html" class="btn btn-neutral float-left" title="sc_reference" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="segmentation.html" class="btn btn-neutral float-right" title="segmentation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Ziqian Zheng, Jiyuan Yang.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

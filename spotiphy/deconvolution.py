@@ -1,6 +1,5 @@
 import anndata
 import os
-# import matplotlib as mpl
 import cv2 as cv
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
@@ -18,13 +17,12 @@ from scipy.spatial.distance import jensenshannon
 import time
 from sklearn.gaussian_process import GaussianProcessRegressor
 from sklearn.gaussian_process.kernels import RBF, ConstantKernel as C
-from . import sc_reference
+from spotiphy import sc_reference
 
 
 def deconvolute(X, sc_ref, device='cuda', n_epoch=8000, adam_params=None, batch_prior=2,
                 plot=False, fig_size=(4.8, 3.6), dpi=200):
-    """
-    Deconvolution of the proportion of genes contributed by each cell type.
+    """Deconvolution of the proportion of genes contributed by each cell type.
 
     Args:
         X: Spatial transcriptomics data. n_spot*n_gene.
@@ -231,11 +229,6 @@ def proportion_to_count(p, n, multiple_spots=False):
     return count
 
 
-def estimation_N(proportion, mean_exp_type, adata_st):
-    sum_exp_spot = np.sum(np.array(adata_st.X))
-
-
-
 def simulation(adata_st: anndata.AnnData, adata_sc: anndata.AnnData, key_type: str, cell_proportion: np.ndarray,
                n_cell=10, batch_effect_sigma=0.1, zero_proportion=0.3, additive_noise_sigma=0.05, save=True,
                out_dir='', filename="ST_Simulated.h5ad", verbose=0):
@@ -250,7 +243,7 @@ def simulation(adata_st: anndata.AnnData, adata_sc: anndata.AnnData, key_type: s
         n_cell: Number of cells in each spot, either a key of adata_st.obs or a positive integer.
         batch_effect_sigma: Sigma of the log-normal distribution when generate batch effect.
         zero_proportion: Proportion of gene expression set to 0. Note that since some gene expression in the original
-                         X is already 0, the final proportion of 0 gene read is larger than zero_proportion.
+            X is already 0, the final proportion of 0 gene read is larger than zero_proportion.
         additive_noise_sigma: Sigma of the log-normal distribution when generate additive noise.
         save: If True, save the generated adata_st as a file.
         out_dir: Output directory.
@@ -472,11 +465,12 @@ class Evaluation:
     def evaluate_metric(self, metric='Cosine similarity', metric_type='Spot', region=None):
         """
         Evaluate the proportions based on the metric.
+
         Args:
             metric: Name of the metric.
             metric_type: How the metric is calculated. 'Spot': metric is calculated for each spot; 'Cell type',
-                         metric is calculated for each cell type; 'Individual': metric is calculated for each individual
-                         proportion estimation.
+                metric is calculated for each cell type; 'Individual': metric is calculated for each individual
+                proportion estimation.
             region: The region that is being evaluated.
         """
         assert metric in self.metric_type_dict[metric_type]
@@ -501,18 +495,19 @@ class Evaluation:
 
     def plot_metric(self, save=False, region=None, metric='Cosine similarity', metric_type='Spot', cell_types=None,
                     suffix='', show=True):
-        """
-        Plot the box plot of each method based on the metric.
+        """Plot the box plot of each method based on the metric.
+
         Box number equals to the number of methods.
+
         Args:
             save: If true, save the figure.
             region: Regions of the tissue.
             metric: Name of the metric.
             metric_type: How the metric is calculated. 'Spot': metric is calculated for each spot; 'Cell type',
-                         metric is calculated for each cell type; 'Individual': metric is calculated for each individual
-                         proportion estimation.
+                metric is calculated for each cell type; 'Individual': metric is calculated for each individual
+                proportion estimation.
             cell_types: If metric_type is 'Cell type' and cell_types is not None, then only plot the results
-                        corresponding to the cell_types.
+                corresponding to the cell_types.
             suffix: suffix of the save file.
             show: Whether to show the figure
         """
@@ -661,7 +656,7 @@ def decomposition(adata_st: anndata.AnnData, adata_sc: anndata.AnnData, key_type
         filename: Name of the saved file.
         verbose: Whether print the time spend.
         use_original_proportion: If the original proportion is used to estimate the iscRNA. Note that even when the
-                                 original proportion is used, we still filter some cells in iscRNA.
+            original proportion is used, we still filter some cells in iscRNA.
     Returns:
         adata_st_decomposed: Anndata similar to scRNA, but obtained by decomposing ST.
     """
@@ -765,14 +760,14 @@ def decomposition(adata_st: anndata.AnnData, adata_sc: anndata.AnnData, key_type
 
 
 def assign_type_spot(nucleus_df, n_cell_df, cell_number, type_list):
-    """
-    Assign the cell type to the cells inside the spot.
+    """Assign the cell type to the cells inside the spot.
 
     Args:
         nucleus_df: Dataframe of the nucleus. Part of spotiphy.segmentation.Segmentation.
         n_cell_df: Dataframe of the number of cells in each spot. Part of spotiphy.segmentation.Segmentation.
         cell_number: Number of each cell type in each spot.
         type_list: List of the cell types.
+
     Returns:
         nucleus_df with assigned spot
     """
@@ -794,8 +789,7 @@ def assign_type_spot(nucleus_df, n_cell_df, cell_number, type_list):
 
 
 def assign_type_out(nucleus_df, cell_proportion, spot_centers, type_list, max_distance=100, band_width=100):
-    """
-    Assign the cell type to the cells outside the spot.
+    """Assign the cell type to the cells outside the spot.
 
     Args:
         nucleus_df: Dataframe of the nucleus. Part of spotiphy.segmentation.Segmentation.
@@ -803,8 +797,9 @@ def assign_type_out(nucleus_df, cell_proportion, spot_centers, type_list, max_di
         cell_proportion: Proportion of each cell type in each spot.
         type_list: List of the cell types.
         max_distance: If the distance between a nucleus and the closest spot is larger than max_distance, the cell type
-                      will not be assigned to this nucleus.
+            will not be assigned to this nucleus.
         band_width: Band width of the kernel.
+
     Returns:
         nucleus_df with assigned spot
     """
@@ -832,8 +827,7 @@ def assign_type_out(nucleus_df, cell_proportion, spot_centers, type_list, max_di
 
 
 def archive_assign_type_out_gp(nucleus_df, cell_proportion, spot_centers, type_list, max_distance=100, return_gp=False):
-    """
-    Assign the cell type to the cells outside the spot.
+    """Assign the cell type to the cells outside the spot.
 
     Args:
         nucleus_df: Dataframe of the nucleus. Part of spotiphy.segmentation.Segmentation.
@@ -841,8 +835,9 @@ def archive_assign_type_out_gp(nucleus_df, cell_proportion, spot_centers, type_l
         cell_proportion: Proportion of each cell type in each spot.
         type_list: List of the cell types.
         max_distance: If the distance between a nucleus and the closest spot is larger than max_distance, the cell type
-                      will not be assigned to this nucleus.
+            will not be assigned to this nucleus.
         return_gp: If return the fitted GP models.
+
     Returns:
         nucleus_df with assigned spot
     """

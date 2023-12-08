@@ -6,12 +6,22 @@
 [![Static Badge](https://img.shields.io/badge/Document-Latest-green)](https://jyyulab.github.io/Spotiphy)
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/jyyulab/Spotiphy/blob/main/tutorials/Spotiphy_tutorial_1.ipynb)
 
+Spotiphy is a Python-based pipeline designed to enhance our understanding of biological tissues by integrating sequencing-based spatial transcriptomics data, scRNA-seq data, and high-resolution histological images. Employing a probabilistic model, Bayesian inference, and advanced image processing techniques, Spotiphy primarily executes three key tasks:
+- **Deconvolution**: Spotiphy estimates the abundance of each cell type in each capture area of spatial tissue.
+- **Decomposition**: Spotiphy decomposes spatial transcriptomics data to the single-cell level.
+- **Pseudo single-cell resolution image**: Spotiphy generates a pseudo single-cell resolution image to reconstruct cell neighbors.
+
+With these outputs, Spotiphy facilitates numerous downstream analyses. For more detailed information, please refer to the associated research paper.
+
+
 ![Spotiphy_overview](https://github.com/jyyulab/Spotiphy/blob/a98aeeb892570ed44a029dd896b21e2b8ec80d89/figures/Spotiphy_overview.png)
 
-## Usage and Tutorials
+## Tutorials and documents
 
+The following tutorial are available:
 
-Tutorials of spotiphy can be found in folder [Tutorials](https://github.com/jyyulab/Spotiphy/tree/main/tutorials).
++ Deconvolution and decomposition of mouse cortex with Spotiphy [[document](https://colab.research.google.com/github/jyyulab/Spotiphy/blob/main/tutorials/Spotiphy_tutorial_1.ipynb)][[Google Colab](https://colab.research.google.com/github/jyyulab/Spotiphy/blob/main/tutorials/Spotiphy_tutorial_1.ipynb)]
+
 
 For more details, please refer to the [documents](https://jyyulab.github.io/Spotiphy).
 
@@ -41,7 +51,7 @@ pip install git+https://github.com/jyyulab/Spotiphy.git
 + **Install from PyPI**: This approach is for installing the Spotiphy package from the Python Package Index 
 (PyPI), which is more streamlined for users who prefer standard package installations.
 ```bash
-pip install spotiphy==0.1.2
+pip install spotiphy
 ```
 
 To test the Installation, try to import Spotiphy in Python.
@@ -50,7 +60,7 @@ import spotiphy
 ```
 
 
-## FAQ
+## Frequently asked questions
 Answers to frequently asked questions can be found [here](https://jyyulab.github.io/Spotiphy/questions.html).
 
 Should you have any further questions, feel free to start a [discussion](https://github.com/jyyulab/Spotiphy/discussions) or reach out directly to the package authors:

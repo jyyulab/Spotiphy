@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>segmentation &mdash; Spotiphy 0.1.2 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=92fd9be5" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=92734c54"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="plot" href="plot.html" />
+    <link rel="prev" title="deconvolution" href="deconvolution.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Spotiphy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">General</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="questions.html">Frequently Asked Questions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="sc_reference.html">sc_reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="deconvolution.html">deconvolution</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">segmentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#segmentation.Segmentation"><code class="docutils literal notranslate"><span class="pre">Segmentation</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#segmentation.Segmentation.n_cell_in_spot"><code class="docutils literal notranslate"><span class="pre">Segmentation.n_cell_in_spot()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#segmentation.Segmentation.plot"><code class="docutils literal notranslate"><span class="pre">Segmentation.plot()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#segmentation.Segmentation.save_results"><code class="docutils literal notranslate"><span class="pre">Segmentation.save_results()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#segmentation.Segmentation.segment_nucleus"><code class="docutils literal notranslate"><span class="pre">Segmentation.segment_nucleus()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#segmentation.Segmentation.stardist_2D_versatile_he"><code class="docutils literal notranslate"><span class="pre">Segmentation.stardist_2D_versatile_he()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#segmentation.add_boundary"><code class="docutils literal notranslate"><span class="pre">add_boundary()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#segmentation.cell_boundary"><code class="docutils literal notranslate"><span class="pre">cell_boundary()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#segmentation.change_predict_defaults"><code class="docutils literal notranslate"><span class="pre">change_predict_defaults()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="plot.html">plot</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Spotiphy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">segmentation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/segmentation.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-segmentation">
+<span id="segmentation"></span><h1>segmentation<a class="headerlink" href="#module-segmentation" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="segmentation.Segmentation">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">segmentation.</span></span><span class="sig-name descname"><span class="pre">Segmentation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spot_center</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prob_thresh</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nms_thresh</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spot_radius</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">36.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_tiles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(8,</span> <span class="pre">8,</span> <span class="pre">1)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/segmentation.html#Segmentation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#segmentation.Segmentation" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="segmentation.Segmentation.n_cell_in_spot">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">n_cell_in_spot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nucleus_center</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spot_center</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spot_radius</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nucleus_df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/segmentation.html#Segmentation.n_cell_in_spot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#segmentation.Segmentation.n_cell_in_spot" title="Link to this definition"></a></dt>
+<dd><p>Find the number of cells in each spot.</p>
+<p>If the center of a nucleus is inside the spot, we assume that the cell is in the spot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nucleus_center</strong> – np.ndarray(n_nucleus*2). Coordinates of the nucleus centers.</p></li>
+<li><p><strong>spot_center</strong> – np.ndarray(n_spot*2). Coordinates of the spot centers.</p></li>
+<li><p><strong>spot_radius</strong> – Radius of the spots.</p></li>
+<li><p><strong>nucleus_df</strong> – Optional, dataframe of the nucleus.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Pandas data frame with two columns. Column ‘cell_count’ represents the number of cells in a spot.
+Column ‘centers’ represents the coordinates of the nucleus centers.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="segmentation.Segmentation.plot">
+<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fig_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(10,</span> <span class="pre">4.5)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dpi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">300</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">crop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmap_segmented</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'hot'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/segmentation.html#Segmentation.plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#segmentation.Segmentation.plot" title="Link to this definition"></a></dt>
+<dd><p>Plot the segmentation results.</p>
+<p>It is recommended to adjust the stardist parameters nms_thresh and prob_thresh based on this plot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fig_size</strong> – Size of the figure.</p></li>
+<li><p><strong>dpi</strong> – Dots per inch (DPI) of the figure.</p></li>
+<li><p><strong>crop</strong> – If None, show the full image. Otherwise, crop should be</p></li>
+<li><p><strong>cmap_segmented</strong> – Color map of the segmented image.</p></li>
+<li><p><strong>save</strong> – If true, save the figure.</p></li>
+<li><p><strong>path</strong> – Path to the save figure.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="segmentation.Segmentation.save_results">
+<span class="sig-name descname"><span class="pre">save_results</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/segmentation.html#Segmentation.save_results"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#segmentation.Segmentation.save_results" title="Link to this definition"></a></dt>
+<dd><p>Save segmentation results.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="segmentation.Segmentation.segment_nucleus">
+<span class="sig-name descname"><span class="pre">segment_nucleus</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/segmentation.html#Segmentation.segment_nucleus"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#segmentation.Segmentation.segment_nucleus" title="Link to this definition"></a></dt>
+<dd><p>Conduct the segmentation using StarDist pretrained model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>save</strong> – Whether to save the segmentation results.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="segmentation.Segmentation.stardist_2D_versatile_he">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">stardist_2D_versatile_he</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prob_thresh</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nms_thresh</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_tiles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(8,</span> <span class="pre">8,</span> <span class="pre">1)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/segmentation.html#Segmentation.stardist_2D_versatile_he"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#segmentation.Segmentation.stardist_2D_versatile_he" title="Link to this definition"></a></dt>
+<dd><p>Segmentation function provided by Stardist.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>img</strong> – Three channel image.</p></li>
+<li><p><strong>nms_thresh</strong> – Parameter of non-maximum suppression.</p></li>
+<li><p><strong>prob_thresh</strong> – The probability threshold that determines the retention of a nucleus.</p></li>
+<li><p><strong>n_tiles</strong> – Out of memory (OOM) errors can occur if the input image is too large. To avoid this problem, the
+input image is broken up into (overlapping) tiles that are processed independently and re-assembled.
+(Copied from stardist document). In default, we break the image into 8*8 tiles.</p></li>
+<li><p><strong>verbose</strong> – Whether to print segmentation progress.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>There are two returns.</p>
+<p>np.ndarray: The segmented image. Background pixels has value 0 and nucleus pixels has
+the positive integer value as the index of the nucleus.</p>
+<p>list: Nucleus details. Details[0]: np.ndarray(n_nucleus*2*32). Boundaries of each nucleus. Details[1]:
+np.ndarray(n_nucleus*2). Center of each nucleus. Details[2]: np.ndarray(n_nucleus). Probability that a
+segmented nucleus is indeed a nucleus.</p>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="segmentation.add_boundary">
+<span class="sig-prename descclassname"><span class="pre">segmentation.</span></span><span class="sig-name descname"><span class="pre">add_boundary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundary</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/segmentation.html#add_boundary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#segmentation.add_boundary" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="segmentation.cell_boundary">
+<span class="sig-prename descclassname"><span class="pre">segmentation.</span></span><span class="sig-name descname"><span class="pre">cell_boundary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nucleus_location</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">img_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_dist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_area</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">search_direction</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/segmentation.html#cell_boundary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#segmentation.cell_boundary" title="Link to this definition"></a></dt>
+<dd><p>Infer the cell boundary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nucleus_location</strong> – Coordinates of the nucleus centers.</p></li>
+<li><p><strong>img_size</strong> – The size of the image.</p></li>
+<li><p><strong>max_dist</strong> – The largest distance from the cell boundary to the nucleus center.</p></li>
+<li><p><strong>max_area</strong> – Largest area of a cell. Segmented nuclei with size larger than this value are discarded.</p></li>
+<li><p><strong>search_direction</strong> – The search direction when determine the cell boundary.</p></li>
+<li><p><strong>verbose</strong> – Whether to print progress.</p></li>
+<li><p><strong>delta</strong> – Increment of the radius in each round.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dictionary of the cell boundary information.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="segmentation.change_predict_defaults">
+<span class="sig-prename descclassname"><span class="pre">segmentation.</span></span><span class="sig-name descname"><span class="pre">change_predict_defaults</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">predict_function</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/segmentation.html#change_predict_defaults"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#segmentation.change_predict_defaults" title="Link to this definition"></a></dt>
+<dd><p>Wrap prediction function for tensorflow&gt;=2.9.0 to reduce outputs.</p>
+<p>Start from tensorflow 2.9.0, the default verbose value in function tensorflow.keras.Model.predict is set to ‘auto’,
+which takes value 1 for the most of the time. Thus, this function is a decorator to wrap the predict function
+and set the default verbose to 0.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>predict_function</strong> – tensorflow.keras.Model.predict</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="deconvolution.html" class="btn btn-neutral float-left" title="deconvolution" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="plot.html" class="btn btn-neutral float-right" title="plot" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Ziqian Zheng, Jiyuan Yang.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

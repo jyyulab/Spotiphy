@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>plot &mdash; Spotiphy 0.1.2 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=92fd9be5" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=92734c54"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Spotiphy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">General</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../questions.html">Frequently Asked Questions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../sc_reference.html">sc_reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deconvolution.html">deconvolution</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../segmentation.html">segmentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plot.html">plot</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Spotiphy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">plot</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for plot</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+<span class="kn">import</span> <span class="nn">cv2</span> <span class="k">as</span> <span class="nn">cv</span>
+<span class="kn">import</span> <span class="nn">matplotlib.patches</span> <span class="k">as</span> <span class="nn">patches</span>
+
+
+<div class="viewcode-block" id="Plot_Visium">
+<a class="viewcode-back" href="../plot.html#plot.Plot_Visium">[docs]</a>
+<span class="k">class</span> <span class="nc">Plot_Visium</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">segmentation</span><span class="p">,</span> <span class="n">boundary_dict</span><span class="p">,</span> <span class="n">type_list</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            segmentation: Object of spotiphy.segmentation.Segmentation.</span>
+<span class="sd">            boundary_dict: Output of function spotiphy.segmentation.cell_boundary.</span>
+<span class="sd">            type_list: List of the cell types.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">img</span> <span class="o">=</span> <span class="n">segmentation</span><span class="o">.</span><span class="n">img</span>  <span class="c1"># Original image.</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">img</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">img</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">img</span><span class="o">*</span><span class="mi">255</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">img_seg</span> <span class="o">=</span> <span class="n">segmentation</span><span class="o">.</span><span class="n">label</span>  <span class="c1"># Segmented image.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_cell_df</span> <span class="o">=</span> <span class="n">segmentation</span><span class="o">.</span><span class="n">n_cell_df</span>  <span class="c1"># Dataframe shown the cells in each spot.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nucleus_boundary</span> <span class="o">=</span> <span class="n">segmentation</span><span class="o">.</span><span class="n">nucleus_boundary</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>  <span class="c1"># Segmented nucleus boundaries.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nucleus_df</span> <span class="o">=</span> <span class="n">segmentation</span><span class="o">.</span><span class="n">nucleus_df</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spot_radius</span> <span class="o">=</span> <span class="n">segmentation</span><span class="o">.</span><span class="n">spot_radius</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spot_centers</span> <span class="o">=</span> <span class="n">segmentation</span><span class="o">.</span><span class="n">spot_center</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">nucleus_centers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nucleus_df</span><span class="p">[[</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>  <span class="c1"># Segmented nucleus centers.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">img_cell</span> <span class="o">=</span> <span class="n">boundary_dict</span><span class="p">[</span><span class="s1">&#39;img_cell&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>   <span class="c1"># Inferred cell location.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">type_mask</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">img_boundary</span> <span class="o">=</span> <span class="n">boundary_dict</span><span class="p">[</span><span class="s1">&#39;cell_boundary&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">individual_boundary</span> <span class="o">=</span> <span class="n">boundary_dict</span><span class="p">[</span><span class="s1">&#39;individual_boundary&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">img_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">img_seg</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">type_list</span> <span class="o">=</span> <span class="n">type_list</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">colors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">plt</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="s2">&quot;tab20b&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">colors</span><span class="p">)</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">plt</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="s2">&quot;tab20c&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">colors</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">colors</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">colors</span><span class="o">*</span><span class="mi">255</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">color_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">type_</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">colors</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">type_</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">type_list</span><span class="p">)}</span>
+
+<div class="viewcode-block" id="Plot_Visium.plot">
+<a class="viewcode-back" href="../plot.html#plot.Plot_Visium.plot">[docs]</a>
+    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">background</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cell</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="s1">&#39;cell&#39;</span><span class="p">,</span> <span class="n">circle_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">boundary</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+             <span class="n">save</span><span class="o">=</span><span class="s1">&#39;Visium_plot.png&#39;</span><span class="p">,</span> <span class="n">background_alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">spot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">spot_width</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">spot_color</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>
+             <span class="n">cell_boundary_color</span><span class="o">=</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            background: If show the background.</span>
+<span class="sd">            cell: Which group of cell shapes to plot? [both, in, out]</span>
+<span class="sd">            shape: Which shape to plot? [cell, nucleus, circle]</span>
+<span class="sd">            circle_size: Size of the nuclei.</span>
+<span class="sd">            boundary: Which group of cell boundary to plot? [both, in, out]</span>
+<span class="sd">            save: If not none, save the figure to the path.</span>
+<span class="sd">            background_alpha: Opacity of the background figure.</span>
+<span class="sd">            spot: If plot the spot.</span>
+<span class="sd">            spot_width: Width of the spot.</span>
+<span class="sd">            spot_color: Color of the spot.</span>
+<span class="sd">            cell_boundary_color: Color of the cell boundaries.</span>
+<span class="sd">            dpi: DPI of the image plotted.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">img</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">img</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">*</span><span class="n">background_alpha</span> <span class="k">if</span> <span class="n">background</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+
+        <span class="n">group_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;both&#39;</span><span class="p">:</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">],</span> <span class="s1">&#39;in&#39;</span><span class="p">:</span> <span class="p">[</span><span class="kc">True</span><span class="p">],</span> <span class="s1">&#39;out&#39;</span><span class="p">:</span> <span class="p">[</span><span class="kc">False</span><span class="p">],</span> <span class="kc">None</span><span class="p">:[],</span> <span class="s1">&#39;None&#39;</span><span class="p">:[]}</span>
+        <span class="n">type_annotation</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nucleus_df</span><span class="p">[</span><span class="s1">&#39;cell_type&#39;</span><span class="p">])</span>
+        <span class="n">in_spot</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nucleus_df</span><span class="p">[</span><span class="s1">&#39;in_spot&#39;</span><span class="p">])</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Adding cells.&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">shape</span> <span class="o">==</span> <span class="s1">&#39;cell&#39;</span><span class="p">:</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="n">t</span><span class="p">:</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">type_list</span><span class="p">)}</span>
+            <span class="n">type_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">type_list</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">img_cell</span><span class="p">))):</span>
+                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">img_cell</span><span class="p">[</span><span class="mi">0</span><span class="p">])):</span>
+                    <span class="n">k</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">img_cell</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">k</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">type_annotation</span><span class="p">[</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="ow">and</span> <span class="n">in_spot</span><span class="p">[</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">in</span> <span class="n">group_dict</span><span class="p">[</span><span class="n">cell</span><span class="p">]:</span>
+                        <span class="n">type_mask</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">d</span><span class="p">[</span><span class="n">type_annotation</span><span class="p">[</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">type_</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">type_list</span><span class="p">)):</span>
+                <span class="n">color</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">color_dict</span><span class="p">[</span><span class="n">type_</span><span class="p">])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+                <span class="n">img</span><span class="p">[</span><span class="n">type_mask</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="n">color</span>
+            <span class="c1"># img.astype(np.int32)</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">type_</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">enumerate</span><span class="p">(</span><span class="n">type_annotation</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">in_spot</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">in</span> <span class="n">group_dict</span><span class="p">[</span><span class="n">cell</span><span class="p">]</span> <span class="ow">and</span> <span class="n">type_</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">color_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">color</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">color_dict</span><span class="p">[</span><span class="n">type_</span><span class="p">]]</span>
+                <span class="k">if</span> <span class="n">shape</span> <span class="o">==</span> <span class="s1">&#39;circle&#39;</span><span class="p">:</span>
+                    <span class="n">img</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nucleus_centers</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">circle_size</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">shape</span> <span class="o">==</span> <span class="s1">&#39;nucleus&#39;</span><span class="p">:</span>
+                    <span class="n">boundary_temp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nucleus_boundary</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+                    <span class="n">img</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">fillPoly</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="p">[</span><span class="n">boundary_temp</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+
+        <span class="n">boundary_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">type_annotation</span><span class="p">))):</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">in_spot</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">in</span> <span class="n">group_dict</span><span class="p">[</span><span class="n">boundary</span><span class="p">]</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">individual_boundary</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span>
+                    <span class="ow">and</span> <span class="n">type_annotation</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">color_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">index_temp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">individual_boundary</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span>
+                <span class="n">boundary_mask</span><span class="p">[</span><span class="n">index_temp</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">index_temp</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">img</span><span class="p">[</span><span class="n">boundary_mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">cell_boundary_color</span>
+
+        <span class="k">if</span> <span class="n">spot</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Adding spots.&#39;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spot_centers</span><span class="p">)):</span>
+                <span class="n">img</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">spot_centers</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spot_radius</span><span class="p">),</span> <span class="n">spot_color</span><span class="p">,</span> <span class="n">spot_width</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">save</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Saving the image.&#39;</span><span class="p">)</span>
+            <span class="n">img1</span> <span class="o">=</span> <span class="n">img</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span>
+            <span class="n">cv</span><span class="o">.</span><span class="n">imwrite</span><span class="p">(</span><span class="n">save</span><span class="p">,</span> <span class="n">img1</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">dpi</span><span class="o">=</span><span class="n">dpi</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Plot_Visium.plot_legend">
+<a class="viewcode-back" href="../plot.html#plot.Plot_Visium.plot_legend">[docs]</a>
+    <span class="k">def</span> <span class="nf">plot_legend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">):</span>
+        <span class="n">img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">type_list</span><span class="p">)</span><span class="o">*</span><span class="mi">60</span><span class="o">+</span><span class="mi">40</span><span class="p">,</span> <span class="mi">400</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+        <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">dpi</span><span class="o">=</span><span class="n">dpi</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">color_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">add_patch</span><span class="p">(</span><span class="n">patches</span><span class="o">.</span><span class="n">Rectangle</span><span class="p">((</span><span class="mi">240</span><span class="p">,</span> <span class="n">i</span><span class="o">*</span><span class="mi">60</span><span class="o">+</span><span class="mi">20</span><span class="p">),</span> <span class="mi">150</span><span class="p">,</span> <span class="mi">45</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">/</span><span class="mi">255</span><span class="p">,</span>
+                                           <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">))</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="n">i</span><span class="o">*</span><span class="mi">60</span><span class="o">+</span><span class="mi">40</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;white&#39;</span><span class="p">)</span>
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">save</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">save</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">,</span> <span class="n">pad_inches</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Plot_Xenium">
+<a class="viewcode-back" href="../plot.html#plot.Plot_Xenium">[docs]</a>
+<span class="k">class</span> <span class="nc">Plot_Xenium</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Xenium_img</span><span class="p">,</span> <span class="n">cell_boundaries</span><span class="p">,</span> <span class="n">nucleus_boundaries</span><span class="p">,</span> <span class="n">type_list</span><span class="p">,</span> <span class="n">cell_type</span><span class="p">,</span> <span class="n">nucleus_centers</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            Xenium_img: Image of Xenium</span>
+<span class="sd">            cell_boundaries: Coordinates of the cell boundaries on the image.</span>
+<span class="sd">            nucleus_boundaries: Coordinates of the nucleus boundaries on the image.</span>
+<span class="sd">            type_list: List of the cell types.</span>
+<span class="sd">            cell_type: Annotation.</span>
+<span class="sd">            nucleus_centers: Centers of the nuclei.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">img</span> <span class="o">=</span> <span class="n">Xenium_img</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">type_list</span> <span class="o">=</span> <span class="n">type_list</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cell_type</span> <span class="o">=</span> <span class="n">cell_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_cell</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">cell_type</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nucleus_centers</span> <span class="o">=</span> <span class="n">nucleus_centers</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+
+        <span class="n">cell_boundaries_temp</span> <span class="o">=</span> <span class="n">cell_boundaries</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_cell</span><span class="p">)]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">cell_boundaries</span><span class="p">))):</span>
+            <span class="n">cell_idx</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">cell_boundaries</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">idx</span><span class="p">[</span><span class="n">cell_idx</span><span class="p">]</span> <span class="o">+=</span> <span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cell_boundaries</span> <span class="o">=</span> <span class="p">[</span><span class="n">cell_boundaries_temp</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">idx</span><span class="p">[</span><span class="n">i</span><span class="p">])]</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">&gt;</span><span class="mi">0</span>
+                                <span class="k">else</span> <span class="p">[]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_cell</span><span class="p">))]</span>
+
+        <span class="n">nucleus_boundaries_temp</span> <span class="o">=</span> <span class="n">nucleus_boundaries</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_cell</span><span class="p">)]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">nucleus_boundaries</span><span class="p">))):</span>
+            <span class="n">cell_idx</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">nucleus_boundaries</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">idx</span><span class="p">[</span><span class="n">cell_idx</span><span class="p">]</span> <span class="o">+=</span> <span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nucleus_boundaries</span> <span class="o">=</span> <span class="p">[</span><span class="n">nucleus_boundaries_temp</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">idx</span><span class="p">[</span><span class="n">i</span><span class="p">])]</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">&gt;</span><span class="mi">0</span>
+                                   <span class="k">else</span> <span class="p">[]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_cell</span><span class="p">))]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">colors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">plt</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="s2">&quot;tab20b&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">colors</span><span class="p">)</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">plt</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="s2">&quot;tab20c&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">colors</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">colors</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">colors</span><span class="o">*</span><span class="mi">255</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">color_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">type_</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">colors</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">type_</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">type_list</span><span class="p">)}</span>
+
+<div class="viewcode-block" id="Plot_Xenium.plot">
+<a class="viewcode-back" href="../plot.html#plot.Plot_Xenium.plot">[docs]</a>
+    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">background</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="s1">&#39;cell&#39;</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="s1">&#39;Xenium_plot.png&#39;</span><span class="p">,</span> <span class="n">cell_boundaries</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">background_alpha</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>
+             <span class="n">circle_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">cell_boundary_color</span><span class="o">=</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span> <span class="n">cell_boundary_thickness</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            background: If show the background.</span>
+<span class="sd">            shape: Which shape to plot? [cell, nucleus, circle]</span>
+<span class="sd">            save: If not none, save the figure to the path.</span>
+<span class="sd">            cell_boundaries: If plot the cell boundaries.</span>
+<span class="sd">            background_alpha: Opacity of the background figure.</span>
+<span class="sd">            circle_size: Size of the circle.</span>
+<span class="sd">            cell_boundary_color: Color of the cell boundaries.</span>
+<span class="sd">            cell_boundary_thickness: Thickness of the cell boundaries.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">img</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">img</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">*</span><span class="n">background_alpha</span> <span class="k">if</span> <span class="n">background</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Adding cellls.&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">type_</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell_type</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">type_</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">color_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">color</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">color_dict</span><span class="p">[</span><span class="n">type_</span><span class="p">]]</span>
+                <span class="k">if</span> <span class="n">shape</span> <span class="o">==</span> <span class="s1">&#39;cell&#39;</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell_boundaries</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">img</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">fillPoly</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">cell_boundaries</span><span class="p">[</span><span class="n">i</span><span class="p">]],</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">shape</span> <span class="o">==</span> <span class="s1">&#39;nucleus&#39;</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nucleus_boundaries</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">img</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">fillPoly</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">nucleus_boundaries</span><span class="p">[</span><span class="n">i</span><span class="p">]],</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">shape</span> <span class="o">==</span> <span class="s1">&#39;circle&#39;</span><span class="p">:</span>
+                    <span class="n">img</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nucleus_centers</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">circle_size</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">cell_boundaries</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">type_</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell_type</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell_boundaries</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">img</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">polylines</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">cell_boundaries</span><span class="p">[</span><span class="n">i</span><span class="p">]],</span> <span class="n">color</span><span class="o">=</span><span class="n">cell_boundary_color</span><span class="p">,</span>
+                                       <span class="n">thickness</span><span class="o">=</span><span class="n">cell_boundary_thickness</span><span class="p">,</span> <span class="n">isClosed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">save</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Saving the image.&#39;</span><span class="p">)</span>
+            <span class="n">img1</span> <span class="o">=</span> <span class="n">img</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span>
+            <span class="n">cv</span><span class="o">.</span><span class="n">imwrite</span><span class="p">(</span><span class="n">save</span><span class="p">,</span> <span class="n">img1</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Ziqian Zheng, Jiyuan Yang.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

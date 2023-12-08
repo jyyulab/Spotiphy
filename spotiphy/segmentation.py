@@ -18,11 +18,11 @@ class Segmentation:
         """
         Args:
             img: Array(_*_*3). Three channel stained image. In default, it should be hematoxylin and eosin (H&E) stained
-                 image.
+                image.
             spot_center: Coordinates of the center of the spots.
             out_dir: Output directory.
             Prob_thresh, nms_thresh: Two thresholds used in Stardist. User should adjust these two threshold based on
-                                    the segmentation results.
+                the segmentation results.
             spot_radius: Radius of the spots. In 10X Visium, it should be 36.5.
 
         """
@@ -49,23 +49,26 @@ class Segmentation:
     @staticmethod
     def stardist_2D_versatile_he(img, prob_thresh: float = 0.2, nms_thresh: float = 0.5, n_tiles=(8, 8, 1),
                                  verbose: bool = True):
-        """
-        Segmentation function provided by Stardist.
+        """Segmentation function provided by Stardist.
+
         Args:
             img: Three channel image.
             nms_thresh: Parameter of non-maximum suppression.
             prob_thresh: The probability threshold that determines the retention of a nucleus.
-            n_tiles: Out of memory (OOM) errors can occur if the input image is too large.
-                     To avoid this problem, the input image is broken up into (overlapping) tiles that are processed
-                     independently and re-assembled. (Copied from stardist document).
-                     In default, we break the image into 8*8 tiles.
+            n_tiles: Out of memory (OOM) errors can occur if the input image is too large. To avoid this problem, the
+                input image is broken up into (overlapping) tiles that are processed independently and re-assembled.
+                (Copied from stardist document). In default, we break the image into 8*8 tiles.
             verbose: Whether to print segmentation progress.
+
         Returns:
-            label: 2D np.ndarray represents the segmented image. Background pixels has value 0 and nucleus pixels has
-                    the positive integer value as the index of the nucleus.
-            details: Details[0]: np.ndarray(n_nucleus*2*32). Boundaries of each nucleus.
-                     Details[1]: np.ndarray(n_nucleus*2). Center of each nucleus.
-                     Details[2]: np.ndarray(n_nucleus). Probability that a segmented nucleus is indeed a nucleus.
+            There are two returns.
+
+            np.ndarray: The segmented image. Background pixels has value 0 and nucleus pixels has
+            the positive integer value as the index of the nucleus.
+
+            list: Nucleus details. Details[0]: np.ndarray(n_nucleus*2*32). Boundaries of each nucleus. Details[1]:
+            np.ndarray(n_nucleus*2). Center of each nucleus. Details[2]: np.ndarray(n_nucleus). Probability that a
+            segmented nucleus is indeed a nucleus.
         """
         axis_norm = (0, 1, 2)  # normalize channels jointly
         img = normalize(img, 1, 99.8, axis=axis_norm)
@@ -79,18 +82,19 @@ class Segmentation:
     @staticmethod
     def n_cell_in_spot(nucleus_center: np.ndarray, spot_center: np.ndarray, spot_radius: float,
                        nucleus_df: pd.DataFrame = None) -> pd.DataFrame:
-        """
-        Find the number of cells in each spot. If the center of a nucleus is inside the spot, we assume that the cell is
-        in the spot.
+        """Find the number of cells in each spot.
+
+        If the center of a nucleus is inside the spot, we assume that the cell is in the spot.
+
         Args:
             nucleus_center: np.ndarray(n_nucleus*2). Coordinates of the nucleus centers.
             spot_center: np.ndarray(n_spot*2). Coordinates of the spot centers.
             spot_radius: Radius of the spots.
             nucleus_df: Optional, dataframe of the nucleus.
+
         Returns:
-            n_cell_df: Pandas data frame with two columns.
-                       Column 'cell_count' represents the number of cells in a spot.
-                       Column 'centers' represents the coordinates of the nucleus centers.
+            Pandas data frame with two columns. Column 'cell_count' represents the number of cells in a spot.
+            Column 'centers' represents the coordinates of the nucleus centers.
         """
         n_spot = len(spot_center)
         n_cell_df = pd.DataFrame({'cell_count': [0] * n_spot, 'Nucleus centers': None, 'Nucleus indices':None})
@@ -107,8 +111,8 @@ class Segmentation:
         return n_cell_df
 
     def segment_nucleus(self, save=True):
-        """
-        Conduct the segmentation using StarDist pretrained model.
+        """Conduct the segmentation using StarDist pretrained model.
+
         Args:
             save: Whether to save the segmentation results.
         """
@@ -125,8 +129,7 @@ class Segmentation:
             self.save_results()
 
     def save_results(self):
-        """
-        Save segmentation results.
+        """Save segmentation results.
         """
         assert self.is_segmented, "Please conduct segmentation first."
         np.save(f'{self.out_dir}segmentation_label.npy', self.label)
@@ -136,14 +139,14 @@ class Segmentation:
         self.n_cell_df.to_csv(f'{self.out_dir}n_cell_df.csv')
 
     def plot(self, fig_size=(10, 4.5), dpi=300, crop=None, cmap_segmented='hot', save=False, path=None):
-        """
-        Plot the segmentation results.
+        """Plot the segmentation results.
+
         It is recommended to adjust the stardist parameters nms_thresh and prob_thresh based on this plot.
+
         Args:
             fig_size: Size of the figure.
             dpi: Dots per inch (DPI) of the figure.
-            crop: If None, show the full image.
-                  Otherwise, crop should be
+            crop: If None, show the full image. Otherwise, crop should be
             cmap_segmented: Color map of the segmented image.
             save: If true, save the figure.
             path: Path to the save figure.
@@ -168,10 +171,12 @@ class Segmentation:
 
 
 def change_predict_defaults(predict_function):
-    """
+    """Wrap prediction function for tensorflow>=2.9.0 to reduce outputs.
+
     Start from tensorflow 2.9.0, the default verbose value in function tensorflow.keras.Model.predict is set to 'auto',
-    which takes value 1 for the most of the time. Thus, this function is a decorator to wrap the predict function and
-    set the default verbose to 0.
+    which takes value 1 for the most of the time. Thus, this function is a decorator to wrap the predict function
+    and set the default verbose to 0.
+
     Args:
         predict_function: tensorflow.keras.Model.predict
     """
@@ -192,8 +197,9 @@ def cell_boundary(nucleus_location, img_size, max_dist, max_area, search_directi
         search_direction: The search direction when determine the cell boundary.
         verbose: Whether to print progress.
         delta: Increment of the radius in each round.
-    Returns:
 
+    Returns:
+        Dictionary of the cell boundary information.
     """
     img_cell = np.zeros(img_size)
     n_nuclei = len(nucleus_location)

@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>segmentation &mdash; Spotiphy 0.1.2 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=92fd9be5" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=92734c54"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Spotiphy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">General</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../questions.html">Frequently Asked Questions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../sc_reference.html">sc_reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deconvolution.html">deconvolution</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../segmentation.html">segmentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plot.html">plot</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Spotiphy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">segmentation</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for segmentation</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">numba</span> <span class="kn">import</span> <span class="n">cuda</span>
+<span class="kn">from</span> <span class="nn">stardist.models</span> <span class="kn">import</span> <span class="n">StarDist2D</span>
+<span class="kn">from</span> <span class="nn">csbdeep.utils</span> <span class="kn">import</span> <span class="n">normalize</span>
+<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+<span class="kn">from</span> <span class="nn">packaging</span> <span class="kn">import</span> <span class="n">version</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">scipy.signal</span> <span class="kn">import</span> <span class="n">convolve2d</span>
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;CUDA_LAUNCH_BLOCKING&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
+
+
+<div class="viewcode-block" id="Segmentation">
+<a class="viewcode-back" href="../segmentation.html#segmentation.Segmentation">[docs]</a>
+<span class="k">class</span> <span class="nc">Segmentation</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img</span><span class="p">,</span> <span class="n">spot_center</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">out_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">prob_thresh</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span>
+                 <span class="n">nms_thresh</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">spot_radius</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">36.5</span><span class="p">,</span> <span class="n">n_tiles</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">1</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            img: Array(_*_*3). Three channel stained image. In default, it should be hematoxylin and eosin (H&amp;E) stained</span>
+<span class="sd">                image.</span>
+<span class="sd">            spot_center: Coordinates of the center of the spots.</span>
+<span class="sd">            out_dir: Output directory.</span>
+<span class="sd">            Prob_thresh, nms_thresh: Two thresholds used in Stardist. User should adjust these two threshold based on</span>
+<span class="sd">                the segmentation results.</span>
+<span class="sd">            spot_radius: Radius of the spots. In 10X Visium, it should be 36.5.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">img</span> <span class="o">=</span> <span class="n">img</span>
+        <span class="k">if</span> <span class="n">spot_center</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">spot_center</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;spot_center must have exact two columns.&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spot_center</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">spot_center</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prob_thresh</span> <span class="o">=</span> <span class="n">prob_thresh</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nms_thresh</span> <span class="o">=</span> <span class="n">nms_thresh</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spot_radius</span> <span class="o">=</span> <span class="n">spot_radius</span>
+        <span class="k">if</span> <span class="n">out_dir</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">out_dir</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">out_dir</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">out_dir</span> <span class="o">=</span> <span class="n">out_dir</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="k">if</span> <span class="n">out_dir</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
+        <span class="c1"># Segmentation results</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nucleus_boundary</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">probability</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_cell_df</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nucleus_df</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_segmented</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># Whether we have conducted segmentation or not.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_tiles</span> <span class="o">=</span> <span class="n">n_tiles</span>
+        <span class="k">if</span> <span class="n">version</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">version</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;2.9.0&quot;</span><span class="p">):</span>
+            <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Model</span><span class="o">.</span><span class="n">predict</span> <span class="o">=</span> <span class="n">change_predict_defaults</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Model</span><span class="o">.</span><span class="n">predict</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Suppress the output of tensorflow prediction for tensorflow version </span><span class="si">{</span><span class="n">tf</span><span class="o">.</span><span class="n">version</span><span class="o">.</span><span class="n">VERSION</span><span class="si">}</span><span class="s2">&gt;=2.9.0.&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Segmentation.stardist_2D_versatile_he">
+<a class="viewcode-back" href="../segmentation.html#segmentation.Segmentation.stardist_2D_versatile_he">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">stardist_2D_versatile_he</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">prob_thresh</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span> <span class="n">nms_thresh</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">n_tiles</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+                                 <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Segmentation function provided by Stardist.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            img: Three channel image.</span>
+<span class="sd">            nms_thresh: Parameter of non-maximum suppression.</span>
+<span class="sd">            prob_thresh: The probability threshold that determines the retention of a nucleus.</span>
+<span class="sd">            n_tiles: Out of memory (OOM) errors can occur if the input image is too large. To avoid this problem, the</span>
+<span class="sd">                input image is broken up into (overlapping) tiles that are processed independently and re-assembled.</span>
+<span class="sd">                (Copied from stardist document). In default, we break the image into 8*8 tiles.</span>
+<span class="sd">            verbose: Whether to print segmentation progress.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            There are two returns.</span>
+
+<span class="sd">            np.ndarray: The segmented image. Background pixels has value 0 and nucleus pixels has</span>
+<span class="sd">            the positive integer value as the index of the nucleus.</span>
+
+<span class="sd">            list: Nucleus details. Details[0]: np.ndarray(n_nucleus*2*32). Boundaries of each nucleus. Details[1]:</span>
+<span class="sd">            np.ndarray(n_nucleus*2). Center of each nucleus. Details[2]: np.ndarray(n_nucleus). Probability that a</span>
+<span class="sd">            segmented nucleus is indeed a nucleus.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">axis_norm</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>  <span class="c1"># normalize channels jointly</span>
+        <span class="n">img</span> <span class="o">=</span> <span class="n">normalize</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">99.8</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis_norm</span><span class="p">)</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">StarDist2D</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="s1">&#39;2D_versatile_he&#39;</span><span class="p">)</span>
+        <span class="n">label</span><span class="p">,</span> <span class="n">details</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict_instances</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">nms_thresh</span><span class="o">=</span><span class="n">nms_thresh</span><span class="p">,</span> <span class="n">prob_thresh</span><span class="o">=</span><span class="n">prob_thresh</span><span class="p">,</span> <span class="n">n_tiles</span><span class="o">=</span><span class="n">n_tiles</span><span class="p">,</span>
+                                                 <span class="n">show_tile_progress</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="n">device</span> <span class="o">=</span> <span class="n">cuda</span><span class="o">.</span><span class="n">get_current_device</span><span class="p">()</span>
+        <span class="n">device</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">label</span><span class="p">,</span> <span class="n">details</span></div>
+
+
+<div class="viewcode-block" id="Segmentation.n_cell_in_spot">
+<a class="viewcode-back" href="../segmentation.html#segmentation.Segmentation.n_cell_in_spot">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">n_cell_in_spot</span><span class="p">(</span><span class="n">nucleus_center</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">spot_center</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">spot_radius</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                       <span class="n">nucleus_df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find the number of cells in each spot.</span>
+
+<span class="sd">        If the center of a nucleus is inside the spot, we assume that the cell is in the spot.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            nucleus_center: np.ndarray(n_nucleus*2). Coordinates of the nucleus centers.</span>
+<span class="sd">            spot_center: np.ndarray(n_spot*2). Coordinates of the spot centers.</span>
+<span class="sd">            spot_radius: Radius of the spots.</span>
+<span class="sd">            nucleus_df: Optional, dataframe of the nucleus.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Pandas data frame with two columns. Column &#39;cell_count&#39; represents the number of cells in a spot.</span>
+<span class="sd">            Column &#39;centers&#39; represents the coordinates of the nucleus centers.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">n_spot</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">spot_center</span><span class="p">)</span>
+        <span class="n">n_cell_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;cell_count&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">n_spot</span><span class="p">,</span> <span class="s1">&#39;Nucleus centers&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;Nucleus indices&#39;</span><span class="p">:</span><span class="kc">None</span><span class="p">})</span>
+        <span class="n">distance</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">spot_center</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span> <span class="o">-</span> <span class="n">nucleus_center</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">nucleus_df</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">nucleus_df</span><span class="p">[</span><span class="s1">&#39;in_spot&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_spot</span><span class="p">):</span>
+            <span class="n">nucleus_index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">distance</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">spot_radius</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">n_cell_df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">nucleus_index</span><span class="p">)</span>
+            <span class="n">n_cell_df</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="s1">&#39;Nucleus centers&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nucleus_center</span><span class="p">[</span><span class="n">nucleus_index</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">nucleus_index</span><span class="p">)</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
+            <span class="n">n_cell_df</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="s1">&#39;Nucleus indices&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nucleus_index</span>
+            <span class="k">if</span> <span class="n">nucleus_df</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">nucleus_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">nucleus_index</span><span class="p">,</span> <span class="s1">&#39;in_spot&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="n">n_cell_df</span></div>
+
+
+<div class="viewcode-block" id="Segmentation.segment_nucleus">
+<a class="viewcode-back" href="../segmentation.html#segmentation.Segmentation.segment_nucleus">[docs]</a>
+    <span class="k">def</span> <span class="nf">segment_nucleus</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Conduct the segmentation using StarDist pretrained model.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            save: Whether to save the segmentation results.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">,</span> <span class="n">details</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stardist_2D_versatile_he</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">img</span><span class="p">,</span> <span class="n">nms_thresh</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nms_thresh</span><span class="p">,</span>
+                                                            <span class="n">prob_thresh</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">prob_thresh</span><span class="p">,</span> <span class="n">n_tiles</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_tiles</span><span class="p">)</span>
+        <span class="n">nucleus_boundary</span><span class="p">,</span> <span class="n">nucleus_center</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">probability</span> <span class="o">=</span> <span class="n">details</span><span class="p">[</span><span class="s1">&#39;coord&#39;</span><span class="p">],</span> <span class="n">details</span><span class="p">[</span><span class="s1">&#39;points&#39;</span><span class="p">],</span> <span class="n">details</span><span class="p">[</span><span class="s1">&#39;prob&#39;</span><span class="p">]</span>
+        <span class="n">nucleus_boundary</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">nucleus_boundary</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nucleus_boundary</span> <span class="o">=</span> <span class="n">nucleus_boundary</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nucleus_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="n">nucleus_center</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="n">nucleus_center</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_cell_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_cell_in_spot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nucleus_df</span><span class="p">[[</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">spot_center</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">spot_radius</span><span class="p">,</span>
+                                             <span class="bp">self</span><span class="o">.</span><span class="n">nucleus_df</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_segmented</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="n">save</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">save_results</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="Segmentation.save_results">
+<a class="viewcode-back" href="../segmentation.html#segmentation.Segmentation.save_results">[docs]</a>
+    <span class="k">def</span> <span class="nf">save_results</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Save segmentation results.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_segmented</span><span class="p">,</span> <span class="s2">&quot;Please conduct segmentation first.&quot;</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">out_dir</span><span class="si">}</span><span class="s1">segmentation_label.npy&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">)</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">out_dir</span><span class="si">}</span><span class="s1">segmentation_boundary.npy&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nucleus_boundary</span><span class="p">)</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">out_dir</span><span class="si">}</span><span class="s1">nucleus_df.csv&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nucleus_df</span><span class="p">)</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">out_dir</span><span class="si">}</span><span class="s1">segmentation_probability.npy&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">probability</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_cell_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">out_dir</span><span class="si">}</span><span class="s1">n_cell_df.csv&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Segmentation.plot">
+<a class="viewcode-back" href="../segmentation.html#segmentation.Segmentation.plot">[docs]</a>
+    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fig_size</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mf">4.5</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">crop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cmap_segmented</span><span class="o">=</span><span class="s1">&#39;hot&#39;</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Plot the segmentation results.</span>
+
+<span class="sd">        It is recommended to adjust the stardist parameters nms_thresh and prob_thresh based on this plot.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            fig_size: Size of the figure.</span>
+<span class="sd">            dpi: Dots per inch (DPI) of the figure.</span>
+<span class="sd">            crop: If None, show the full image. Otherwise, crop should be</span>
+<span class="sd">            cmap_segmented: Color map of the segmented image.</span>
+<span class="sd">            save: If true, save the figure.</span>
+<span class="sd">            path: Path to the save figure.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_segmented</span><span class="p">,</span> <span class="s2">&quot;Please conduct segmentation first.&quot;</span>
+        <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="n">fig_size</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="n">dpi</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">crop</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">img</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">img</span>
+            <span class="n">img_segmented</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">label</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">img</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">img</span><span class="p">[</span><span class="n">crop</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">crop</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">crop</span><span class="p">[</span><span class="mi">2</span><span class="p">]:</span><span class="n">crop</span><span class="p">[</span><span class="mi">3</span><span class="p">]]</span>
+            <span class="n">img_segmented</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">[</span><span class="n">crop</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">crop</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">crop</span><span class="p">[</span><span class="mi">2</span><span class="p">]:</span><span class="n">crop</span><span class="p">[</span><span class="mi">3</span><span class="p">]]</span>
+        <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+        <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Original image&quot;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img_segmented</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap_segmented</span><span class="p">)</span>
+        <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Segmented image&quot;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">save</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="change_predict_defaults">
+<a class="viewcode-back" href="../segmentation.html#segmentation.change_predict_defaults">[docs]</a>
+<span class="k">def</span> <span class="nf">change_predict_defaults</span><span class="p">(</span><span class="n">predict_function</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Wrap prediction function for tensorflow&gt;=2.9.0 to reduce outputs.</span>
+
+<span class="sd">    Start from tensorflow 2.9.0, the default verbose value in function tensorflow.keras.Model.predict is set to &#39;auto&#39;,</span>
+<span class="sd">    which takes value 1 for the most of the time. Thus, this function is a decorator to wrap the predict function</span>
+<span class="sd">    and set the default verbose to 0.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        predict_function: tensorflow.keras.Model.predict</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">predict_function</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">wrapper</span></div>
+
+
+
+<div class="viewcode-block" id="cell_boundary">
+<a class="viewcode-back" href="../segmentation.html#segmentation.cell_boundary">[docs]</a>
+<span class="k">def</span> <span class="nf">cell_boundary</span><span class="p">(</span><span class="n">nucleus_location</span><span class="p">,</span> <span class="n">img_size</span><span class="p">,</span> <span class="n">max_dist</span><span class="p">,</span> <span class="n">max_area</span><span class="p">,</span> <span class="n">search_direction</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Infer the cell boundary.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        nucleus_location: Coordinates of the nucleus centers.</span>
+<span class="sd">        img_size: The size of the image.</span>
+<span class="sd">        max_dist: The largest distance from the cell boundary to the nucleus center.</span>
+<span class="sd">        max_area: Largest area of a cell. Segmented nuclei with size larger than this value are discarded.</span>
+<span class="sd">        search_direction: The search direction when determine the cell boundary.</span>
+<span class="sd">        verbose: Whether to print progress.</span>
+<span class="sd">        delta: Increment of the radius in each round.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Dictionary of the cell boundary information.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">img_cell</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">img_size</span><span class="p">)</span>
+    <span class="n">n_nuclei</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">nucleus_location</span><span class="p">)</span>
+    <span class="n">n_pixel</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">n_nuclei</span>
+    <span class="n">nuclei_left</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_nuclei</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+
+    <span class="n">radius</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="n">nuclei_left</span> <span class="ow">and</span> <span class="n">radius</span> <span class="o">&lt;</span> <span class="n">max_dist</span><span class="p">:</span>
+        <span class="n">radius</span> <span class="o">+=</span> <span class="n">delta</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;r: &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">radius</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">There are &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">nuclei_left</span><span class="p">))</span> <span class="o">+</span> <span class="s1">&#39; nuclei left.&#39;</span><span class="p">)</span>
+        <span class="n">pixel_check</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">dx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="n">radius</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">radius</span><span class="o">+</span><span class="mi">2</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">dy</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="n">radius</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">radius</span><span class="o">+</span><span class="mi">2</span><span class="p">):</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">radius</span><span class="o">-</span><span class="n">delta</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">&lt;=</span> <span class="n">dx</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="n">dy</span><span class="o">**</span><span class="mi">2</span> <span class="o">&lt;=</span> <span class="n">radius</span><span class="o">**</span><span class="mi">2</span><span class="p">:</span>
+                    <span class="n">pixel_check</span> <span class="o">+=</span> <span class="p">[[</span><span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">]]</span>
+
+        <span class="n">nuclei_remove</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">nuclei_left</span><span class="p">:</span>
+            <span class="n">border_temp</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">c_y</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">nucleus_location</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+            <span class="n">c_x</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">nucleus_location</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+            <span class="n">flag</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># Whether the expended space are all occupied by background or other cells.</span>
+            <span class="k">for</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span> <span class="ow">in</span> <span class="n">pixel_check</span><span class="p">:</span>
+                <span class="n">x1</span> <span class="o">=</span> <span class="n">c_x</span> <span class="o">+</span> <span class="n">dx</span>
+                <span class="n">y1</span> <span class="o">=</span> <span class="n">c_y</span> <span class="o">+</span> <span class="n">dy</span>
+                <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">x1</span> <span class="o">&lt;=</span> <span class="n">img_cell</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span> <span class="ow">and</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">y1</span> <span class="o">&lt;=</span> <span class="n">img_cell</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span> <span class="ow">and</span> <span class="n">dx</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="n">dy</span><span class="o">**</span><span class="mi">2</span> <span class="o">&lt;=</span> <span class="n">radius</span><span class="o">**</span><span class="mi">2</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">img_cell</span><span class="p">[</span><span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">img_cell</span><span class="p">[</span><span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+                        <span class="n">border_temp</span> <span class="o">+=</span> <span class="p">[[</span><span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">]]</span>
+                    <span class="k">if</span> <span class="n">img_cell</span><span class="p">[</span><span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">]</span> <span class="o">==</span> <span class="n">i</span><span class="p">:</span>
+                        <span class="n">flag</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">n_pixel</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">border_temp</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">n_pixel</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">max_area</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">border_temp</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">flag</span><span class="p">):</span>
+                <span class="n">nuclei_remove</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">nuclei_remove</span><span class="p">:</span>
+            <span class="n">nuclei_left</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+
+    <span class="n">img_cell_boundaries</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">img_cell</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">img_cell</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">3</span><span class="p">))</span>
+    <span class="n">individual_boundary</span> <span class="o">=</span> <span class="p">{</span><span class="n">i</span><span class="p">:[]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_nuclei</span><span class="o">+</span><span class="mi">1</span><span class="p">)}</span>
+    <span class="c1"># for x in tqdm(range(len(img_cell))):</span>
+    <span class="c1">#     for y in range(len(img_cell[0])):</span>
+    <span class="c1">#         idx = img_cell[x, y]</span>
+    <span class="c1">#         for k in range(len(search_direction)):</span>
+    <span class="c1">#             x1, y1 = x + search_direction[k][0], y + search_direction[k][1]</span>
+    <span class="c1">#             if 0 &lt;= x1 &lt;= img_cell.shape[0]-1 and 0 &lt;= y1 &lt;= img_cell.shape[1]-1 and img_cell[x1, y1] != idx:</span>
+    <span class="c1">#                 img_cell_boundaries[x, y] = [150, 150, 150]</span>
+    <span class="c1">#                 individual_boundary[idx] += [[x, y]]</span>
+    <span class="c1">#                 break</span>
+
+    <span class="n">search_direction</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">search_direction</span><span class="p">)</span>
+    <span class="n">boundary_img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">img_cell</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">search_direction</span><span class="p">):</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="nb">max</span><span class="p">([</span><span class="nb">abs</span><span class="p">(</span><span class="n">dx</span><span class="p">),</span> <span class="nb">abs</span><span class="p">(</span><span class="n">dy</span><span class="p">)])</span>
+        <span class="n">kernel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">2</span><span class="o">*</span><span class="n">d</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">d</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">kernel</span><span class="p">[</span><span class="n">dy</span><span class="o">+</span><span class="n">d</span><span class="p">,</span> <span class="n">dx</span><span class="o">+</span><span class="n">d</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">kernel</span><span class="p">[</span><span class="n">d</span><span class="p">,</span> <span class="n">d</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="n">convolved</span> <span class="o">=</span> <span class="n">convolve2d</span><span class="p">(</span><span class="n">img_cell</span><span class="p">,</span> <span class="n">kernel</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">)</span>
+        <span class="n">boundary_img</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">convolved</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">img_cell_boundaries</span><span class="p">[</span><span class="n">boundary_img</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">150</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="mi">150</span><span class="p">]</span>
+    <span class="c1"># for i in tqdm(range(n_nuclei+1)):</span>
+    <span class="c1">#     y, x = np.where((img_cell == i) &amp; (boundary_img &gt; 0))</span>
+    <span class="c1">#     individual_boundary[i] += list(zip(x, y))</span>
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">img_cell</span><span class="p">))):</span>
+        <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">img_cell</span><span class="p">[</span><span class="mi">0</span><span class="p">])):</span>
+            <span class="k">if</span> <span class="n">boundary_img</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">individual_boundary</span><span class="p">[</span><span class="n">img_cell</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">]]</span> <span class="o">+=</span> <span class="p">[[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">]]</span>
+
+    <span class="n">img_cell_boundaries</span> <span class="o">=</span> <span class="n">img_cell_boundaries</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+    <span class="n">individual_boundary</span> <span class="o">=</span> <span class="p">{</span><span class="n">i</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">individual_boundary</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_nuclei</span><span class="o">+</span><span class="mi">1</span><span class="p">)}</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;img_cell&#39;</span><span class="p">:</span> <span class="n">img_cell</span><span class="p">,</span> <span class="s1">&#39;cell_boundary&#39;</span><span class="p">:</span> <span class="n">img_cell_boundaries</span><span class="p">,</span> <span class="s1">&#39;size&#39;</span><span class="p">:</span> <span class="n">n_pixel</span><span class="p">,</span>
+         <span class="s1">&#39;individual_boundary&#39;</span><span class="p">:</span> <span class="n">individual_boundary</span><span class="p">}</span>
+    <span class="k">return</span> <span class="n">d</span></div>
+
+
+
+<div class="viewcode-block" id="add_boundary">
+<a class="viewcode-back" href="../segmentation.html#segmentation.add_boundary">[docs]</a>
+<span class="k">def</span> <span class="nf">add_boundary</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">boundary</span><span class="p">):</span>
+    <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="k">assert</span> <span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="n">boundary</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">img</span><span class="p">)):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">img</span><span class="p">[</span><span class="mi">0</span><span class="p">])):</span>
+            <span class="k">if</span> <span class="n">boundary</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">img</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">img</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Ziqian Zheng, Jiyuan Yang.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

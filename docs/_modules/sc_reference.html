@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sc_reference &mdash; Spotiphy 0.1.2 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=92fd9be5" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=92734c54"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Spotiphy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">General</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../questions.html">Frequently Asked Questions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../sc_reference.html">sc_reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deconvolution.html">deconvolution</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../segmentation.html">segmentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plot.html">plot</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Spotiphy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">sc_reference</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for sc_reference</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">anndata</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">stats</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+
+<div class="viewcode-block" id="initialization">
+<a class="viewcode-back" href="../sc_reference.html#sc_reference.initialization">[docs]</a>
+<span class="k">def</span> <span class="nf">initialization</span><span class="p">(</span><span class="n">adata_sc</span><span class="p">:</span> <span class="n">anndata</span><span class="o">.</span><span class="n">AnnData</span><span class="p">,</span> <span class="n">adata_st</span><span class="p">:</span> <span class="n">anndata</span><span class="o">.</span><span class="n">AnnData</span><span class="p">,</span> <span class="n">min_genes</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">200</span><span class="p">,</span> <span class="n">min_cells</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">200</span><span class="p">,</span>
+                   <span class="n">min_std</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span> <span class="n">normalize_st</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">filtering</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Filter single cell data and spatial data, and normalize the data to count per million (CPM).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        adata_sc (anndata.AnnData): Single cell data.</span>
+<span class="sd">        adata_st (anndata.AnnData): Spatial data.</span>
+<span class="sd">        min_genes (int): Minimum number of genes expressed required for a cell to pass filtering.</span>
+<span class="sd">        min_cells (int): Minimum number of cells expressed required for a gene to pass filtering.</span>
+<span class="sd">        min_std (float): Minimum std of counts required for a gene to pass filtering after CPM normalization.</span>
+<span class="sd">        normalize_st (bool): If False, spatial data is also normalized to one million. Otherwise, normalized_st should</span>
+<span class="sd">            be np.ndarray, representing the number of cells in each spot, and the expression of each spot is normalized</span>
+<span class="sd">            to n_cell million.</span>
+<span class="sd">        filtering (bool): Whether to filter the genes in adata_sc.</span>
+<span class="sd">        verbose (int): Verbose mode.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">time_start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">adata_sc</span><span class="o">.</span><span class="n">X</span> <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">adata_sc</span><span class="o">.</span><span class="n">X</span><span class="p">)</span> <span class="ow">is</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="k">else</span> <span class="n">adata_sc</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span>
+    <span class="n">Y</span> <span class="o">=</span> <span class="n">adata_st</span><span class="o">.</span><span class="n">X</span> <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">adata_st</span><span class="o">.</span><span class="n">X</span><span class="p">)</span> <span class="ow">is</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="k">else</span> <span class="n">adata_st</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">verbose</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Convert expression matrix to array: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">time_start</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+        <span class="n">time_start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+    <span class="c1"># CPM normalization</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">X</span> <span class="o">*</span> <span class="mf">1e6</span> <span class="o">/</span> <span class="n">X</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">normalize_st</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">Y</span> <span class="o">=</span> <span class="n">Y</span> <span class="o">*</span> <span class="mf">1e6</span> <span class="o">/</span> <span class="n">Y</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">normalize_st</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">adata_st</span><span class="p">),)</span>
+        <span class="n">Y</span> <span class="o">=</span> <span class="n">Y</span> <span class="o">*</span> <span class="mf">1e6</span> <span class="o">/</span> <span class="n">Y</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">*</span> <span class="n">normalize_st</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">verbose</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Normalization: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">time_start</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+        <span class="n">time_start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">adata_st</span><span class="o">.</span><span class="n">X</span> <span class="o">=</span> <span class="n">Y</span>
+
+    <span class="c1"># Initial filtering</span>
+    <span class="c1"># One can also achieve the same result by using sc.pp.filter_cells(adata_sc1, min_genes=min_genes) and</span>
+    <span class="c1"># sc.pp.filter_genes(adata_sc1, min_cells=min_cells). However, the code below is faster based on our test.</span>
+    <span class="k">if</span> <span class="n">filtering</span><span class="p">:</span>
+        <span class="n">cell_f1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">X</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">min_genes</span>
+        <span class="n">gene_f1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">X</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">min_cells</span>
+        <span class="n">gene_f2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">min_std</span>
+        <span class="n">adata_sc</span><span class="o">.</span><span class="n">X</span> <span class="o">=</span> <span class="n">X</span>
+        <span class="n">adata_sc</span> <span class="o">=</span> <span class="n">adata_sc</span><span class="p">[</span><span class="n">cell_f1</span><span class="p">]</span>
+        <span class="n">adata_sc</span> <span class="o">=</span> <span class="n">adata_sc</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">gene_f1</span><span class="p">,</span> <span class="n">gene_f2</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="n">verbose</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Filtering: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">time_start</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+            <span class="n">time_start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">adata_sc</span><span class="o">.</span><span class="n">X</span> <span class="o">=</span> <span class="n">X</span>
+
+    <span class="c1"># Find the intersection of genes</span>
+    <span class="n">common_genes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">adata_st</span><span class="o">.</span><span class="n">var_names</span><span class="p">)</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">adata_sc</span><span class="o">.</span><span class="n">var_names</span><span class="p">)))</span>
+    <span class="n">adata_sc</span> <span class="o">=</span> <span class="n">adata_sc</span><span class="p">[:,</span> <span class="n">common_genes</span><span class="p">]</span>
+    <span class="n">adata_st</span> <span class="o">=</span> <span class="n">adata_st</span><span class="p">[:,</span> <span class="n">common_genes</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">verbose</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Find common genes: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">time_start</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">adata_sc</span><span class="p">,</span> <span class="n">adata_st</span></div>
+
+
+
+<div class="viewcode-block" id="marker_selection">
+<a class="viewcode-back" href="../sc_reference.html#sc_reference.marker_selection">[docs]</a>
+<span class="k">def</span> <span class="nf">marker_selection</span><span class="p">(</span><span class="n">adata_sc</span><span class="p">:</span> <span class="n">anndata</span><span class="o">.</span><span class="n">AnnData</span><span class="p">,</span> <span class="n">key_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">threshold_cover</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">threshold_p</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+                     <span class="n">threshold_fold</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">n_select</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">return_dict</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Find marker genes based on pairwise ratio test.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        adata_sc: scRNA data (Anndata).</span>
+<span class="sd">        key_type: The key that is used to extract cell type information from adata_sc.obs.</span>
+<span class="sd">        threshold_cover: Minimum proportion of non-zero reads of a marker gene in assigned cell type.</span>
+<span class="sd">        threshold_p: Maximum p-value for a gene to be marker gene.</span>
+<span class="sd">        threshold_fold: Minimum fold change for a gene to be marker gene.</span>
+<span class="sd">        n_select: Number of marker genes selected for each cell type.</span>
+<span class="sd">        verbose: 0: silent. 1: print the number of marker genes of each cell type.</span>
+<span class="sd">        return_dict: If true, return a dictionary of marker genes, where the keys are the name of the cell types.</span>
+<span class="sd">        q: Quantile of the fold-change that we considered.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">       List of the marker genes or a dictionary of marker genes, where the keys are the name of the cell types.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">adata_sc</span><span class="o">.</span><span class="n">X</span> <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">adata_sc</span><span class="o">.</span><span class="n">X</span><span class="p">)</span> <span class="ow">is</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="k">else</span> <span class="n">adata_sc</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span>
+
+    <span class="c1"># Derive mean and std matrix</span>
+    <span class="n">type_list</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">adata_sc</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="n">key_type</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()))</span>  <span class="c1"># list of the cell type.</span>
+    <span class="n">n_gene</span><span class="p">,</span> <span class="n">n_type</span> <span class="o">=</span> <span class="n">adata_sc</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nb">len</span><span class="p">(</span><span class="n">type_list</span><span class="p">)</span>
+    <span class="n">expression_mu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_type</span><span class="p">,</span> <span class="n">n_gene</span><span class="p">))</span>  <span class="c1"># Mean expression of each gene in each cell type.</span>
+    <span class="n">expression_sd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_type</span><span class="p">,</span> <span class="n">n_gene</span><span class="p">))</span>  <span class="c1"># Standard deviation of expression of each gene in each cell type.</span>
+    <span class="n">n_cell_by_type</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_type</span><span class="p">)</span>
+    <span class="n">data_type</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># The expression data categorized by cell types.</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_type</span><span class="p">):</span>
+        <span class="n">data_type</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">adata_sc</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="n">key_type</span><span class="p">]</span> <span class="o">==</span> <span class="n">type_list</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>
+        <span class="n">expression_mu</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">data_type</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">expression_sd</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">data_type</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">n_cell_by_type</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data_type</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+    <span class="k">del</span> <span class="n">X</span>
+    <span class="n">expression_sd</span> <span class="o">=</span> <span class="n">expression_sd</span> <span class="o">+</span> <span class="mf">1e-10</span>
+    <span class="n">expression_mu</span> <span class="o">=</span> <span class="n">expression_mu</span> <span class="o">+</span> <span class="mf">1e-10</span>
+
+    <span class="c1"># t test</span>
+    <span class="n">fold_change</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_type</span><span class="p">,</span> <span class="n">n_gene</span><span class="p">))</span>
+    <span class="n">p_value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_type</span><span class="p">,</span> <span class="n">n_gene</span><span class="p">))</span>
+    <span class="n">type_index_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">expression_mu</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># Cell type index with the maximum mean expression of each gene</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_gene</span><span class="p">):</span>
+        <span class="n">mu0</span> <span class="o">=</span> <span class="n">expression_mu</span><span class="p">[</span><span class="n">type_index_max</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">i</span><span class="p">]</span>
+        <span class="n">sd0</span> <span class="o">=</span> <span class="n">expression_sd</span><span class="p">[</span><span class="n">type_index_max</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">i</span><span class="p">]</span>
+        <span class="n">n0</span> <span class="o">=</span> <span class="n">n_cell_by_type</span><span class="p">[</span><span class="n">type_index_max</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="n">sd0</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span> <span class="n">n0</span> <span class="o">+</span> <span class="n">expression_sd</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span> <span class="n">n_cell_by_type</span>
+        <span class="n">B</span> <span class="o">=</span> <span class="p">(</span><span class="n">sd0</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span> <span class="n">n0</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="p">(</span><span class="n">n0</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">expression_sd</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span> <span class="n">n_cell_by_type</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="p">(</span><span class="n">n_cell_by_type</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">t_stat</span> <span class="o">=</span> <span class="p">(</span><span class="n">mu0</span> <span class="o">-</span> <span class="n">expression_mu</span><span class="p">[:,</span> <span class="n">i</span><span class="p">])</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+        <span class="n">fold_change</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">mu0</span><span class="o">/</span><span class="n">expression_mu</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">A</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="n">B</span>
+        <span class="n">p_value</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">sf</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">t_stat</span><span class="p">),</span> <span class="n">df</span><span class="p">)</span>
+
+    <span class="c1"># determine the marker genes</span>
+    <span class="n">p_value_sort</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">p_value</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">fold_change_sort</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">fold_change</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">gene_name</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">adata_sc</span><span class="o">.</span><span class="n">var_names</span><span class="p">)</span>
+    <span class="n">marker_gene</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span> <span class="k">if</span> <span class="n">return_dict</span> <span class="k">else</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_type</span><span class="p">):</span>
+        <span class="c1"># fraction of non-zero reads in current datatype</span>
+        <span class="n">cover_fraction</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">data_type</span><span class="p">[</span><span class="n">i</span><span class="p">][:,</span> <span class="n">type_index_max</span> <span class="o">==</span> <span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="n">n_cell_by_type</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">p_value_temp</span> <span class="o">=</span> <span class="n">p_value_sort</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="n">type_index_max</span> <span class="o">==</span> <span class="n">i</span><span class="p">]</span>  <span class="c1"># second-largest p-value</span>
+        <span class="c1"># fold_change_temp = fold_change_sort[1, type_index_max == i]  # second-smallest fold change</span>
+        <span class="n">fold_change_temp</span> <span class="o">=</span> <span class="n">fold_change_sort</span><span class="p">[</span><span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">q</span><span class="o">*</span><span class="p">(</span><span class="n">n_type</span><span class="o">-</span><span class="mi">1</span><span class="p">)))),</span> <span class="n">type_index_max</span> <span class="o">==</span> <span class="n">i</span><span class="p">]</span>
+        <span class="n">selected</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">cover_fraction</span> <span class="o">&gt;=</span> <span class="n">threshold_cover</span><span class="p">,</span> <span class="n">p_value_temp</span> <span class="o">&lt;</span> <span class="n">threshold_p</span><span class="p">)</span>
+        <span class="n">selected</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">fold_change_temp</span> <span class="o">&gt;=</span> <span class="n">threshold_fold</span><span class="p">,</span> <span class="n">selected</span><span class="p">)</span>
+        <span class="n">gene_name_temp</span> <span class="o">=</span> <span class="n">gene_name</span><span class="p">[</span><span class="n">type_index_max</span> <span class="o">==</span> <span class="n">i</span><span class="p">][</span><span class="n">selected</span><span class="p">]</span>
+
+        <span class="n">fold_change_temp</span> <span class="o">=</span> <span class="n">fold_change_temp</span><span class="p">[</span><span class="n">selected</span><span class="p">]</span>
+        <span class="n">selected_gene_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">fold_change_temp</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">][:</span><span class="n">n_select</span><span class="p">]</span>
+        <span class="n">selected_gene</span> <span class="o">=</span> <span class="n">gene_name_temp</span><span class="p">[</span><span class="n">selected_gene_idx</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">return_dict</span><span class="p">:</span>
+            <span class="n">marker_gene</span><span class="p">[</span><span class="n">type_list</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">selected_gene</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">marker_gene</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">selected_gene</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">verbose</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">type_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;: </span><span class="si">{:d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">selected_gene</span><span class="p">))))</span>
+    <span class="k">return</span> <span class="n">marker_gene</span></div>
+
+
+
+<div class="viewcode-block" id="construct_sc_ref">
+<a class="viewcode-back" href="../sc_reference.html#sc_reference.construct_sc_ref">[docs]</a>
+<span class="k">def</span> <span class="nf">construct_sc_ref</span><span class="p">(</span><span class="n">adata_sc</span><span class="p">:</span> <span class="n">anndata</span><span class="o">.</span><span class="n">AnnData</span><span class="p">,</span> <span class="n">key_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Construct the scRNA reference from scRNA data.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        adata_sc: scRNA data.</span>
+<span class="sd">        key_type: The key that is used to extract cell type information from adata_sc.obs.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        scRNA reference. Numpy assay with dimension n_type*n_gene</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">type_list</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">adata_sc</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="n">key_type</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()))</span>
+    <span class="n">n_gene</span><span class="p">,</span> <span class="n">n_type</span> <span class="o">=</span> <span class="n">adata_sc</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nb">len</span><span class="p">(</span><span class="n">type_list</span><span class="p">)</span>
+    <span class="n">sc_ref</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_type</span><span class="p">,</span> <span class="n">n_gene</span><span class="p">))</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">adata_sc</span><span class="o">.</span><span class="n">X</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">cell_type</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">enumerate</span><span class="p">(</span><span class="n">type_list</span><span class="p">)):</span>
+        <span class="n">sc_X_temp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">adata_sc</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="n">key_type</span><span class="p">]</span> <span class="o">==</span> <span class="n">cell_type</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">sc_ref</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">sc_X_temp</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">sc_X_temp</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">sc_ref</span></div>
+
+
+
+<div class="viewcode-block" id="plot_sc_ref">
+<a class="viewcode-back" href="../sc_reference.html#sc_reference.plot_sc_ref">[docs]</a>
+<span class="k">def</span> <span class="nf">plot_sc_ref</span><span class="p">(</span><span class="n">sc_ref</span><span class="p">,</span> <span class="n">type_list</span><span class="p">,</span> <span class="n">fig_size</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Plot the heatmap of the single cell reference</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        sc_ref: scRNA reference. np.ndarray n_type*n_gene.</span>
+<span class="sd">        type_list: List of the cell types.</span>
+<span class="sd">        fig_size: Initial size of the figure.</span>
+<span class="sd">        dpi: Dots per inch (DPI) of the figure.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">fig_size_adjust</span> <span class="o">=</span> <span class="p">(</span><span class="n">fig_size</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">fig_size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">sc_ref</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="mi">20</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="n">fig_size_adjust</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="n">dpi</span><span class="p">)</span>
+    <span class="n">sc_ref_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">sc_ref</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">type_list</span><span class="p">)</span>
+    <span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">sc_ref_df</span><span class="p">,</span> <span class="n">robust</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="plot_heatmap">
+<a class="viewcode-back" href="../sc_reference.html#sc_reference.plot_heatmap">[docs]</a>
+<span class="k">def</span> <span class="nf">plot_heatmap</span><span class="p">(</span><span class="n">adata_sc</span><span class="p">,</span> <span class="n">key_type</span><span class="p">,</span> <span class="n">fig_size</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">out_dir</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Plot the heatmap of the mean expression.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        adata_sc: scRNA data (Anndata).</span>
+<span class="sd">        key_type: The key that is used to extract cell type information from adata_sc.obs.</span>
+<span class="sd">        fig_size: Initial size of the figure.</span>
+<span class="sd">        dpi: Dots per inch (DPI) of the figure.</span>
+<span class="sd">        save: Whether to save the heatmap.</span>
+<span class="sd">        out_dir: Output directory.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">adata_sc</span><span class="o">.</span><span class="n">X</span> <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">adata_sc</span><span class="o">.</span><span class="n">X</span><span class="p">)</span> <span class="ow">is</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="k">else</span> <span class="n">adata_sc</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span>
+    <span class="n">type_list</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">adata_sc</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="n">key_type</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()))</span>  <span class="c1"># list of the cell type.</span>
+    <span class="n">n_gene</span><span class="p">,</span> <span class="n">n_type</span> <span class="o">=</span> <span class="n">adata_sc</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nb">len</span><span class="p">(</span><span class="n">type_list</span><span class="p">)</span>
+    <span class="n">expression_mu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_type</span><span class="p">,</span> <span class="n">n_gene</span><span class="p">))</span>  <span class="c1"># Mean expression of each gene in each cell type.</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_type</span><span class="p">):</span>
+        <span class="n">data_temp</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">adata_sc</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="n">key_type</span><span class="p">]</span> <span class="o">==</span> <span class="n">type_list</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
+        <span class="n">expression_mu</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">data_temp</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">del</span> <span class="n">X</span>
+
+    <span class="n">expression_mu</span> <span class="o">=</span> <span class="n">expression_mu</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">expression_mu</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">fig_size_adjust</span> <span class="o">=</span> <span class="p">(</span><span class="n">fig_size</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">fig_size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">n_type</span><span class="o">/</span><span class="mi">20</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="n">fig_size_adjust</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="n">dpi</span><span class="p">)</span>
+    <span class="n">sc_ref_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">expression_mu</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">type_list</span><span class="p">)</span>
+    <span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">sc_ref_df</span><span class="p">,</span> <span class="n">robust</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">save</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">out_dir</span><span class="o">+</span><span class="s1">&#39;heatmap.jpg&#39;</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Ziqian Zheng, Jiyuan Yang.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
