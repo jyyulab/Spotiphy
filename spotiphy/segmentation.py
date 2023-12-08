@@ -17,13 +17,16 @@ class Segmentation:
                  nms_thresh: float = 0.5, spot_radius: float = 36.5, n_tiles=(8, 8, 1)):
         """
         Args:
-            img: Array(_*_*3). Three channel stained image. In default, it should be hematoxylin and eosin (H&E) stained
+            img (numpy.ndarray):. Three channel stained image. In default, it should be hematoxylin and eosin (H&E) stained
                 image.
             spot_center: Coordinates of the center of the spots.
             out_dir: Output directory.
             Prob_thresh, nms_thresh: Two thresholds used in Stardist. User should adjust these two threshold based on
                 the segmentation results.
             spot_radius: Radius of the spots. In 10X Visium, it should be 36.5.
+            n_tiles: Out of memory (OOM) errors can occur if the input image is too large. To avoid this problem, the
+                input image is broken up into (overlapping) tiles that are processed independently and re-assembled.
+                (Copied from stardist document). In default, we break the image into 8*8 tiles.
 
         """
         self.img = img

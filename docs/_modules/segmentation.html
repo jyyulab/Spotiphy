@@ -42,7 +42,7 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">General</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Basic</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
@@ -102,13 +102,16 @@
                  <span class="n">nms_thresh</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">spot_radius</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">36.5</span><span class="p">,</span> <span class="n">n_tiles</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">1</span><span class="p">)):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Args:</span>
-<span class="sd">            img: Array(_*_*3). Three channel stained image. In default, it should be hematoxylin and eosin (H&amp;E) stained</span>
+<span class="sd">            img (numpy.ndarray):. Three channel stained image. In default, it should be hematoxylin and eosin (H&amp;E) stained</span>
 <span class="sd">                image.</span>
 <span class="sd">            spot_center: Coordinates of the center of the spots.</span>
 <span class="sd">            out_dir: Output directory.</span>
 <span class="sd">            Prob_thresh, nms_thresh: Two thresholds used in Stardist. User should adjust these two threshold based on</span>
 <span class="sd">                the segmentation results.</span>
 <span class="sd">            spot_radius: Radius of the spots. In 10X Visium, it should be 36.5.</span>
+<span class="sd">            n_tiles: Out of memory (OOM) errors can occur if the input image is too large. To avoid this problem, the</span>
+<span class="sd">                input image is broken up into (overlapping) tiles that are processed independently and re-assembled.</span>
+<span class="sd">                (Copied from stardist document). In default, we break the image into 8*8 tiles.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">img</span> <span class="o">=</span> <span class="n">img</span>

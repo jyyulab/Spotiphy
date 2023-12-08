@@ -42,7 +42,7 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">General</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Basic</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
@@ -116,7 +116,7 @@
 <span class="sd">        plot: Whether to plot the ELBO loss.</span>
 <span class="sd">        n_epoch: Number of training epochs.</span>
 <span class="sd">        adam_params: Parameters for the adam optimizer.</span>
-<span class="sd">        batch_prior: Parameter of the prior Dirichlet distribution of the batch effect: 2^(Uniform(0, batch_prior))</span>
+<span class="sd">        batch_prior: Parameter of the prior distribution of the batch effect: 2^(Uniform(0, batch_prior))</span>
 <span class="sd">        fig_size: Size of the figure.</span>
 <span class="sd">        dpi: Dots per inch (DPI) of the figure.</span>
 
@@ -200,7 +200,7 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        X: Spatial transcriptomics data. n_spot*n_gene.</span>
-<span class="sd">        adata_sc: scRNA data (Anndata).</span>
+<span class="sd">        adata_sc (anndata.Anndata): scRNA data.</span>
 <span class="sd">        sc_ref: Single cell reference. n_type*n_gene.</span>
 <span class="sd">        type_list: List of the cell types.</span>
 <span class="sd">        key_type: Column name of the cell types in adata_sc.</span>
@@ -772,8 +772,7 @@
 <span class="k">def</span> <span class="nf">decomposition</span><span class="p">(</span><span class="n">adata_st</span><span class="p">:</span> <span class="n">anndata</span><span class="o">.</span><span class="n">AnnData</span><span class="p">,</span> <span class="n">adata_sc</span><span class="p">:</span> <span class="n">anndata</span><span class="o">.</span><span class="n">AnnData</span><span class="p">,</span> <span class="n">key_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">cell_proportion</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
                   <span class="n">save</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">out_dir</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">n_cell</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spot_location</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                   <span class="n">filtering_gene</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;ST_decomposition.h5ad&quot;</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">use_original_proportion</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Decompose ST.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Decompose ST.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        adata_st: Original spatial transcriptomics data.</span>

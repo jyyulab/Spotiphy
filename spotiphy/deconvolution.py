@@ -31,7 +31,7 @@ def deconvolute(X, sc_ref, device='cuda', n_epoch=8000, adam_params=None, batch_
         plot: Whether to plot the ELBO loss.
         n_epoch: Number of training epochs.
         adam_params: Parameters for the adam optimizer.
-        batch_prior: Parameter of the prior Dirichlet distribution of the batch effect: 2^(Uniform(0, batch_prior))
+        batch_prior: Parameter of the prior distribution of the batch effect: 2^(Uniform(0, batch_prior))
         fig_size: Size of the figure.
         dpi: Dots per inch (DPI) of the figure.
 
@@ -112,7 +112,7 @@ def estimation_proportion(X, adata_sc, sc_ref, type_list, key_type, device='cuda
 
     Args:
         X: Spatial transcriptomics data. n_spot*n_gene.
-        adata_sc: scRNA data (Anndata).
+        adata_sc (anndata.Anndata): scRNA data.
         sc_ref: Single cell reference. n_type*n_gene.
         type_list: List of the cell types.
         key_type: Column name of the cell types in adata_sc.
@@ -639,8 +639,7 @@ class Evaluation:
 def decomposition(adata_st: anndata.AnnData, adata_sc: anndata.AnnData, key_type: str, cell_proportion: np.ndarray,
                   save=True, out_dir='', threshold=0.1, n_cell=None, spot_location: np.ndarray = None,
                   filtering_gene=False, filename="ST_decomposition.h5ad", verbose=0, use_original_proportion=False):
-    """
-    Decompose ST.
+    """Decompose ST.
 
     Args:
         adata_st: Original spatial transcriptomics data.

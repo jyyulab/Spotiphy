@@ -4,10 +4,10 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Deconvolution and decomposition of Visium data with Spotiphy &mdash; Spotiphy 0.1.2 documentation</title>
+  <title>Deconvolution and decomposition of mouse cortex with Spotiphy &mdash; Spotiphy 0.1.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=92fd9be5" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="_static/nbsphinx-code-cells.css" />
+      <link rel="stylesheet" type="text/css" href="_static/nbsphinx-code-cells.css?v=2aa19091" />
 
   
   <!--[if lt IE 9]>
@@ -48,14 +48,14 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">General</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Basic</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="tutorials.html">Tutorials</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Deconvolution and decomposition of Visium data with Spotiphy</a><ul>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Deconvolution and decomposition of mouse cortex with Spotiphy</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#Contents">Contents</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Install-and-load-packages">Install and load packages</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Load-Visium-and-scRNA-data">Load Visium and scRNA data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Load-Visium-data,-scRNA-data,-and-the-HE-staining-image.">Load Visium data, scRNA data, and the HE staining image.</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Select-marker-genes-for-the-deconvolution">Select marker genes for the deconvolution</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Deconvolution:-Estimate-cell-abundance-in-spatial-spots">Deconvolution: Estimate cell abundance in spatial spots</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Segmentation:-Estimate-cell-number-in-each-spatial-spot">Segmentation: Estimate cell number in each spatial spot</a></li>
@@ -90,7 +90,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="tutorials.html">Tutorials</a></li>
-      <li class="breadcrumb-item active">Deconvolution and decomposition of Visium data with Spotiphy</li>
+      <li class="breadcrumb-item active">Deconvolution and decomposition of mouse cortex with Spotiphy</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/Spotiphy_tutorial_1.ipynb.txt" rel="nofollow"> View page source</a>
       </li>
@@ -100,8 +100,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="Deconvolution-and-decomposition-of-Visium-data-with-Spotiphy">
-<h1>Deconvolution and decomposition of Visium data with Spotiphy<a class="headerlink" href="#Deconvolution-and-decomposition-of-Visium-data-with-Spotiphy" title="Link to this heading"></a></h1>
+  <section id="Deconvolution-and-decomposition-of-mouse-cortex-with-Spotiphy">
+<h1>Deconvolution and decomposition of mouse cortex with Spotiphy<a class="headerlink" href="#Deconvolution-and-decomposition-of-mouse-cortex-with-Spotiphy" title="Link to this heading"></a></h1>
 <ul class="simple">
 <li><p>by Ziqian Zheng <a class="reference external" href="mailto:zzheng92&#37;&#52;&#48;wisc&#46;edu">zzheng92<span>&#64;</span>wisc<span>&#46;</span>edu</a> and Jiyuna Yang <a class="reference external" href="mailto:jiyuan&#46;yang&#37;&#52;&#48;stjude&#46;org">jiyuan<span>&#46;</span>yang<span>&#64;</span>stjude<span>&#46;</span>org</a>.</p></li>
 <li><p>Last update: Nov 29th 2023</p></li>
@@ -121,13 +121,13 @@
 <section id="Install-and-load-packages">
 <h2>Install and load packages<a class="headerlink" href="#Install-and-load-packages" title="Link to this heading"></a></h2>
 <p>If you’re using you local environment, please ensure that <code class="docutils literal notranslate"><span class="pre">spotiphy</span></code> is correctly installed by following the instructions on its <a class="reference external" href="https://github.com/jyyulab/Spotiphy">GitHub page</a>.</p>
-<p>If you’re using Google Colab, please execute the following code block to install <code class="docutils literal notranslate"><span class="pre">spotiphy</span></code> and all its dependencies.</p>
+<p>If you’re using Google Colab, please execute the following code block to install <code class="docutils literal notranslate"><span class="pre">spotiphy</span></code> and all its dependencies. To ensure the code runs smoothly in Google Colab, we will manually eliminate some unnecessary Jupyter variables.</p>
 <p><strong>😮Important:</strong> To get enough RAM, <a class="reference external" href="https://colab.research.google.com/signup">Colab Pro</a> might be needed.</p>
 <p>For the first time the following code block is executed in Google Colab, you may get an error of inconsistent package versions like this:</p>
 <ul class="simple">
 <li><p>ERROR: pip’s dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.</p></li>
 </ul>
-<p>To solve this issue, simply ignore this error and <strong>restart the runtime</strong>. Then you will be able to load the packages correctly.</p>
+<p>To solve this issue, simply ignore this error and <strong>restart the session</strong> (Click <em>Runtime</em>, then click <em>Restart Session</em>). Then you will be able to load the packages correctly.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
@@ -153,7 +153,7 @@
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">import</span> <span class="nn">cv2</span>
 
-<span class="n">results_folder</span> <span class="o">=</span> <span class="s1">&#39;./results/mouse_brain/&#39;</span>
+<span class="n">results_folder</span> <span class="o">=</span> <span class="s1">&#39;results/mouse_brain/&#39;</span>
 <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">results_folder</span><span class="p">):</span>
   <span class="c1"># Create result folder if it does not exist</span>
   <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">results_folder</span><span class="p">)</span>
@@ -161,17 +161,39 @@
 </div>
 </div>
 </section>
-<section id="Load-Visium-and-scRNA-data">
-<h2>Load Visium and scRNA data<a class="headerlink" href="#Load-Visium-and-scRNA-data" title="Link to this heading"></a></h2>
-<p>We first load the scRNA data, visium data and the corresponding H&amp;E staining image.</p>
-<div class="nbinput docutils container">
+<section id="Load-Visium-data,-scRNA-data,-and-the-HE-staining-image.">
+<h2>Load Visium data, scRNA data, and the HE staining image.<a class="headerlink" href="#Load-Visium-data,-scRNA-data,-and-the-HE-staining-image." title="Link to this heading"></a></h2>
+<p>Verify the existence of the required data. If they are not present, download them from GitHub.</p>
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">requests</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="s1">&#39;data/&#39;</span><span class="p">):</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="s1">&#39;data/&#39;</span><span class="p">)</span>
+
+<span class="n">data_path</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;data/scRNA_mouse_brain.h5ad&#39;</span><span class="p">,</span> <span class="s1">&#39;data/ST_mouse_brain.h5ad&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;data/img_mouse_brain.png&#39;</span><span class="p">]</span>
+<span class="n">urls</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;https://raw.githubusercontent.com/jyyulab/Spotiphy/main/tutorials/data/scRNA_mouse_brain.h5ad&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;https://raw.githubusercontent.com/jyyulab/Spotiphy/main/tutorials/data/ST_mouse_brain.h5ad&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;https://raw.githubusercontent.com/jyyulab/Spotiphy/main/tutorials/data/img_mouse_brain.png&#39;</span><span class="p">]</span>
+
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">path</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">data_path</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">urls</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">allow_redirects</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+            <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+        <span class="k">del</span> <span class="n">response</span>
+</pre></div>
+</div>
+</div>
+<p>Load the scRNA data, visium data and the corresponding H&amp;E staining image.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
 <div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">adata_sc</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">read_h5ad</span><span class="p">(</span><span class="s2">&quot;data/scRNA_mouse_brain.h5ad&quot;</span><span class="p">)</span>
 <span class="n">adata_st</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">read_h5ad</span><span class="p">(</span><span class="s2">&quot;data/ST_mouse_brain.h5ad&quot;</span><span class="p">)</span>
-<span class="n">adata_sc_orig</span> <span class="o">=</span> <span class="n">adata_sc</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-<span class="n">adata_st_orig</span> <span class="o">=</span> <span class="n">adata_st</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 <span class="n">img</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="s2">&quot;data/img_mouse_brain.png&quot;</span><span class="p">)</span>
 
 <span class="n">key_type</span> <span class="o">=</span> <span class="s1">&#39;celltype&#39;</span>
@@ -185,56 +207,11 @@
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-<span class="ansi-red-intense-fg ansi-bold">---------------------------------------------------------------------------</span>
-<span class="ansi-red-intense-fg ansi-bold">FileNotFoundError</span>                         Traceback (most recent call last)
-Cell <span class="ansi-green-intense-fg ansi-bold">In[3], line 1</span>
-<span class="ansi-green-intense-fg ansi-bold">----&gt; 1</span> adata_sc <span style="color: rgb(98,98,98)">=</span> <span class="ansi-yellow-bg">sc</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">read_h5ad</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg" style="color: rgb(175,0,0)">&#34;</span><span class="ansi-yellow-bg" style="color: rgb(175,0,0)">data/scRNA_mouse_brain.h5ad</span><span class="ansi-yellow-bg" style="color: rgb(175,0,0)">&#34;</span><span class="ansi-yellow-bg">)</span>
-<span class="ansi-green-fg">      2</span> adata_st <span style="color: rgb(98,98,98)">=</span> sc<span style="color: rgb(98,98,98)">.</span>read_h5ad(<span style="color: rgb(175,0,0)">&#34;</span><span style="color: rgb(175,0,0)">data/ST_mouse_brain.h5ad</span><span style="color: rgb(175,0,0)">&#34;</span>)
-<span class="ansi-green-fg">      3</span> adata_sc_orig <span style="color: rgb(98,98,98)">=</span> adata_sc<span style="color: rgb(98,98,98)">.</span>copy()
-
-File <span class="ansi-green-intense-fg ansi-bold">~\Anaconda3\envs\spotiphy\lib\site-packages\anndata\_io\h5ad.py:219</span>, in <span class="ansi-cyan-fg">read_h5ad</span><span class="ansi-blue-intense-fg ansi-bold">(filename, backed, as_sparse, as_sparse_fmt, chunk_size)</span>
-<span class="ansi-green-fg">    211</span>         <span class="ansi-bold" style="color: rgb(0,135,0)">raise</span> <span class="ansi-bold" style="color: rgb(215,95,95)">NotImplementedError</span>(
-<span class="ansi-green-fg">    212</span>             <span style="color: rgb(175,0,0)">&#34;</span><span style="color: rgb(175,0,0)">Currently only `X` and `raw/X` can be read as sparse.</span><span style="color: rgb(175,0,0)">&#34;</span>
-<span class="ansi-green-fg">    213</span>         )
-<span class="ansi-green-fg">    215</span> rdasp <span style="color: rgb(98,98,98)">=</span> partial(
-<span class="ansi-green-fg">    216</span>     read_dense_as_sparse, sparse_format<span style="color: rgb(98,98,98)">=</span>as_sparse_fmt, axis_chunk<span style="color: rgb(98,98,98)">=</span>chunk_size
-<span class="ansi-green-fg">    217</span> )
-<span class="ansi-green-intense-fg ansi-bold">--&gt; 219</span> <span class="ansi-bold" style="color: rgb(0,135,0)">with</span> <span class="ansi-yellow-bg">h5py</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">File</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">filename</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg" style="color: rgb(175,0,0)">&#34;</span><span class="ansi-yellow-bg" style="color: rgb(175,0,0)">r</span><span class="ansi-yellow-bg" style="color: rgb(175,0,0)">&#34;</span><span class="ansi-yellow-bg">)</span> <span class="ansi-bold" style="color: rgb(0,135,0)">as</span> f:
-<span class="ansi-green-fg">    221</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">def</span> <span style="color: rgb(0,0,255)">callback</span>(func, elem_name: <span style="color: rgb(0,135,0)">str</span>, elem, iospec):
-<span class="ansi-green-fg">    222</span>         <span class="ansi-bold" style="color: rgb(0,135,0)">if</span> iospec<span style="color: rgb(98,98,98)">.</span>encoding_type <span style="color: rgb(98,98,98)">==</span> <span style="color: rgb(175,0,0)">&#34;</span><span style="color: rgb(175,0,0)">anndata</span><span style="color: rgb(175,0,0)">&#34;</span> <span class="ansi-bold" style="color: rgb(175,0,255)">or</span> elem_name<span style="color: rgb(98,98,98)">.</span>endswith(<span style="color: rgb(175,0,0)">&#34;</span><span style="color: rgb(175,0,0)">/</span><span style="color: rgb(175,0,0)">&#34;</span>):
-
-File <span class="ansi-green-intense-fg ansi-bold">~\Anaconda3\envs\spotiphy\lib\site-packages\h5py\_hl\files.py:567</span>, in <span class="ansi-cyan-fg">File.__init__</span><span class="ansi-blue-intense-fg ansi-bold">(self, name, mode, driver, libver, userblock_size, swmr, rdcc_nslots, rdcc_nbytes, rdcc_w0, track_order, fs_strategy, fs_persist, fs_threshold, fs_page_size, page_buf_size, min_meta_keep, min_raw_keep, locking, alignment_threshold, alignment_interval, meta_block_size, **kwds)</span>
-<span class="ansi-green-fg">    558</span>     fapl <span style="color: rgb(98,98,98)">=</span> make_fapl(driver, libver, rdcc_nslots, rdcc_nbytes, rdcc_w0,
-<span class="ansi-green-fg">    559</span>                      locking, page_buf_size, min_meta_keep, min_raw_keep,
-<span class="ansi-green-fg">    560</span>                      alignment_threshold<span style="color: rgb(98,98,98)">=</span>alignment_threshold,
-<span class="ansi-green-fg">    561</span>                      alignment_interval<span style="color: rgb(98,98,98)">=</span>alignment_interval,
-<span class="ansi-green-fg">    562</span>                      meta_block_size<span style="color: rgb(98,98,98)">=</span>meta_block_size,
-<span class="ansi-green-fg">    563</span>                      <span style="color: rgb(98,98,98)">*</span><span style="color: rgb(98,98,98)">*</span>kwds)
-<span class="ansi-green-fg">    564</span>     fcpl <span style="color: rgb(98,98,98)">=</span> make_fcpl(track_order<span style="color: rgb(98,98,98)">=</span>track_order, fs_strategy<span style="color: rgb(98,98,98)">=</span>fs_strategy,
-<span class="ansi-green-fg">    565</span>                      fs_persist<span style="color: rgb(98,98,98)">=</span>fs_persist, fs_threshold<span style="color: rgb(98,98,98)">=</span>fs_threshold,
-<span class="ansi-green-fg">    566</span>                      fs_page_size<span style="color: rgb(98,98,98)">=</span>fs_page_size)
-<span class="ansi-green-intense-fg ansi-bold">--&gt; 567</span>     fid <span style="color: rgb(98,98,98)">=</span> <span class="ansi-yellow-bg">make_fid</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">name</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">mode</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">userblock_size</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">fapl</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">fcpl</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">swmr</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">=</span><span class="ansi-yellow-bg">swmr</span><span class="ansi-yellow-bg">)</span>
-<span class="ansi-green-fg">    569</span> <span class="ansi-bold" style="color: rgb(0,135,0)">if</span> <span style="color: rgb(0,135,0)">isinstance</span>(libver, <span style="color: rgb(0,135,0)">tuple</span>):
-<span class="ansi-green-fg">    570</span>     <span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>_libver <span style="color: rgb(98,98,98)">=</span> libver
-
-File <span class="ansi-green-intense-fg ansi-bold">~\Anaconda3\envs\spotiphy\lib\site-packages\h5py\_hl\files.py:231</span>, in <span class="ansi-cyan-fg">make_fid</span><span class="ansi-blue-intense-fg ansi-bold">(name, mode, userblock_size, fapl, fcpl, swmr)</span>
-<span class="ansi-green-fg">    229</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">if</span> swmr <span class="ansi-bold" style="color: rgb(175,0,255)">and</span> swmr_support:
-<span class="ansi-green-fg">    230</span>         flags <span style="color: rgb(98,98,98)">|</span><span style="color: rgb(98,98,98)">=</span> h5f<span style="color: rgb(98,98,98)">.</span>ACC_SWMR_READ
-<span class="ansi-green-intense-fg ansi-bold">--&gt; 231</span>     fid <span style="color: rgb(98,98,98)">=</span> <span class="ansi-yellow-bg">h5f</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">open</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">name</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">flags</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">fapl</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">=</span><span class="ansi-yellow-bg">fapl</span><span class="ansi-yellow-bg">)</span>
-<span class="ansi-green-fg">    232</span> <span class="ansi-bold" style="color: rgb(0,135,0)">elif</span> mode <span style="color: rgb(98,98,98)">==</span> <span style="color: rgb(175,0,0)">&#39;</span><span style="color: rgb(175,0,0)">r+</span><span style="color: rgb(175,0,0)">&#39;</span>:
-<span class="ansi-green-fg">    233</span>     fid <span style="color: rgb(98,98,98)">=</span> h5f<span style="color: rgb(98,98,98)">.</span>open(name, h5f<span style="color: rgb(98,98,98)">.</span>ACC_RDWR, fapl<span style="color: rgb(98,98,98)">=</span>fapl)
-
-File <span class="ansi-green-intense-fg ansi-bold">h5py\_objects.pyx:54</span>, in <span class="ansi-cyan-fg">h5py._objects.with_phil.wrapper</span><span class="ansi-blue-intense-fg ansi-bold">()</span>
-
-File <span class="ansi-green-intense-fg ansi-bold">h5py\_objects.pyx:55</span>, in <span class="ansi-cyan-fg">h5py._objects.with_phil.wrapper</span><span class="ansi-blue-intense-fg ansi-bold">()</span>
-
-File <span class="ansi-green-intense-fg ansi-bold">h5py\h5f.pyx:106</span>, in <span class="ansi-cyan-fg">h5py.h5f.open</span><span class="ansi-blue-intense-fg ansi-bold">()</span>
-
-<span class="ansi-red-intense-fg ansi-bold">FileNotFoundError</span>: [Errno 2] Unable to open file (unable to open file: name = &#39;data/scRNA_mouse_brain.h5ad&#39;, errno = 2, error message = &#39;No such file or directory&#39;, flags = 0, o_flags = 0)
+There are 14 cell types: [&#39;Astro&#39;, &#39;CA&#39;, &#39;DG&#39;, &#39;L2/3 IT CTX&#39;, &#39;L4 IT CTX&#39;, &#39;L4/5 IT CTX&#39;, &#39;L5 IT CTX&#39;, &#39;L5 PT CTX&#39;, &#39;L5/6 IT CTX&#39;, &#39;L6 CT CTX&#39;, &#39;L6b CTX&#39;, &#39;Microglia&#39;, &#39;Oligo&#39;, &#39;SUB&#39;]
 </pre></div></div>
 </div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">pyplot</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
@@ -246,23 +223,56 @@ File <span class="ansi-green-intense-fg ansi-bold">h5py\h5f.pyx:106</span>, in <
 </pre></div>
 </div>
 </div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+scatterplots.py (392): No data for colormapping provided via &#39;c&#39;. Parameters &#39;cmap&#39; will be ignored
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Spotiphy_tutorial_1_9_1.png" src="_images/Spotiphy_tutorial_1_9_1.png" />
+</div>
+</div>
 </section>
 <section id="Select-marker-genes-for-the-deconvolution">
 <h2>Select marker genes for the deconvolution<a class="headerlink" href="#Select-marker-genes-for-the-deconvolution" title="Link to this heading"></a></h2>
-<p>Initialize the spatial trancriptomics and scRNA data. Specifically, - <code class="docutils literal notranslate"><span class="pre">adata_sc</span></code> and <code class="docutils literal notranslate"><span class="pre">adata_st</span></code> are normalized - cells and genes in <code class="docutils literal notranslate"><span class="pre">adata_sc</span></code> are filtered - only the common genes of <code class="docutils literal notranslate"><span class="pre">adata_sc</span></code> and <code class="docutils literal notranslate"><span class="pre">adata_st</span></code> are kept</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<p>Initialize the spatial trancriptomics and scRNA data. Specifically, - <code class="docutils literal notranslate"><span class="pre">adata_sc</span></code> and <code class="docutils literal notranslate"><span class="pre">adata_st</span></code> are normalized - cells and genes in <code class="docutils literal notranslate"><span class="pre">adata_sc</span></code> are filtered - only the common genes shared by <code class="docutils literal notranslate"><span class="pre">adata_sc</span></code> and <code class="docutils literal notranslate"><span class="pre">adata_st</span></code> are kept</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
 <div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">adata_sc</span><span class="p">,</span> <span class="n">adata_st</span> <span class="o">=</span> <span class="n">spotiphy</span><span class="o">.</span><span class="n">initialization</span><span class="p">(</span><span class="n">adata_sc</span><span class="p">,</span> <span class="n">adata_st</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Convert expression matrix to array: 0.98s
+Normalization: 3.52s
+Filtering: 3.8s
+Find common genes: 0.05s
+</pre></div></div>
+</div>
 <p>Select marker genes based on pairwise statistical tests. The selected marker genes are saved as a CSV file.</p>
-<p>Users can adjust the following arguments: - <code class="docutils literal notranslate"><span class="pre">n_select</span></code>: the maximum number of marker genes select for each cell type - <code class="docutils literal notranslate"><span class="pre">threshold_p</span></code>: threshold of the <span class="math notranslate nohighlight">\(p\)</span>-value to be considered significant - <code class="docutils literal notranslate"><span class="pre">threshold_fold</span></code>: threshold of the fold-change to be considered significant - <code class="docutils literal notranslate"><span class="pre">q</span></code>: Since more than one <span class="math notranslate nohighlight">\(p\)</span>-values are obtained in using the pairwise tests, we only consider the <span class="math notranslate nohighlight">\(p\)</span>-value at quantile <code class="docutils literal notranslate"><span class="pre">q</span></code>. For additional details, please refer to the supplementary material of the
-paper.</p>
+<p>Users can adjust the following arguments:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">n_select</span></code>: the maximum number of marker genes select for each cell type</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">threshold_p</span></code>: threshold of the <span class="math notranslate nohighlight">\(p\)</span>-value to be considered significant</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">threshold_fold</span></code>: threshold of the fold-change to be considered significant</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">q</span></code>: Since more than one <span class="math notranslate nohighlight">\(p\)</span>-values are obtained in using the pairwise tests, we only consider the <span class="math notranslate nohighlight">\(p\)</span>-value at quantile <code class="docutils literal notranslate"><span class="pre">q</span></code>. For additional details, please refer to the supplementary material of the paper.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">return_dict</span></code>: Whether return a dictionary representing the marker genes selected for each cell type, or just return the list of all selected marker genes.</p></li>
+</ul>
+<p>The parameters specified in the following code block provide a good starting point.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
 <div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">marker_gene_dict</span> <span class="o">=</span> <span class="n">spotiphy</span><span class="o">.</span><span class="n">sc_reference</span><span class="o">.</span><span class="n">marker_selection</span><span class="p">(</span><span class="n">adata_sc</span><span class="p">,</span> <span class="n">key_type</span><span class="o">=</span><span class="n">key_type</span><span class="p">,</span> <span class="n">return_dict</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -280,9 +290,16 @@ paper.</p>
 </pre></div>
 </div>
 </div>
-<p>Construct the single_cell reference matrix based on the selected marker genes and visualize the results.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<p>If saving of the selected marker genes to file is not necessary, the code can be simplified to</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">marker_gene_dict</span> <span class="o">=</span> <span class="n">spotiphy</span><span class="o">.</span><span class="n">sc_reference</span><span class="o">.</span><span class="n">marker_selection</span><span class="p">(</span><span class="n">adata_sc</span><span class="p">,</span> <span class="n">key_type</span><span class="o">=</span><span class="n">key_type</span><span class="p">,</span> <span class="n">n_select</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">threshold_p</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+                                                          <span class="n">threshold_fold</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="mf">0.15</span><span class="p">)</span>
+<span class="n">adata_sc</span> <span class="o">=</span> <span class="n">adata_sc</span><span class="p">[:,</span> <span class="n">marker_gene</span><span class="p">]</span>
+<span class="n">adata_st</span> <span class="o">=</span> <span class="n">adata_st</span><span class="p">[:,</span> <span class="n">marker_gene</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Construct the single_cell reference matrix based on the selected marker genes and visualize the results. We can examine which cell types are similar according to the heatmap.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
 <div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sc_ref</span> <span class="o">=</span> <span class="n">spotiphy</span><span class="o">.</span><span class="n">construct_sc_ref</span><span class="p">(</span><span class="n">adata_sc</span><span class="p">,</span> <span class="n">key_type</span><span class="o">=</span><span class="n">key_type</span><span class="p">)</span>
@@ -290,12 +307,28 @@ paper.</p>
 </pre></div>
 </div>
 </div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+14it [00:00, 424.32it/s]
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Spotiphy_tutorial_1_15_1.png" src="_images/Spotiphy_tutorial_1_15_1.png" />
+</div>
+</div>
 </section>
 <section id="Deconvolution:-Estimate-cell-abundance-in-spatial-spots">
 <h2>Deconvolution: Estimate cell abundance in spatial spots<a class="headerlink" href="#Deconvolution:-Estimate-cell-abundance-in-spatial-spots" title="Link to this heading"></a></h2>
 <p>For performing the deconvolution, we calculate the posterior distribution of certain parameters within a probabilistic generative model using <code class="docutils literal notranslate"><span class="pre">`Pyro</span></code> &lt;<a class="reference external" href="https://pyro.ai/">https://pyro.ai/</a>&gt;`__.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<p>Parameters of the function <code class="docutils literal notranslate"><span class="pre">estimation_proportion</span></code>: - <code class="docutils literal notranslate"><span class="pre">X</span></code>: Spatial transcriptomics data. n_spot<em>n_gene. - ``adata_sc``: scRNA data (Anndata). - ``sc_ref``: Single cell reference. n_type</em>n_gene. - <code class="docutils literal notranslate"><span class="pre">type_list</span></code>: List of the cell types. - <code class="docutils literal notranslate"><span class="pre">key_type</span></code>: Column name of the cell types in adata_sc. - <code class="docutils literal notranslate"><span class="pre">batch_prior</span></code>: Parameter involved in the prior distribution of the batch effect factors. It is recommended to select from <span class="math notranslate nohighlight">\([1, 2]\)</span>. - <code class="docutils literal notranslate"><span class="pre">n_epoch</span></code>: Number of training epoch.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
 <div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">device</span> <span class="o">=</span> <span class="s1">&#39;cuda&#39;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s1">&#39;cpu&#39;</span>
@@ -307,8 +340,31 @@ paper.</p>
 </pre></div>
 </div>
 </div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+100%|██████████| 8000/8000 [08:26&lt;00:00, 15.81it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Spotiphy_tutorial_1_17_1.png" src="_images/Spotiphy_tutorial_1_17_1.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+2272758115.py (5): Trying to modify attribute `.obs` of view, initializing view as actual.
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
 <div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">vmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="n">adata_st</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="n">type_list</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="mf">0.98</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
@@ -320,12 +376,28 @@ paper.</p>
 </pre></div>
 </div>
 </div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Spotiphy_tutorial_1_18_0.png" src="_images/Spotiphy_tutorial_1_18_0.png" />
+</div>
+</div>
 </section>
 <section id="Segmentation:-Estimate-cell-number-in-each-spatial-spot">
 <h2>Segmentation: Estimate cell number in each spatial spot<a class="headerlink" href="#Segmentation:-Estimate-cell-number-in-each-spatial-spot" title="Link to this heading"></a></h2>
-<p>We use the package <code class="docutils literal notranslate"><span class="pre">Stardist</span></code> to segmente nuclei from H&amp;E staining image. Then the number of nuclei in each spot is counted.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<p>We use the package <code class="docutils literal notranslate"><span class="pre">Stardist</span></code> to segmente nuclei from H&amp;E staining image. Then the number of nuclei in each spot is counted. Note that to get the results above, the image is not required.</p>
+<p>Parameters use in function <code class="docutils literal notranslate"><span class="pre">Segmentation</span></code>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">img</span></code> (numpy.ndarray):. Three channel stained image. In default, it should be hematoxylin and eosin (H&amp;E) stained image.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">spot_center</span></code>: Coordinates of the center of the spots.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">out_dir</span></code>: Output directory.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Prob_thresh</span></code>, <code class="docutils literal notranslate"><span class="pre">nms_thresh</span></code>: Two thresholds used in Stardist. User should adjust these two thresholds based on the segmentation results. More details can be found <a class="reference external" href="https://squidpy.readthedocs.io/en/stable/notebooks/tutorials/tutorial_stardist.html">here</a>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">spot_radius</span></code>: Radius of the spots. In 10X Visium, it should be 36.5.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">n_tiles</span></code>: Out of memory (OOM) errors can occur if the input image is too large. To avoid this problem, the input image is broken up into (overlapping) tiles that are processed independently and re-assembled. In default, we break the image into 8*8 tiles.</p></li>
+</ul>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
 <div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">results_folder</span><span class="o">+</span><span class="s1">&#39;segmentation/&#39;</span><span class="p">):</span>
@@ -338,9 +410,29 @@ paper.</p>
 </pre></div>
 </div>
 </div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Suppress the output of tensorflow prediction for tensorflow version 2.12.0&gt;=2.9.0.
+Found model &#39;2D_versatile_he&#39; for &#39;StarDist2D&#39;.
+Loading network weights from &#39;weights_best.h5&#39;.
+Loading thresholds from &#39;thresholds.json&#39;.
+Using default values: prob_thresh=0.692478, nms_thresh=0.3.
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+100%|██████████| 4/4 [00:07&lt;00:00,  1.78s/it]
+</pre></div></div>
+</div>
 <p>Plot a small section of the segmented results for examination.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
 <div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Segmentation</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">save</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">crop</span><span class="o">=</span><span class="p">(</span><span class="mi">2000</span><span class="p">,</span> <span class="mi">2500</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">1500</span><span class="p">),</span>
@@ -348,38 +440,68 @@ paper.</p>
 </pre></div>
 </div>
 </div>
-<p>We can save the class <code class="docutils literal notranslate"><span class="pre">Segmentation</span></code> for future usage.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
 </div>
-<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">results_folder</span><span class="o">+</span><span class="sa">f</span><span class="s1">&#39;segmentation/Segmentation.pkl&#39;</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
-    <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">Segmentation</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span>
-</pre></div>
+<div class="output_area docutils container">
+<img alt="_images/Spotiphy_tutorial_1_22_0.png" src="_images/Spotiphy_tutorial_1_22_0.png" />
 </div>
 </div>
 </section>
 <section id="Decomposition:-Decompose-the-expression-of-each-spatial-spot-into-single-cell-level">
 <h2>Decomposition: Decompose the expression of each spatial spot into single-cell level<a class="headerlink" href="#Decomposition:-Decompose-the-expression-of-each-spatial-spot-into-single-cell-level" title="Link to this heading"></a></h2>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<p>Decompose the spatial transcriptomics. Note that since we want to decompose all genes in the spatial transcriptomics, we reload the scRNA-seq data and spatial transcriptomics data. The argument <code class="docutils literal notranslate"><span class="pre">n_cell</span></code> represents the number of cells in each spot. When the histology image is not available, user can either estimate the cell number or simply set <code class="docutils literal notranslate"><span class="pre">n_cell</span></code> to <code class="docutils literal notranslate"><span class="pre">None</span></code>. When <code class="docutils literal notranslate"><span class="pre">n_cell</span></code> is <code class="docutils literal notranslate"><span class="pre">None</span></code>, we will assume that a cell type does not exist in a spot unless its proportion is larger than
+<code class="docutils literal notranslate"><span class="pre">threshold</span></code>. For more details, please refer to the <a class="reference external" href="https://jyyulab.github.io/Spotiphy/deconvolution.html#deconvolution.decomposition">document</a>.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
-<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">adata_st_decomposed</span> <span class="o">=</span> <span class="n">spotiphy</span><span class="o">.</span><span class="n">deconvolution</span><span class="o">.</span><span class="n">decomposition</span><span class="p">(</span><span class="n">adata_st_orig</span><span class="p">,</span> <span class="n">adata_sc_orig</span><span class="p">,</span> <span class="n">key_type</span><span class="p">,</span>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">adata_sc_orig</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">read_h5ad</span><span class="p">(</span><span class="s2">&quot;data/scRNA_mouse_brain.h5ad&quot;</span><span class="p">)</span>
+<span class="n">adata_st_orig</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">read_h5ad</span><span class="p">(</span><span class="s2">&quot;data/ST_mouse_brain.h5ad&quot;</span><span class="p">)</span>
+<span class="n">adata_st_decomposed</span> <span class="o">=</span> <span class="n">spotiphy</span><span class="o">.</span><span class="n">deconvolution</span><span class="o">.</span><span class="n">decomposition</span><span class="p">(</span><span class="n">adata_st_orig</span><span class="p">,</span> <span class="n">adata_sc_orig</span><span class="p">,</span> <span class="n">key_type</span><span class="p">,</span>
                                                            <span class="n">cell_proportion</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">out_dir</span><span class="o">=</span><span class="n">results_folder</span><span class="p">,</span>
-                                                           <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">spot_location</span><span class="o">=</span><span class="n">adata_st</span><span class="o">.</span><span class="n">obsm</span><span class="p">[</span><span class="s1">&#39;spatial&#39;</span><span class="p">],</span>
+                                                           <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">spot_location</span><span class="o">=</span><span class="n">adata_st_orig</span><span class="o">.</span><span class="n">obsm</span><span class="p">[</span><span class="s1">&#39;spatial&#39;</span><span class="p">],</span>
                                                            <span class="n">filtering_gene</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                                                            <span class="n">n_cell</span><span class="o">=</span><span class="n">n_cell_df</span><span class="p">[</span><span class="s1">&#39;cell_count&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
                                                            <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;ST_decomposition.h5ad&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Prepared proportion data. Time use 0.05
+Initialized scRNA and ST data. Time use 8.13
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+14it [00:00, 451.60it/s]
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Processed scRNA and ST data. Time use 0.22
+Decomposition complete. Time use 0.07
+Constructed ST decomposition data file. Time use 0.05
+Saved file to output folder. Time use 0.35
+</pre></div></div>
+</div>
 </section>
 <section id="Generate-pseudo-single-cell-resolution-image">
 <h2>Generate pseudo single-cell resolution image<a class="headerlink" href="#Generate-pseudo-single-cell-resolution-image" title="Link to this heading"></a></h2>
 <p>As only the nuclei are stained in the H&amp;E staining image, we first infer the boundary of each cell.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<p>Specifically, we gradually expend the area of each cell from the center of its nucleus. The expansion is stopped when: 1. the area of the cell is already larger than <code class="docutils literal notranslate"><span class="pre">max_area</span></code>, 2. the neighborhood are all occupied by other cells, or 3. the largest distance from the cell boundary to the nucleus center is larger than <code class="docutils literal notranslate"><span class="pre">max_dist</span></code>. <code class="docutils literal notranslate"><span class="pre">delta</span></code> represent the increase of expansion distance in each iteration.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
 <div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">search_direction</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">],</span>
@@ -390,9 +512,18 @@ paper.</p>
 </pre></div>
 </div>
 </div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+100%|██████████| 12/12 [00:07&lt;00:00,  1.56it/s]
+100%|██████████| 4100/4100 [00:07&lt;00:00, 549.41it/s]
+</pre></div></div>
+</div>
 <p>We can save the dictionary of the cell boundaries for future usage.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
 <div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">results_folder</span><span class="o">+</span><span class="sa">f</span><span class="s1">&#39;segmentation/boundary_dict.pkl&#39;</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
@@ -400,9 +531,14 @@ paper.</p>
 </pre></div>
 </div>
 </div>
-<p>Assign cell types to nuclei in the spatial tissue using these three steps: - Function <code class="docutils literal notranslate"><span class="pre">proportion_to_count</span></code>: compute the count of each cell type using the segmentation outcomes and the estimated proportions. - Function <code class="docutils literal notranslate"><span class="pre">assign_type_spot</span></code>: assign cell types to nuclei within the spots. - Function <code class="docutils literal notranslate"><span class="pre">cell_proportion_smooth</span></code>: allocate cell types to nuclei located outside the spots.</p>
+<p>Assign cell types to nuclei in the spatial tissue using these three steps:</p>
+<ul class="simple">
+<li><p>Function <code class="docutils literal notranslate"><span class="pre">proportion_to_count</span></code>: compute the count of each cell type using the segmentation outcomes and the estimated proportions.</p></li>
+<li><p>Function <code class="docutils literal notranslate"><span class="pre">assign_type_spot</span></code>: assign cell types to nuclei within the spots.</p></li>
+<li><p>Function <code class="docutils literal notranslate"><span class="pre">cell_proportion_smooth</span></code>: allocate cell types to nuclei located outside the spots.</p></li>
+</ul>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
 <div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">cell_number</span> <span class="o">=</span> <span class="n">spotiphy</span><span class="o">.</span><span class="n">deconvolution</span><span class="o">.</span><span class="n">proportion_to_count</span><span class="p">(</span><span class="n">cell_proportion</span><span class="p">,</span> <span class="n">n_cell_df</span><span class="p">[</span><span class="s1">&#39;cell_count&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
@@ -417,8 +553,8 @@ paper.</p>
 </div>
 </div>
 <p>Define the class <code class="docutils literal notranslate"><span class="pre">plot_visium</span></code> for generating the pseudo image. Then we plot the legend of the images.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
 </pre></div>
 </div>
 <div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">plot_visium</span> <span class="o">=</span> <span class="n">spotiphy</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">Plot_Visium</span><span class="p">(</span><span class="n">segmentation</span><span class="o">=</span><span class="n">Segmentation</span><span class="p">,</span> <span class="n">boundary_dict</span><span class="o">=</span><span class="n">boundary_dict</span><span class="p">,</span>
@@ -427,10 +563,17 @@ paper.</p>
 </pre></div>
 </div>
 </div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Spotiphy_tutorial_1_33_0.png" src="_images/Spotiphy_tutorial_1_33_0.png" />
+</div>
+</div>
 <p>We now generate the pseudo image. The user need to specify the following arguments: - <code class="docutils literal notranslate"><span class="pre">shape</span></code>: When adding the cells, which shape should be used. Should be selected from <code class="docutils literal notranslate"><span class="pre">cell</span></code>, <code class="docutils literal notranslate"><span class="pre">nucleus</span></code>, or <code class="docutils literal notranslate"><span class="pre">circle</span></code> - <code class="docutils literal notranslate"><span class="pre">cell</span></code>: Which group of cells should be included in the image: <code class="docutils literal notranslate"><span class="pre">in</span></code>, <code class="docutils literal notranslate"><span class="pre">out</span></code>, or <code class="docutils literal notranslate"><span class="pre">both</span></code>. - <code class="docutils literal notranslate"><span class="pre">boundary</span></code>: Which group of boundaries should be included in the image: <code class="docutils literal notranslate"><span class="pre">in</span></code>, <code class="docutils literal notranslate"><span class="pre">out</span></code>, <code class="docutils literal notranslate"><span class="pre">both</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
 <p>For example, if we want to generate a pseudo image with cells inside the spots, the following code can be used.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
 </pre></div>
 </div>
 <div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">plot_visium</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">background</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="n">results_folder</span><span class="o">+</span><span class="s1">&#39;pseudo_image_in.png&#39;</span><span class="p">,</span> <span class="n">spot_color</span><span class="o">=</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">),</span>
@@ -438,9 +581,44 @@ paper.</p>
 </pre></div>
 </div>
 </div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Adding cells.
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+100%|██████████| 4100/4100 [00:07&lt;00:00, 575.83it/s]
+14it [00:00, 27.47it/s]
+10747it [00:00, 1791652.49it/s]
+100%|██████████| 10747/10747 [00:00&lt;00:00, 307073.12it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Adding spots.
+Saving the image.
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Spotiphy_tutorial_1_35_3.png" src="_images/Spotiphy_tutorial_1_35_3.png" />
+</div>
+</div>
 <p>If we want to show all the cells using circles without the cell boundary, we can use the following code:</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
 </pre></div>
 </div>
 <div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">plot_visium</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">background</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="n">results_folder</span><span class="o">+</span><span class="s1">&#39;pseudo_image_both_circle.png&#39;</span><span class="p">,</span>
@@ -449,9 +627,50 @@ paper.</p>
 </pre></div>
 </div>
 </div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Adding cells.
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+10747it [00:00, 182128.94it/s]
+100%|██████████| 10747/10747 [00:00&lt;00:00, 2149350.81it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Adding spots.
+Saving the image.
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Spotiphy_tutorial_1_37_4.png" src="_images/Spotiphy_tutorial_1_37_4.png" />
+</div>
+</div>
 <p>Note that we can also save the updated class <code class="docutils literal notranslate"><span class="pre">Segmentation</span></code> for future usage.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
 </pre></div>
 </div>
 <div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">results_folder</span><span class="o">+</span><span class="sa">f</span><span class="s1">&#39;segmentation/Segmentation.pkl&#39;</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>

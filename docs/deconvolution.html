@@ -45,7 +45,7 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">General</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Basic</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
@@ -308,7 +308,7 @@ original proportion is used, we still filter some cells in iscRNA.</p></li>
 <li><p><strong>plot</strong> – Whether to plot the ELBO loss.</p></li>
 <li><p><strong>n_epoch</strong> – Number of training epochs.</p></li>
 <li><p><strong>adam_params</strong> – Parameters for the adam optimizer.</p></li>
-<li><p><strong>batch_prior</strong> – Parameter of the prior Dirichlet distribution of the batch effect: 2^(Uniform(0, batch_prior))</p></li>
+<li><p><strong>batch_prior</strong> – Parameter of the prior distribution of the batch effect: 2^(Uniform(0, batch_prior))</p></li>
 <li><p><strong>fig_size</strong> – Size of the figure.</p></li>
 <li><p><strong>dpi</strong> – Dots per inch (DPI) of the figure.</p></li>
 </ul>
@@ -327,7 +327,7 @@ original proportion is used, we still filter some cells in iscRNA.</p></li>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>X</strong> – Spatial transcriptomics data. n_spot*n_gene.</p></li>
-<li><p><strong>adata_sc</strong> – scRNA data (Anndata).</p></li>
+<li><p><strong>adata_sc</strong> (<em>anndata.Anndata</em>) – scRNA data.</p></li>
 <li><p><strong>sc_ref</strong> – Single cell reference. n_type*n_gene.</p></li>
 <li><p><strong>type_list</strong> – List of the cell types.</p></li>
 <li><p><strong>key_type</strong> – Column name of the cell types in adata_sc.</p></li>

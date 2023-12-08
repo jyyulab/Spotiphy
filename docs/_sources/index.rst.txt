@@ -34,7 +34,7 @@ With these outputs, Spotiphy facilitates numerous downstream analyses. For more 
 .. toctree::
    :maxdepth: 2
    :hidden:
-   :caption: General
+   :caption: Basic
 
    install
    tutorials
