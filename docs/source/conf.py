@@ -34,3 +34,4 @@ html_context = {
     "github_version": "master",  # Version
     "conf_py_path": "/docs/",  # Path in the checkout to the docs root
 }
+html_favicon = 'logo.ico'
