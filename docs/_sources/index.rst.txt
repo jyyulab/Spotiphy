@@ -28,7 +28,7 @@ With these outputs, Spotiphy facilitates numerous downstream analyses. For more 
 
 
 
-.. image:: _static/figures/Spotiphy_overview.png
+.. image:: _static/figures/cover.png
     :align: center
 
 .. toctree::
