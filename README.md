@@ -1,4 +1,4 @@
-# Spotiphy reveals location-specific cell subtypes through transcriptome profile at single-cell resolution
+# Spotiphy: generative modeling in single-cell spatial whole transcriptomics
 
 [![Pypi version](https://img.shields.io/pypi/v/spotiphy)](https://pypi.org/project/spotiphy/)
 [![Downloads](https://static.pepy.tech/badge/spotiphy)](https://pepy.tech/project/spotiphy)
