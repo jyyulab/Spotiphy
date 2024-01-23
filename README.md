@@ -15,6 +15,7 @@ Spotiphy is a Python-based pipeline designed to enhance our understanding of bio
 
 With these outputs, Spotiphy facilitates numerous downstream analyses. For more detailed information, please refer to the associated research paper.
 
+![Spotiphy_overview](https://github.com/jyyulab/Spotiphy/blob/9a16882511aef6e0e7db9154f0d9f59a2c567c6f/figures/cover.png)
 
 ![Spotiphy_overview](https://github.com/jyyulab/Spotiphy/blob/9a16882511aef6e0e7db9154f0d9f59a2c567c6f/figures/cover.png)
 
