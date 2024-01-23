@@ -139,7 +139,7 @@ def estimation_proportion(X, adata_sc, sc_ref, type_list, key_type, device='cuda
 
 
 def plot_proportion(img, proportion, spot_location, radius, cmap_name='viridis', alpha=0.4, save_path='proportion.png',
-                    vmax=0.98, spot_scale=1.3, show_figure=False):
+                    vmax=0.98, spot_scale=1.3, show_figure=False, int_ticks=False, bar_location=(5800, 8100)):
     """
     Plot the proportion of a cell type.
 
@@ -153,6 +153,8 @@ def plot_proportion(img, proportion, spot_location, radius, cmap_name='viridis',
         save_path: If not none, save the img to the path.
         vmax: Quantile of the maximum value in the color bar.
         spot_scale: Scale of the spot in the figure.
+        show_figure: Whether plot the figure.
+        int_ticks: Whether the ticks must be integers.
     """
     def render_to_array(fig):
         fig.canvas.draw()
@@ -179,6 +181,8 @@ def plot_proportion(img, proportion, spot_location, radius, cmap_name='viridis',
         a = int(vmax*10)/20
     else:
         a = int(vmax*100)/200
+    if int_ticks:
+        a = int(a)
     ticks=[0, a, a*2]
     cb1 = plt.colorbar(plt.cm.ScalarMappable(norm=plt.Normalize(vmin, vmax), cmap=cmap), cax=cbar_ax, ticks=ticks)
     cb1.outline.set_edgecolor("none")
@@ -187,7 +191,7 @@ def plot_proportion(img, proportion, spot_location, radius, cmap_name='viridis',
     cbar_array = render_to_array(fig)
     plt.close(fig)
 
-    c = [5800, 8100]
+    c = [bar_location[0], bar_location[1]]
     img[c[0]:c[0]+cbar_array.shape[0], c[1]:c[1]+cbar_array.shape[1]][np.sum(cbar_array, axis=2) < 252*3] \
         = cbar_array[np.sum(cbar_array, axis=2) < 252*3]
 

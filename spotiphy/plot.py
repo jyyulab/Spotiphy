@@ -7,12 +7,13 @@ import matplotlib.patches as patches
 
 
 class Plot_Visium:
-    def __init__(self, segmentation, boundary_dict, type_list):
+    def __init__(self, segmentation, boundary_dict, type_list, colors=None):
         """
         Args:
             segmentation: Object of spotiphy.segmentation.Segmentation.
             boundary_dict: Output of function spotiphy.segmentation.cell_boundary.
             type_list: List of the cell types.
+            colors: Colors of each cell type.
         """
         self.img = segmentation.img  # Original image.
         if np.max(self.img) <= 1:
@@ -32,8 +33,11 @@ class Plot_Visium:
         self.img_size = self.img_seg.shape[:2]
         self.type_list = type_list
 
-        self.colors = np.array(list(plt.get_cmap("tab20b").colors) + list(plt.get_cmap("tab20c").colors))
-        self.colors = (self.colors*255).astype(np.int32)
+        if colors is None:
+            self.colors = np.array(list(plt.get_cmap("tab20b").colors) + list(plt.get_cmap("tab20c").colors))
+            self.colors = (self.colors*255).astype(np.int32)
+        else:
+            self.colors = colors
         self.color_dict = {type_: list(self.colors[i]) for i, type_ in enumerate(type_list)}
 
     def plot(self, background=False, cell='both', shape='cell', circle_size=10, boundary=None,
@@ -68,7 +72,8 @@ class Plot_Visium:
             for i in tqdm(range(len(self.img_cell))):
                 for j in range(len(self.img_cell[0])):
                     k = self.img_cell[i, j]
-                    if k > 0 and type_annotation[k-1] in d.keys() and in_spot[k-1] in group_dict[cell]:
+                    if (0 < k <= len(type_annotation) and type_annotation[k-1] in d.keys()
+                            and in_spot[k-1] in group_dict[cell]):
                         type_mask[i, j, d[type_annotation[k-1]]] = True
             for i, type_ in tqdm(enumerate(self.type_list)):
                 color = np.array(self.color_dict[type_]).astype(np.int32)
@@ -103,16 +108,27 @@ class Plot_Visium:
         plt.figure(dpi=dpi)
         plt.imshow(img)
 
-    def plot_legend(self, save=None, dpi=300):
-        img = np.zeros((len(self.type_list)*60+40, 400, 3))
+    def plot_legend(self, save=None, dpi=300, background=(0, 0, 0), ncol=1, word_color=(255, 255, 255), fontsize=6,
+                    horizontal_distance=380):
+        nrow = len(self.type_list)//ncol
+        if nrow*ncol < len(self.type_list):
+            nrow += 1
+        img = np.ones((nrow*60+40, ncol*horizontal_distance-30, 3)) * np.array(background)
+        img = img.astype(np.int32)
+
         fig, ax = plt.subplots(dpi=dpi)
         plt.imshow(img)
-        i = 0
+        i = 0  # col index
+        j = 0  # row index
+        word_color = (word_color[0]/255, word_color[1]/255, word_color[2]/255)
         for k, v in self.color_dict.items():
-            ax.add_patch(patches.Rectangle((240, i*60+20), 150, 45, facecolor=np.array(v)/255,
-                                           edgecolor='none'))
-            ax.text(20, i*60+40, k, va="center", ha="left", fontsize=5, color='white')
-            i += 1
+            ax.add_patch(patches.Rectangle((i*horizontal_distance+20, j*60+20), 100, 45,
+                                           facecolor=np.array(v)/255, edgecolor='none'))
+            ax.text(i*horizontal_distance+145, j*60+43, k, va="center", ha="left", fontsize=fontsize, color=word_color)
+            j += 1
+            if j == nrow:
+                j = 0
+                i += 1
         ax.axis('off')
         if save is not None:
             plt.savefig(save, bbox_inches='tight', pad_inches=0)
