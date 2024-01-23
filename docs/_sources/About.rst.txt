@@ -6,8 +6,9 @@ For the detailed description of Spotiphy algorithm, please check our lab page: `
 Contact
 ----------------------
 - Ziqian Zheng: zzheng92@wisc.edu
-- Jiyuan Yang: jiyuan.yang@stjude.org
-- Jiyang Yu: jiyang.yu@stjude.org
+- Dr. Jiyuan Yang: jiyuan.yang@stjude.org
+- Dr. Kaibo Liu: kliu8@wisc.edu
+- Dr. Jiyang Yu: jiyang.yu@stjude.org
 
 Citation
 ----------------------
