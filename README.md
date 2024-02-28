@@ -1,4 +1,4 @@
-# Spotiphy: generative modeling in single-cell spatial whole transcriptomics
+# Spotiphy enables single-cell spatial whole transcriptomics via generative modeling
 
 [![Pypi version](https://img.shields.io/pypi/v/spotiphy)](https://pypi.org/project/spotiphy/)
 [![Downloads](https://static.pepy.tech/badge/spotiphy)](https://pepy.tech/project/spotiphy)
