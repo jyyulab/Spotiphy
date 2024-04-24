@@ -138,12 +138,15 @@ def marker_selection(adata_sc: anndata.AnnData, key_type: str, threshold_cover=0
         fold_change_temp = fold_change_temp[selected]
         selected_gene_idx = np.argsort(fold_change_temp)[::-1][:n_select]
         selected_gene = gene_name_temp[selected_gene_idx]
+
         if return_dict:
             marker_gene[type_list[i]] = list(selected_gene)
         else:
             marker_gene.extend(list(selected_gene))
         if verbose == 1:
-            print(type_list[i] + ': {:d}'.format(len(list(selected_gene))))
+            print(f'{type_list[i]}: {len(list(selected_gene)):d}')
+        elif len(list(selected_gene)) < 5:
+            print(f'Warning: Only {len(list(selected_gene)):d} genes are selected for {type_list[i]}.')
     return marker_gene
 
 

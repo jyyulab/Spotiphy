@@ -1,7 +1,6 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from numba import cuda
 from stardist.models import StarDist2D
 from csbdeep.utils import normalize
 import tensorflow as tf
@@ -78,8 +77,6 @@ class Segmentation:
         model = StarDist2D.from_pretrained('2D_versatile_he')
         label, details = model.predict_instances(img, nms_thresh=nms_thresh, prob_thresh=prob_thresh, n_tiles=n_tiles,
                                                  show_tile_progress=verbose)
-        device = cuda.get_current_device()
-        device.reset()
         return label, details
 
     @staticmethod
