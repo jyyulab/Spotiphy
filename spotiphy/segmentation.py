@@ -8,12 +8,14 @@ from packaging import version
 import os
 from scipy.signal import convolve2d
 from tqdm import tqdm
+import cv2
 os.environ['CUDA_LAUNCH_BLOCKING'] = '1'
 
 
 class Segmentation:
     def __init__(self, img, spot_center: np.ndarray, out_dir: str = '', prob_thresh: float = 0.2,
-                 nms_thresh: float = 0.5, spot_radius: float = 36.5, n_tiles=(8, 8, 1)):
+                 nms_thresh: float = 0.5, spot_radius: float = 36.5, n_tiles=(8, 8, 1), 
+                 enhancement=False, enhancement_params=None):
         """
         Args:
             img (numpy.ndarray):. Three channel stained image. In default, it should be hematoxylin and eosin (H&E) stained
@@ -26,9 +28,16 @@ class Segmentation:
             n_tiles: Out of memory (OOM) errors can occur if the input image is too large. To avoid this problem, the
                 input image is broken up into (overlapping) tiles that are processed independently and re-assembled.
                 (Copied from stardist document). In default, we break the image into 8*8 tiles.
+            enhancement: Whether to apply image enhancement before segmentation. (testing)
+            enhancement_params: Optional, the parameter in the enhancement procedure. If not provided, use default. (testing)
 
         """
-        self.img = img
+        self.enhancement_params = enhancement_params if enhancement_params else {'cla_wt': 0.2}
+        if enhancement:
+            self.img = self._apply_enhancement(img, **self.enhancement_params)
+        else:
+            self.img = img
+
         if spot_center is not None:
             assert spot_center.shape[1] == 2, "spot_center must have exact two columns."
         self.spot_center = np.array(spot_center)
@@ -47,6 +56,42 @@ class Segmentation:
         if version.parse(tf.__version__) >= version.parse("2.9.0"):
             tf.keras.Model.predict = change_predict_defaults(tf.keras.Model.predict)
             print(f"Suppress the output of tensorflow prediction for tensorflow version {tf.version.VERSION}>=2.9.0.")
+
+    @staticmethod
+    def _apply_enhancement(img, cla_wt: float):
+        """Apply CLAHE and bilateral filtering to enhance the image.
+
+        Args:
+            img: Input RGB image.
+            cla_wt: Weight for combining CLAHE and bilateral filtering results. Must be between 0 and 1.
+
+        Returns:
+            np.ndarray: Enhanced image.
+        """
+
+        def _bilateral(img):
+            bilateral_filtered = cv2.bilateralFilter(img, d=9, sigmaColor=75, sigmaSpace=75)
+            return bilateral_filtered
+
+        def _clahe(img):
+            lab = cv2.cvtColor(img, cv2.COLOR_RGB2LAB)
+            l, a, b = cv2.split(lab)
+            clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
+            l_clahe = clahe.apply(l)
+            lab_clahe = cv2.merge((l_clahe, a, b))
+            result_rgb = cv2.cvtColor(lab_clahe, cv2.COLOR_LAB2RGB)
+            return result_rgb
+
+        def _CLA_BIL(img, cla_wt):
+            clahe_img = _clahe(img)
+            bil_img = _bilateral(img)
+            combined_result = cv2.addWeighted(clahe_img, cla_wt, bil_img, 1-cla_wt, 0)
+            return combined_result
+        
+        img = _CLA_BIL(img, cla_wt)
+
+        return img
+
 
     @staticmethod
     def stardist_2D_versatile_he(img, prob_thresh: float = 0.2, nms_thresh: float = 0.5, n_tiles=(8, 8, 1),
@@ -72,6 +117,7 @@ class Segmentation:
             np.ndarray(n_nucleus*2). Center of each nucleus. Details[2]: np.ndarray(n_nucleus). Probability that a
             segmented nucleus is indeed a nucleus.
         """
+
         axis_norm = (0, 1, 2)  # normalize channels jointly
         img = normalize(img, 1, 99.8, axis=axis_norm)
         model = StarDist2D.from_pretrained('2D_versatile_he')
