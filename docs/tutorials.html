@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="./">
 <head>
@@ -5,21 +7,19 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Tutorials &mdash; Spotiphy 0.1.2 documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=92fd9be5" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
 
   
     <link rel="shortcut icon" href="_static/logo.ico"/>
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="_static/jquery.js?v=5d32c60e"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=92734c54"></script>
-        <script src="_static/doctools.js?v=888ff710"></script>
-        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=92734c54"></script>
+      <script src="_static/doctools.js?v=9a2dae69"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -51,6 +51,7 @@
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Tutorials</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="Spotiphy_tutorial_1.html">Deconvolution and decomposition of mouse cortex with Spotiphy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Spotiphy_tutorial_2_HumanBrain.html">Deconvolution and decomposition of mouse cortex with Spotiphy</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="questions.html">Frequently Asked Questions</a></li>
@@ -59,7 +60,6 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="scRNA%20Reference.html">scRNA Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Deconvolution%20and%20Decomposition.html">Deconvolution and Decomposition</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Segmentation.html">Segmentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Visualization.html">Visualization</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">About</span></p>
@@ -104,6 +104,17 @@
 <li class="toctree-l2"><a class="reference internal" href="Spotiphy_tutorial_1.html#Segmentation:-Estimate-cell-number-in-each-spatial-spot">Segmentation: Estimate cell number in each spatial spot</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Spotiphy_tutorial_1.html#Decomposition:-Decompose-the-expression-of-each-spatial-spot-into-single-cell-level">Decomposition: Decompose the expression of each spatial spot into single-cell level</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Spotiphy_tutorial_1.html#Generate-pseudo-single-cell-resolution-image">Generate pseudo single-cell resolution image</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Spotiphy_tutorial_2_HumanBrain.html">Deconvolution and decomposition of mouse cortex with Spotiphy</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Spotiphy_tutorial_2_HumanBrain.html#Contents">Contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Spotiphy_tutorial_2_HumanBrain.html#Install-and-load-packages">Install and load packages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Spotiphy_tutorial_2_HumanBrain.html#Load-Visium-data,-scRNA-data,-and-the-HE-staining-image.">Load Visium data, scRNA data, and the HE staining image.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Spotiphy_tutorial_2_HumanBrain.html#Select-marker-genes-for-the-deconvolution">Select marker genes for the deconvolution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Spotiphy_tutorial_2_HumanBrain.html#Deconvolution:-Estimate-cell-abundance-in-spatial-spots">Deconvolution: Estimate cell abundance in spatial spots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Spotiphy_tutorial_2_HumanBrain.html#Segmentation:-Estimate-cell-number-in-each-spatial-spot">Segmentation: Estimate cell number in each spatial spot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Spotiphy_tutorial_2_HumanBrain.html#Decomposition:-Decompose-the-expression-of-each-spatial-spot-into-single-cell-level">Decomposition: Decompose the expression of each spatial spot into single-cell level</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Spotiphy_tutorial_2_HumanBrain.html#Generate-pseudo-single-cell-resolution-image">Generate pseudo single-cell resolution image</a></li>
 </ul>
 </li>
 </ul>

@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="./">
 <head>
@@ -5,28 +7,24 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Deconvolution and decomposition of mouse cortex with Spotiphy &mdash; Spotiphy 0.1.2 documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=92fd9be5" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="_static/nbsphinx-code-cells.css" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/nbsphinx-code-cells.css?v=2aa19091" />
 
   
     <link rel="shortcut icon" href="_static/logo.ico"/>
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="_static/jquery.js?v=5d32c60e"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=92734c54"></script>
-        <script src="_static/doctools.js?v=888ff710"></script>
-        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=92734c54"></script>
+      <script src="_static/doctools.js?v=9a2dae69"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Frequently Asked Questions" href="questions.html" />
+    <link rel="next" title="Deconvolution and decomposition of mouse cortex with Spotiphy" href="Spotiphy_tutorial_2_HumanBrain.html" />
     <link rel="prev" title="Tutorials" href="tutorials.html" /> 
 </head>
 
@@ -64,6 +62,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#Generate-pseudo-single-cell-resolution-image">Generate pseudo single-cell resolution image</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="Spotiphy_tutorial_2_HumanBrain.html">Deconvolution and decomposition of mouse cortex with Spotiphy</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="questions.html">Frequently Asked Questions</a></li>
@@ -72,7 +71,6 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="scRNA%20Reference.html">scRNA Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Deconvolution%20and%20Decomposition.html">Deconvolution and Decomposition</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Segmentation.html">Segmentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Visualization.html">Visualization</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">About</span></p>
@@ -137,7 +135,7 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
 <span class="n">IN_COLAB</span> <span class="o">=</span> <span class="s2">&quot;google.colab&quot;</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span>
 <span class="k">if</span> <span class="n">IN_COLAB</span><span class="p">:</span>
     <span class="err">!</span><span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">qq</span> <span class="n">spotiphy</span>
@@ -148,15 +146,15 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">spotiphy</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">pickle</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">matplotlib</span> <span class="k">as</span> <span class="nn">mpl</span>
-<span class="kn">import</span> <span class="nn">scanpy</span> <span class="k">as</span> <span class="nn">sc</span>
-<span class="kn">import</span> <span class="nn">torch</span>
-<span class="kn">import</span> <span class="nn">cv2</span>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">spotiphy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pickle</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mpl</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scanpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sc</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">cv2</span>
 
 <span class="n">results_folder</span> <span class="o">=</span> <span class="s1">&#39;results/mouse_brain/&#39;</span>
 <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">results_folder</span><span class="p">):</span>
@@ -173,7 +171,7 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">requests</span>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
 <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="s1">&#39;data/&#39;</span><span class="p">):</span>
     <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="s1">&#39;data/&#39;</span><span class="p">)</span>
 
@@ -246,7 +244,12 @@ scatterplots.py (392): No data for colormapping provided via &#39;c&#39;. Parame
 </section>
 <section id="Select-marker-genes-for-the-deconvolution">
 <h2>Select marker genes for the deconvolution<a class="headerlink" href="#Select-marker-genes-for-the-deconvolution" title="Link to this heading"></a></h2>
-<p>Initialize the spatial trancriptomics and scRNA data. Specifically, - <code class="docutils literal notranslate"><span class="pre">adata_sc</span></code> and <code class="docutils literal notranslate"><span class="pre">adata_st</span></code> are normalized - cells and genes in <code class="docutils literal notranslate"><span class="pre">adata_sc</span></code> are filtered - only the common genes shared by <code class="docutils literal notranslate"><span class="pre">adata_sc</span></code> and <code class="docutils literal notranslate"><span class="pre">adata_st</span></code> are kept</p>
+<p>Initialize the spatial trancriptomics and scRNA data. Specifically,</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">adata_sc</span></code> and <code class="docutils literal notranslate"><span class="pre">adata_st</span></code> are normalized</p></li>
+<li><p>cells and genes in <code class="docutils literal notranslate"><span class="pre">adata_sc</span></code> are filtered</p></li>
+<li><p>only the common genes shared by <code class="docutils literal notranslate"><span class="pre">adata_sc</span></code> and <code class="docutils literal notranslate"><span class="pre">adata_st</span></code> are kept</p></li>
+</ul>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
@@ -331,7 +334,16 @@ Find common genes: 0.05s
 <section id="Deconvolution:-Estimate-cell-abundance-in-spatial-spots">
 <h2>Deconvolution: Estimate cell abundance in spatial spots<a class="headerlink" href="#Deconvolution:-Estimate-cell-abundance-in-spatial-spots" title="Link to this heading"></a></h2>
 <p>For performing the deconvolution, we calculate the posterior distribution of certain parameters within a probabilistic generative model using <code class="docutils literal notranslate"><span class="pre">`Pyro</span></code> &lt;<a class="reference external" href="https://pyro.ai">https://pyro.ai</a>&gt;`__.</p>
-<p>Parameters of the function <code class="docutils literal notranslate"><span class="pre">estimation_proportion</span></code>: - <code class="docutils literal notranslate"><span class="pre">X</span></code>: Spatial transcriptomics data. n_spot<em>n_gene. - ``adata_sc``: scRNA data (Anndata). - ``sc_ref``: Single cell reference. n_type</em>n_gene. - <code class="docutils literal notranslate"><span class="pre">type_list</span></code>: List of the cell types. - <code class="docutils literal notranslate"><span class="pre">key_type</span></code>: Column name of the cell types in adata_sc. - <code class="docutils literal notranslate"><span class="pre">batch_prior</span></code>: Parameter involved in the prior distribution of the batch effect factors. It is recommended to select from <span class="math notranslate nohighlight">\([1, 2]\)</span>. - <code class="docutils literal notranslate"><span class="pre">n_epoch</span></code>: Number of training epoch.</p>
+<p>Parameters of the function <code class="docutils literal notranslate"><span class="pre">estimation_proportion</span></code>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">X</span></code>: Spatial transcriptomics data. n_spot*n_gene.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">adata_sc</span></code>: scRNA data (Anndata).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sc_ref</span></code>: Single cell reference. n_type*n_gene.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">type_list</span></code>: List of the cell types.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">key_type</span></code>: Column name of the cell types in adata_sc.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">batch_prior</span></code>: Parameter involved in the prior distribution of the batch effect factors. It is recommended to select from <span class="math notranslate nohighlight">\([1, 2]\)</span>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">n_epoch</span></code>: Number of training epoch.</p></li>
+</ul>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
@@ -575,7 +587,12 @@ Saved file to output folder. Time use 0.35
 <img alt="_images/Spotiphy_tutorial_1_33_0.png" src="_images/Spotiphy_tutorial_1_33_0.png" />
 </div>
 </div>
-<p>We now generate the pseudo image. The user need to specify the following arguments: - <code class="docutils literal notranslate"><span class="pre">shape</span></code>: When adding the cells, which shape should be used. Should be selected from <code class="docutils literal notranslate"><span class="pre">cell</span></code>, <code class="docutils literal notranslate"><span class="pre">nucleus</span></code>, or <code class="docutils literal notranslate"><span class="pre">circle</span></code> - <code class="docutils literal notranslate"><span class="pre">cell</span></code>: Which group of cells should be included in the image: <code class="docutils literal notranslate"><span class="pre">in</span></code>, <code class="docutils literal notranslate"><span class="pre">out</span></code>, or <code class="docutils literal notranslate"><span class="pre">both</span></code>. - <code class="docutils literal notranslate"><span class="pre">boundary</span></code>: Which group of boundaries should be included in the image: <code class="docutils literal notranslate"><span class="pre">in</span></code>, <code class="docutils literal notranslate"><span class="pre">out</span></code>, <code class="docutils literal notranslate"><span class="pre">both</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+<p>We now generate the pseudo image. The user need to specify the following arguments:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">shape</span></code>: When adding the cells, which shape should be used. Should be selected from <code class="docutils literal notranslate"><span class="pre">cell</span></code>, <code class="docutils literal notranslate"><span class="pre">nucleus</span></code>, or <code class="docutils literal notranslate"><span class="pre">circle</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cell</span></code>: Which group of cells should be included in the image: <code class="docutils literal notranslate"><span class="pre">in</span></code>, <code class="docutils literal notranslate"><span class="pre">out</span></code>, or <code class="docutils literal notranslate"><span class="pre">both</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">boundary</span></code>: Which group of boundaries should be included in the image: <code class="docutils literal notranslate"><span class="pre">in</span></code>, <code class="docutils literal notranslate"><span class="pre">out</span></code>, <code class="docutils literal notranslate"><span class="pre">both</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+</ul>
 <p>For example, if we want to generate a pseudo image with cells inside the spots, the following code can be used.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
@@ -691,7 +708,7 @@ Saving the image.
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="tutorials.html" class="btn btn-neutral float-left" title="Tutorials" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="questions.html" class="btn btn-neutral float-right" title="Frequently Asked Questions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="Spotiphy_tutorial_2_HumanBrain.html" class="btn btn-neutral float-right" title="Deconvolution and decomposition of mouse cortex with Spotiphy" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

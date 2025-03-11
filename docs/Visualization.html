@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="./">
 <head>
@@ -5,26 +7,22 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Visualization &mdash; Spotiphy 0.1.2 documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=92fd9be5" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
 
   
     <link rel="shortcut icon" href="_static/logo.ico"/>
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="_static/jquery.js?v=5d32c60e"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=92734c54"></script>
-        <script src="_static/doctools.js?v=888ff710"></script>
-        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=92734c54"></script>
+      <script src="_static/doctools.js?v=9a2dae69"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="About the project" href="About.html" />
-    <link rel="prev" title="Segmentation" href="Segmentation.html" /> 
+    <link rel="prev" title="Deconvolution and Decomposition" href="Deconvolution%20and%20Decomposition.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -56,19 +54,7 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="scRNA%20Reference.html">scRNA Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Deconvolution%20and%20Decomposition.html">Deconvolution and Decomposition</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Segmentation.html">Segmentation</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Visualization</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#plot.Plot_Visium"><code class="docutils literal notranslate"><span class="pre">Plot_Visium</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#plot.Plot_Visium.plot"><code class="docutils literal notranslate"><span class="pre">Plot_Visium.plot()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#plot.Plot_Visium.plot_legend"><code class="docutils literal notranslate"><span class="pre">Plot_Visium.plot_legend()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#plot.Plot_Xenium"><code class="docutils literal notranslate"><span class="pre">Plot_Xenium</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#plot.Plot_Xenium.plot"><code class="docutils literal notranslate"><span class="pre">Plot_Xenium.plot()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Visualization</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">About</span></p>
 <ul>
@@ -99,74 +85,15 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-plot">
-<span id="visualization"></span><h1>Visualization<a class="headerlink" href="#module-plot" title="Link to this heading"></a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="plot.Plot_Visium">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plot.</span></span><span class="sig-name descname"><span class="pre">Plot_Visium</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">segmentation</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundary_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plot.html#Plot_Visium"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plot.Plot_Visium" title="Link to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="plot.Plot_Visium.plot">
-<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">background</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'both'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cell'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">circle_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundary</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Visium_plot.png'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">background_alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spot_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spot_color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">255)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell_boundary_color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(100,</span> <span class="pre">100,</span> <span class="pre">100)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dpi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">300</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plot.html#Plot_Visium.plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plot.Plot_Visium.plot" title="Link to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>background</strong> – If show the background.</p></li>
-<li><p><strong>cell</strong> – Which group of cell shapes to plot? [both, in, out]</p></li>
-<li><p><strong>shape</strong> – Which shape to plot? [cell, nucleus, circle]</p></li>
-<li><p><strong>circle_size</strong> – Size of the nuclei.</p></li>
-<li><p><strong>boundary</strong> – Which group of cell boundary to plot? [both, in, out]</p></li>
-<li><p><strong>save</strong> – If not none, save the figure to the path.</p></li>
-<li><p><strong>background_alpha</strong> – Opacity of the background figure.</p></li>
-<li><p><strong>spot</strong> – If plot the spot.</p></li>
-<li><p><strong>spot_width</strong> – Width of the spot.</p></li>
-<li><p><strong>spot_color</strong> – Color of the spot.</p></li>
-<li><p><strong>cell_boundary_color</strong> – Color of the cell boundaries.</p></li>
-<li><p><strong>dpi</strong> – DPI of the image plotted.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="plot.Plot_Visium.plot_legend">
-<span class="sig-name descname"><span class="pre">plot_legend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dpi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">300</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">background</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ncol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">word_color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(255,</span> <span class="pre">255,</span> <span class="pre">255)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fontsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">6</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">horizontal_distance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">380</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plot.html#Plot_Visium.plot_legend"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plot.Plot_Visium.plot_legend" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="plot.Plot_Xenium">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plot.</span></span><span class="sig-name descname"><span class="pre">Plot_Xenium</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Xenium_img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell_boundaries</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nucleus_boundaries</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nucleus_centers</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plot.html#Plot_Xenium"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plot.Plot_Xenium" title="Link to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="plot.Plot_Xenium.plot">
-<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">background</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cell'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Xenium_plot.png'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell_boundaries</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">background_alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">circle_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell_boundary_color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(100,</span> <span class="pre">100,</span> <span class="pre">100)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell_boundary_thickness</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plot.html#Plot_Xenium.plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plot.Plot_Xenium.plot" title="Link to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>background</strong> – If show the background.</p></li>
-<li><p><strong>shape</strong> – Which shape to plot? [cell, nucleus, circle]</p></li>
-<li><p><strong>save</strong> – If not none, save the figure to the path.</p></li>
-<li><p><strong>cell_boundaries</strong> – If plot the cell boundaries.</p></li>
-<li><p><strong>background_alpha</strong> – Opacity of the background figure.</p></li>
-<li><p><strong>circle_size</strong> – Size of the circle.</p></li>
-<li><p><strong>cell_boundary_color</strong> – Color of the cell boundaries.</p></li>
-<li><p><strong>cell_boundary_thickness</strong> – Thickness of the cell boundaries.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
+  <section id="visualization">
+<h1>Visualization<a class="headerlink" href="#visualization" title="Link to this heading"></a></h1>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="Segmentation.html" class="btn btn-neutral float-left" title="Segmentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Deconvolution%20and%20Decomposition.html" class="btn btn-neutral float-left" title="Deconvolution and Decomposition" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="About.html" class="btn btn-neutral float-right" title="About the project" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
