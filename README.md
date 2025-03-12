@@ -72,4 +72,4 @@ Should you have any further questions, feel free to start a [discussion](https:/
 
 ## Cite Spotiphy:
 
-Pending
+https://www.nature.com/articles/s41592-025-02622-5
