@@ -6,7 +6,7 @@ sys.path.insert(0, os.path.abspath('../../'))
 project = 'Spotiphy'
 copyright = '2023, Ziqian Zheng, Jiyuan Yang'
 author = 'Ziqian Zheng, Jiyuan Yang'
-release = '0.1.2'
+release = '0.1.3'
 
 extensions = [
     'nbsphinx',

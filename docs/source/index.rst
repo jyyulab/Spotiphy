@@ -30,7 +30,7 @@ With these outputs, Spotiphy facilitates numerous downstream analyses. For more 
 
 
 
-.. image:: _static/figures/cover.png
+.. image:: _static/figures/Cover_image_NMETH-A55722_2.jpg
     :align: center
 
 .. toctree::
