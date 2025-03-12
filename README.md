@@ -7,7 +7,7 @@
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/jyyulab/Spotiphy/blob/main/tutorials/Spotiphy_tutorial_1.ipynb)
 [![Zenodo](https://img.shields.io/badge/data_download-Zenodo?logo=Zenodo&labelColor=ffcc6d&color=b28e4c)](https://zenodo.org/records/10520022)
 
-![Spotiphy_cover](https://github.com/jyyulab/Spotiphy/blob/9a16882511aef6e0e7db9154f0d9f59a2c567c6f/figures/cover.png)
+![Spotiphy_cover](https://github.com/jyyulab/Spotiphy/blob/5e7209b1b9e5524417c95ebfdc1ee9ee601587b0/figures/Cover%20image_NMETH-A55722_2.jpg)
 
 Spotiphy is a Python-based pipeline designed to enhance our understanding of biological tissues by integrating sequencing-based spatial transcriptomics data, scRNA-seq data, and high-resolution histological images. Employing a probabilistic model, Bayesian inference, and advanced image processing techniques, Spotiphy primarily executes three key tasks:
 - **Deconvolution**: Spotiphy estimates the abundance of each cell type in each capture area of spatial tissue.
