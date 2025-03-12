@@ -6,5 +6,5 @@ Tutorials
 .. toctree::
    :maxdepth: 2
 
-   ../../Spotiphy_tutorial_1
-   ../../Spotiphy_tutorial_2_HumanBrain
+   ../../Spotiphy_tutorial
+   ../../Spotiphy_Decomposition_Analysis_tutorial

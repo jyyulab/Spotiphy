@@ -35,3 +35,6 @@ html_context = {
     "conf_py_path": "/docs/",  # Path in the checkout to the docs root
 }
 html_favicon = 'logo.ico'
+
+nbsphinx_execute = 'never'
+nbsphinx_allow_errors = True

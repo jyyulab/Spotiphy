@@ -26,7 +26,7 @@ We offer two methods for installing the Spotiphy package:
 
 .. code-block::
 
-    pip install spotiphy==0.1.2
+    pip install spotiphy==0.1.3
 
 
 To test the Installation, try to import Spotiphy in Python.
