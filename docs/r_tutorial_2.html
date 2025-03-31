@@ -1,23 +1,26 @@
-
-
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" data-content_root="./">
+<html class="writer-html5" lang="en">
 <head>
-  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Conversion of Spotiphy-Derived iscRNA Data to Seurat or SparseEset Object for Downstream Analysis &mdash; Spotiphy 0.1.3 documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css" />
 
   
     <link rel="shortcut icon" href="_static/logo.ico"/>
-      <script src="_static/jquery.js?v=5d32c60e"></script>
-      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=360bc84d"></script>
-      <script src="_static/doctools.js?v=9a2dae69"></script>
-      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -60,6 +63,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="scRNA%20Reference.html">scRNA Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Deconvolution%20and%20Decomposition.html">Deconvolution and Decomposition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Segmentation.html">Segmentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Visualization.html">Visualization</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">About</span></p>
@@ -93,7 +97,7 @@
            <div itemprop="articleBody">
              
   <section id="conversion-of-spotiphy-derived-iscrna-data-to-seurat-or-sparseeset-object-for-downstream-analysis">
-<span id="r-tutorial-2"></span><h1>Conversion of Spotiphy-Derived iscRNA Data to Seurat or SparseEset Object for Downstream Analysis<a class="headerlink" href="#conversion-of-spotiphy-derived-iscrna-data-to-seurat-or-sparseeset-object-for-downstream-analysis" title="Link to this heading"></a></h1>
+<span id="r-tutorial-2"></span><h1>Conversion of Spotiphy-Derived iscRNA Data to Seurat or SparseEset Object for Downstream Analysis<a class="headerlink" href="#conversion-of-spotiphy-derived-iscrna-data-to-seurat-or-sparseeset-object-for-downstream-analysis" title="Permalink to this heading"></a></h1>
 <div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">Seurat</span><span class="p">)</span>
 <span class="nf">library</span><span class="p">(</span><span class="n">SeuratDisk</span><span class="p">)</span>
 <span class="nf">library</span><span class="p">(</span><span class="n">SeuratData</span><span class="p">)</span>
@@ -130,7 +134,7 @@
 <span class="n">meta.data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">ST_decomposition.seurat</span><span class="o">@</span><span class="n">meta.data</span>
 <span class="c1">#create SparseEset</span>
 <span class="n">ST_decomposition.eset</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">createSparseEset</span><span class="p">(</span><span class="n">input_matrix</span><span class="o">=</span><span class="n">ST_decomposition.seurat</span><span class="o">@</span><span class="n">assays</span><span class="o">$</span><span class="n">originalexp</span><span class="o">@</span><span class="n">counts</span><span class="p">,</span><span class="n">cellData</span><span class="o">=</span><span class="n">meta.data</span><span class="p">)</span>
-<span class="nf">colnames</span><span class="p">(</span><span class="n">ST_decomposition.eset</span><span class="p">)[</span><span class="m">1</span><span class="o">:</span><span class="p">(</span><span class="nf">ncol</span><span class="p">(</span><span class="n">ST_decomposition.eset</span><span class="p">))]</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">sapply</span><span class="p">(</span><span class="m">1</span><span class="o">:</span><span class="p">(</span><span class="nf">ncol</span><span class="p">(</span><span class="n">ST_decomposition.eset</span><span class="p">)),</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">l</span><span class="p">)</span><span class="w"> </span><span class="nf">paste0</span><span class="p">(</span><span class="s">&quot;Cell_&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">colnames</span><span class="p">(</span><span class="n">ST_decomposition.eset</span><span class="p">)[</span><span class="n">l</span><span class="p">]))</span>
+<span class="nf">colnames</span><span class="p">(</span><span class="n">ST_decomposition.eset</span><span class="p">)[</span><span class="m">1</span><span class="o">:</span><span class="p">(</span><span class="nf">ncol</span><span class="p">(</span><span class="n">ST_decomposition.eset</span><span class="p">))]</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">sapply</span><span class="p">(</span><span class="m">1</span><span class="o">:</span><span class="p">(</span><span class="nf">ncol</span><span class="p">(</span><span class="n">ST_decomposition.eset</span><span class="p">)),</span><span class="w"> </span><span class="nf">function</span><span class="p">(</span><span class="n">l</span><span class="p">)</span><span class="w"> </span><span class="nf">paste0</span><span class="p">(</span><span class="s">&quot;Cell_&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">colnames</span><span class="p">(</span><span class="n">ST_decomposition.eset</span><span class="p">)[</span><span class="n">l</span><span class="p">]))</span>
 <span class="c1"># saveRDS(ST_decomposition.eset, file = &quot;ST_decomposition.eset.rds&quot;)</span>
 
 <span class="c1">#Common scMINER pipeline# For more details: https://jyyulab.github.io/scMINER/index.html</span>

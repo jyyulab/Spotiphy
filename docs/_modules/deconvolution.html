@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" data-content_root="../">
+<html class="writer-html5" lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>deconvolution &mdash; Spotiphy 0.1.2 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=92fd9be5" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+  <title>deconvolution &mdash; Spotiphy 0.1.3 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css" />
 
   
     <link rel="shortcut icon" href="../_static/logo.ico"/>
@@ -13,11 +13,12 @@
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../_static/jquery.js?v=5d32c60e"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=92734c54"></script>
-        <script src="../_static/doctools.js?v=888ff710"></script>
-        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -108,9 +109,7 @@
 <span class="kn">from</span> <span class="nn">spotiphy</span> <span class="kn">import</span> <span class="n">sc_reference</span>
 
 
-<div class="viewcode-block" id="deconvolute">
-<a class="viewcode-back" href="../Deconvolution%20and%20Decomposition.html#deconvolution.deconvolute">[docs]</a>
-<span class="k">def</span> <span class="nf">deconvolute</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">sc_ref</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cuda&#39;</span><span class="p">,</span> <span class="n">n_epoch</span><span class="o">=</span><span class="mi">8000</span><span class="p">,</span> <span class="n">adam_params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">batch_prior</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+<div class="viewcode-block" id="deconvolute"><a class="viewcode-back" href="../Deconvolution%20and%20Decomposition.html#deconvolution.deconvolute">[docs]</a><span class="k">def</span> <span class="nf">deconvolute</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">sc_ref</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cuda&#39;</span><span class="p">,</span> <span class="n">n_epoch</span><span class="o">=</span><span class="mi">8000</span><span class="p">,</span> <span class="n">adam_params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">batch_prior</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
                 <span class="n">plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fig_size</span><span class="o">=</span><span class="p">(</span><span class="mf">4.8</span><span class="p">,</span> <span class="mf">3.6</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">200</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Deconvolution of the proportion of genes contributed by each cell type.</span>
 
@@ -195,10 +194,7 @@
     <span class="k">return</span> <span class="n">pyro</span><span class="o">.</span><span class="n">get_param_store</span><span class="p">()</span></div>
 
 
-
-<div class="viewcode-block" id="estimation_proportion">
-<a class="viewcode-back" href="../Deconvolution%20and%20Decomposition.html#deconvolution.estimation_proportion">[docs]</a>
-<span class="k">def</span> <span class="nf">estimation_proportion</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">adata_sc</span><span class="p">,</span> <span class="n">sc_ref</span><span class="p">,</span> <span class="n">type_list</span><span class="p">,</span> <span class="n">key_type</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cuda&#39;</span><span class="p">,</span> <span class="n">n_epoch</span><span class="o">=</span><span class="mi">8000</span><span class="p">,</span> <span class="n">adam_params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<div class="viewcode-block" id="estimation_proportion"><a class="viewcode-back" href="../Deconvolution%20and%20Decomposition.html#deconvolution.estimation_proportion">[docs]</a><span class="k">def</span> <span class="nf">estimation_proportion</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">adata_sc</span><span class="p">,</span> <span class="n">sc_ref</span><span class="p">,</span> <span class="n">type_list</span><span class="p">,</span> <span class="n">key_type</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cuda&#39;</span><span class="p">,</span> <span class="n">n_epoch</span><span class="o">=</span><span class="mi">8000</span><span class="p">,</span> <span class="n">adam_params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                           <span class="n">batch_prior</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fig_size</span><span class="o">=</span><span class="p">(</span><span class="mf">4.8</span><span class="p">,</span> <span class="mf">3.6</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">200</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Estimate the proportion of each cell type in each spot.</span>
@@ -231,10 +227,7 @@
     <span class="k">return</span> <span class="n">cell_proportion</span></div>
 
 
-
-<div class="viewcode-block" id="plot_proportion">
-<a class="viewcode-back" href="../Deconvolution%20and%20Decomposition.html#deconvolution.plot_proportion">[docs]</a>
-<span class="k">def</span> <span class="nf">plot_proportion</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">proportion</span><span class="p">,</span> <span class="n">spot_location</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">cmap_name</span><span class="o">=</span><span class="s1">&#39;viridis&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">save_path</span><span class="o">=</span><span class="s1">&#39;proportion.png&#39;</span><span class="p">,</span>
+<div class="viewcode-block" id="plot_proportion"><a class="viewcode-back" href="../Deconvolution%20and%20Decomposition.html#deconvolution.plot_proportion">[docs]</a><span class="k">def</span> <span class="nf">plot_proportion</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">proportion</span><span class="p">,</span> <span class="n">spot_location</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">cmap_name</span><span class="o">=</span><span class="s1">&#39;viridis&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">save_path</span><span class="o">=</span><span class="s1">&#39;proportion.png&#39;</span><span class="p">,</span>
                     <span class="n">vmax</span><span class="o">=</span><span class="mf">0.98</span><span class="p">,</span> <span class="n">spot_scale</span><span class="o">=</span><span class="mf">1.3</span><span class="p">,</span> <span class="n">show_figure</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">int_ticks</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">bar_location</span><span class="o">=</span><span class="p">(</span><span class="mi">5800</span><span class="p">,</span> <span class="mi">8100</span><span class="p">)):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Plot the proportion of a cell type.</span>
@@ -300,10 +293,7 @@
         <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
 
-
-<div class="viewcode-block" id="proportion_to_count">
-<a class="viewcode-back" href="../Deconvolution%20and%20Decomposition.html#deconvolution.proportion_to_count">[docs]</a>
-<span class="k">def</span> <span class="nf">proportion_to_count</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">multiple_spots</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="proportion_to_count"><a class="viewcode-back" href="../Deconvolution%20and%20Decomposition.html#deconvolution.proportion_to_count">[docs]</a><span class="k">def</span> <span class="nf">proportion_to_count</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">multiple_spots</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert the cell proportion to the absolute cell number.</span>
 
@@ -332,10 +322,7 @@
     <span class="k">return</span> <span class="n">count</span></div>
 
 
-
-<div class="viewcode-block" id="simulation">
-<a class="viewcode-back" href="../Deconvolution%20and%20Decomposition.html#deconvolution.simulation">[docs]</a>
-<span class="k">def</span> <span class="nf">simulation</span><span class="p">(</span><span class="n">adata_st</span><span class="p">:</span> <span class="n">anndata</span><span class="o">.</span><span class="n">AnnData</span><span class="p">,</span> <span class="n">adata_sc</span><span class="p">:</span> <span class="n">anndata</span><span class="o">.</span><span class="n">AnnData</span><span class="p">,</span> <span class="n">key_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">cell_proportion</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+<div class="viewcode-block" id="simulation"><a class="viewcode-back" href="../Deconvolution%20and%20Decomposition.html#deconvolution.simulation">[docs]</a><span class="k">def</span> <span class="nf">simulation</span><span class="p">(</span><span class="n">adata_st</span><span class="p">:</span> <span class="n">anndata</span><span class="o">.</span><span class="n">AnnData</span><span class="p">,</span> <span class="n">adata_sc</span><span class="p">:</span> <span class="n">anndata</span><span class="o">.</span><span class="n">AnnData</span><span class="p">,</span> <span class="n">key_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">cell_proportion</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
                <span class="n">n_cell</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">batch_effect_sigma</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">zero_proportion</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">additive_noise_sigma</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                <span class="n">out_dir</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;ST_Simulated.h5ad&quot;</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -433,10 +420,7 @@
     <span class="k">return</span> <span class="n">adata_st</span></div>
 
 
-
-<div class="viewcode-block" id="Evaluation">
-<a class="viewcode-back" href="../Deconvolution%20and%20Decomposition.html#deconvolution.Evaluation">[docs]</a>
-<span class="k">class</span> <span class="nc">Evaluation</span><span class="p">:</span>
+<div class="viewcode-block" id="Evaluation"><a class="viewcode-back" href="../Deconvolution%20and%20Decomposition.html#deconvolution.Evaluation">[docs]</a><span class="k">class</span> <span class="nc">Evaluation</span><span class="p">:</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proportion_truth</span><span class="p">,</span> <span class="n">proportion_estimated_list</span><span class="p">,</span> <span class="n">methods</span><span class="p">,</span> <span class="n">out_dir</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">cluster</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">type_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">colors</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">coordinates</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">min_spot_distance</span><span class="o">=</span><span class="mi">112</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -483,9 +467,7 @@
             <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">out_dir</span> <span class="o">+</span> <span class="s1">&#39;figures&#39;</span><span class="p">)</span>
         <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">proportion_estimated_list</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_method</span>
 
-<div class="viewcode-block" id="Evaluation.absolute_error">
-<a class="viewcode-back" href="../Deconvolution%20and%20Decomposition.html#deconvolution.Evaluation.absolute_error">[docs]</a>
-    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="Evaluation.absolute_error"><a class="viewcode-back" href="../Deconvolution%20and%20Decomposition.html#deconvolution.Evaluation.absolute_error">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">absolute_error</span><span class="p">(</span><span class="n">proportion_truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">proportion_estimated</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">metric_type</span><span class="o">=</span><span class="s1">&#39;Spot&#39;</span><span class="p">):</span>
         <span class="k">assert</span> <span class="n">proportion_truth</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">proportion_estimated</span><span class="o">.</span><span class="n">shape</span>
         <span class="n">error</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">proportion_truth</span> <span class="o">-</span> <span class="n">proportion_estimated</span><span class="p">)</span>
@@ -498,10 +480,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid metric type </span><span class="si">{</span><span class="n">metric_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
-
-<div class="viewcode-block" id="Evaluation.square_error">
-<a class="viewcode-back" href="../Deconvolution%20and%20Decomposition.html#deconvolution.Evaluation.square_error">[docs]</a>
-    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="Evaluation.square_error"><a class="viewcode-back" href="../Deconvolution%20and%20Decomposition.html#deconvolution.Evaluation.square_error">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">square_error</span><span class="p">(</span><span class="n">proportion_truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">proportion_estimated</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">metric_type</span><span class="o">=</span><span class="s1">&#39;Spot&#39;</span><span class="p">):</span>
         <span class="k">assert</span> <span class="n">proportion_truth</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">proportion_estimated</span><span class="o">.</span><span class="n">shape</span>
         <span class="n">error</span> <span class="o">=</span> <span class="p">(</span><span class="n">proportion_truth</span> <span class="o">-</span> <span class="n">proportion_estimated</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
@@ -514,10 +493,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid metric type </span><span class="si">{</span><span class="n">metric_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
-
-<div class="viewcode-block" id="Evaluation.cosine">
-<a class="viewcode-back" href="../Deconvolution%20and%20Decomposition.html#deconvolution.Evaluation.cosine">[docs]</a>
-    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="Evaluation.cosine"><a class="viewcode-back" href="../Deconvolution%20and%20Decomposition.html#deconvolution.Evaluation.cosine">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">cosine</span><span class="p">(</span><span class="n">proportion_truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">proportion_estimated</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">metric_type</span><span class="o">=</span><span class="s1">&#39;Spot&#39;</span><span class="p">):</span>
         <span class="k">assert</span> <span class="n">proportion_truth</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">proportion_estimated</span><span class="o">.</span><span class="n">shape</span>
         <span class="k">if</span> <span class="n">metric_type</span> <span class="o">==</span> <span class="s1">&#39;Spot&#39;</span><span class="p">:</span>
@@ -531,10 +507,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid metric type </span><span class="si">{</span><span class="n">metric_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
-
-<div class="viewcode-block" id="Evaluation.correlation">
-<a class="viewcode-back" href="../Deconvolution%20and%20Decomposition.html#deconvolution.Evaluation.correlation">[docs]</a>
-    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="Evaluation.correlation"><a class="viewcode-back" href="../Deconvolution%20and%20Decomposition.html#deconvolution.Evaluation.correlation">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">correlation</span><span class="p">(</span><span class="n">proportion_truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">proportion_estimated</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">metric_type</span><span class="o">=</span><span class="s1">&#39;Spot&#39;</span><span class="p">):</span>
         <span class="k">assert</span> <span class="n">proportion_truth</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">proportion_estimated</span><span class="o">.</span><span class="n">shape</span>
         <span class="k">if</span> <span class="n">metric_type</span> <span class="o">==</span> <span class="s1">&#39;Cell type&#39;</span><span class="p">:</span>
@@ -554,10 +527,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid metric type </span><span class="si">{</span><span class="n">metric_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
-
-<div class="viewcode-block" id="Evaluation.correct_fraction">
-<a class="viewcode-back" href="../Deconvolution%20and%20Decomposition.html#deconvolution.Evaluation.correct_fraction">[docs]</a>
-    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="Evaluation.correct_fraction"><a class="viewcode-back" href="../Deconvolution%20and%20Decomposition.html#deconvolution.Evaluation.correct_fraction">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">correct_fraction</span><span class="p">(</span><span class="n">proportion_truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">proportion_estimated</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">metric_type</span><span class="o">=</span><span class="s1">&#39;Spot&#39;</span><span class="p">):</span>
         <span class="k">assert</span> <span class="n">proportion_truth</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">proportion_estimated</span><span class="o">.</span><span class="n">shape</span>
         <span class="n">correct_proportion</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">proportion_truth</span><span class="p">,</span> <span class="n">proportion_estimated</span><span class="p">)</span>
@@ -568,10 +538,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid metric type </span><span class="si">{</span><span class="n">metric_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
-
-<div class="viewcode-block" id="Evaluation.JSD">
-<a class="viewcode-back" href="../Deconvolution%20and%20Decomposition.html#deconvolution.Evaluation.JSD">[docs]</a>
-    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="Evaluation.JSD"><a class="viewcode-back" href="../Deconvolution%20and%20Decomposition.html#deconvolution.Evaluation.JSD">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">JSD</span><span class="p">(</span><span class="n">proportion_truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">proportion_estimated</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">metric_type</span><span class="o">=</span><span class="s1">&#39;Spot&#39;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Jensen–Shannon divergence</span>
@@ -588,10 +555,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid metric type </span><span class="si">{</span><span class="n">metric_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
-
-<div class="viewcode-block" id="Evaluation.evaluate_metric">
-<a class="viewcode-back" href="../Deconvolution%20and%20Decomposition.html#deconvolution.Evaluation.evaluate_metric">[docs]</a>
-    <span class="k">def</span> <span class="nf">evaluate_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s1">&#39;Cosine similarity&#39;</span><span class="p">,</span> <span class="n">metric_type</span><span class="o">=</span><span class="s1">&#39;Spot&#39;</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Evaluation.evaluate_metric"><a class="viewcode-back" href="../Deconvolution%20and%20Decomposition.html#deconvolution.Evaluation.evaluate_metric">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s1">&#39;Cosine similarity&#39;</span><span class="p">,</span> <span class="n">metric_type</span><span class="o">=</span><span class="s1">&#39;Spot&#39;</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Evaluate the proportions based on the metric.</span>
 
@@ -622,10 +586,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">metric_dict</span><span class="p">[</span><span class="n">metric</span><span class="o">+</span><span class="s1">&#39; &#39;</span><span class="o">+</span><span class="n">metric_type</span><span class="p">]</span> <span class="o">=</span> <span class="n">metric_values</span>
         <span class="k">return</span> <span class="n">metric_values</span></div>
 
-
-<div class="viewcode-block" id="Evaluation.plot_metric">
-<a class="viewcode-back" href="../Deconvolution%20and%20Decomposition.html#deconvolution.Evaluation.plot_metric">[docs]</a>
-    <span class="k">def</span> <span class="nf">plot_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s1">&#39;Cosine similarity&#39;</span><span class="p">,</span> <span class="n">metric_type</span><span class="o">=</span><span class="s1">&#39;Spot&#39;</span><span class="p">,</span> <span class="n">cell_types</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<div class="viewcode-block" id="Evaluation.plot_metric"><a class="viewcode-back" href="../Deconvolution%20and%20Decomposition.html#deconvolution.Evaluation.plot_metric">[docs]</a>    <span class="k">def</span> <span class="nf">plot_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s1">&#39;Cosine similarity&#39;</span><span class="p">,</span> <span class="n">metric_type</span><span class="o">=</span><span class="s1">&#39;Spot&#39;</span><span class="p">,</span> <span class="n">cell_types</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Plot the box plot of each method based on the metric.</span>
 
@@ -687,10 +648,7 @@
             <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">df</span></div>
 
-
-<div class="viewcode-block" id="Evaluation.plot_metric_spot_type">
-<a class="viewcode-back" href="../Deconvolution%20and%20Decomposition.html#deconvolution.Evaluation.plot_metric_spot_type">[docs]</a>
-    <span class="k">def</span> <span class="nf">plot_metric_spot_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s1">&#39;Absolute error&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="Evaluation.plot_metric_spot_type"><a class="viewcode-back" href="../Deconvolution%20and%20Decomposition.html#deconvolution.Evaluation.plot_metric_spot_type">[docs]</a>    <span class="k">def</span> <span class="nf">plot_metric_spot_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s1">&#39;Absolute error&#39;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Similar to plot_metric_spot, but the figures are separated for each cell type.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -727,10 +685,7 @@
             <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
             <span class="k">del</span> <span class="n">ax</span></div>
 
-
-<div class="viewcode-block" id="Evaluation.plot_metric_all">
-<a class="viewcode-back" href="../Deconvolution%20and%20Decomposition.html#deconvolution.Evaluation.plot_metric_all">[docs]</a>
-    <span class="k">def</span> <span class="nf">plot_metric_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s2">&quot;Absolute error&quot;</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Evaluation.plot_metric_all"><a class="viewcode-back" href="../Deconvolution%20and%20Decomposition.html#deconvolution.Evaluation.plot_metric_all">[docs]</a>    <span class="k">def</span> <span class="nf">plot_metric_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s2">&quot;Absolute error&quot;</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">assert</span> <span class="n">metric</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">general_metric_names</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_method</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_type</span> <span class="o">/</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">metric</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">metric_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
@@ -771,14 +726,10 @@
         <span class="c1"># ax.set(xlabel=&#39;&#39;)</span>
         <span class="k">if</span> <span class="n">save</span><span class="p">:</span>
             <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">out_dir</span><span class="si">}</span><span class="s1">figures/</span><span class="si">{</span><span class="n">metric</span><span class="si">}{</span><span class="n">region_name</span><span class="si">}</span><span class="s1">.tiff&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
-</div>
+        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div></div>
 
 
-
-<div class="viewcode-block" id="decomposition">
-<a class="viewcode-back" href="../Deconvolution%20and%20Decomposition.html#deconvolution.decomposition">[docs]</a>
-<span class="k">def</span> <span class="nf">decomposition</span><span class="p">(</span><span class="n">adata_st</span><span class="p">:</span> <span class="n">anndata</span><span class="o">.</span><span class="n">AnnData</span><span class="p">,</span> <span class="n">adata_sc</span><span class="p">:</span> <span class="n">anndata</span><span class="o">.</span><span class="n">AnnData</span><span class="p">,</span> <span class="n">key_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">cell_proportion</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+<div class="viewcode-block" id="decomposition"><a class="viewcode-back" href="../Deconvolution%20and%20Decomposition.html#deconvolution.decomposition">[docs]</a><span class="k">def</span> <span class="nf">decomposition</span><span class="p">(</span><span class="n">adata_st</span><span class="p">:</span> <span class="n">anndata</span><span class="o">.</span><span class="n">AnnData</span><span class="p">,</span> <span class="n">adata_sc</span><span class="p">:</span> <span class="n">anndata</span><span class="o">.</span><span class="n">AnnData</span><span class="p">,</span> <span class="n">key_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">cell_proportion</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
                   <span class="n">save</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">out_dir</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">n_cell</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spot_location</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                   <span class="n">filtering_gene</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;ST_decomposition.h5ad&quot;</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">use_original_proportion</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Decompose ST.</span>
@@ -900,10 +851,7 @@
     <span class="k">return</span> <span class="n">adata_st_decomposed</span></div>
 
 
-
-<div class="viewcode-block" id="assign_type_spot">
-<a class="viewcode-back" href="../Deconvolution%20and%20Decomposition.html#deconvolution.assign_type_spot">[docs]</a>
-<span class="k">def</span> <span class="nf">assign_type_spot</span><span class="p">(</span><span class="n">nucleus_df</span><span class="p">,</span> <span class="n">n_cell_df</span><span class="p">,</span> <span class="n">cell_number</span><span class="p">,</span> <span class="n">type_list</span><span class="p">):</span>
+<div class="viewcode-block" id="assign_type_spot"><a class="viewcode-back" href="../Deconvolution%20and%20Decomposition.html#deconvolution.assign_type_spot">[docs]</a><span class="k">def</span> <span class="nf">assign_type_spot</span><span class="p">(</span><span class="n">nucleus_df</span><span class="p">,</span> <span class="n">n_cell_df</span><span class="p">,</span> <span class="n">cell_number</span><span class="p">,</span> <span class="n">type_list</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Assign the cell type to the cells inside the spot.</span>
 
 <span class="sd">    Args:</span>
@@ -932,10 +880,7 @@
     <span class="k">return</span> <span class="n">nucleus_df</span></div>
 
 
-
-<div class="viewcode-block" id="assign_type_out">
-<a class="viewcode-back" href="../Deconvolution%20and%20Decomposition.html#deconvolution.assign_type_out">[docs]</a>
-<span class="k">def</span> <span class="nf">assign_type_out</span><span class="p">(</span><span class="n">nucleus_df</span><span class="p">,</span> <span class="n">cell_proportion</span><span class="p">,</span> <span class="n">spot_centers</span><span class="p">,</span> <span class="n">type_list</span><span class="p">,</span> <span class="n">max_distance</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">band_width</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+<div class="viewcode-block" id="assign_type_out"><a class="viewcode-back" href="../Deconvolution%20and%20Decomposition.html#deconvolution.assign_type_out">[docs]</a><span class="k">def</span> <span class="nf">assign_type_out</span><span class="p">(</span><span class="n">nucleus_df</span><span class="p">,</span> <span class="n">cell_proportion</span><span class="p">,</span> <span class="n">spot_centers</span><span class="p">,</span> <span class="n">type_list</span><span class="p">,</span> <span class="n">max_distance</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">band_width</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Assign the cell type to the cells outside the spot.</span>
 
 <span class="sd">    Args:</span>
@@ -973,10 +918,7 @@
     <span class="k">return</span> <span class="n">nucleus_df</span><span class="p">,</span> <span class="n">smooth</span></div>
 
 
-
-<div class="viewcode-block" id="archive_assign_type_out_gp">
-<a class="viewcode-back" href="../Deconvolution%20and%20Decomposition.html#deconvolution.archive_assign_type_out_gp">[docs]</a>
-<span class="k">def</span> <span class="nf">archive_assign_type_out_gp</span><span class="p">(</span><span class="n">nucleus_df</span><span class="p">,</span> <span class="n">cell_proportion</span><span class="p">,</span> <span class="n">spot_centers</span><span class="p">,</span> <span class="n">type_list</span><span class="p">,</span> <span class="n">max_distance</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">return_gp</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="archive_assign_type_out_gp"><a class="viewcode-back" href="../Deconvolution%20and%20Decomposition.html#deconvolution.archive_assign_type_out_gp">[docs]</a><span class="k">def</span> <span class="nf">archive_assign_type_out_gp</span><span class="p">(</span><span class="n">nucleus_df</span><span class="p">,</span> <span class="n">cell_proportion</span><span class="p">,</span> <span class="n">spot_centers</span><span class="p">,</span> <span class="n">type_list</span><span class="p">,</span> <span class="n">max_distance</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">return_gp</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Assign the cell type to the cells outside the spot.</span>
 
 <span class="sd">    Args:</span>
@@ -1029,7 +971,6 @@
         <span class="k">return</span> <span class="n">nucleus_df</span><span class="p">,</span> <span class="n">gp_list</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">nucleus_df</span></div>
-
 
 </pre></div>
 

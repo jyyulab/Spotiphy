@@ -38,3 +38,5 @@ html_favicon = 'logo.ico'
 
 nbsphinx_execute = 'never'
 nbsphinx_allow_errors = True
+
+autodoc_mock_imports = ["cv2", "stardist", "torch", "csbdeep", "pyro", "tensorflow"]

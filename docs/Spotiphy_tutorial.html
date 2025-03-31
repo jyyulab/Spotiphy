@@ -1,31 +1,34 @@
-
-
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" data-content_root="./">
+<html class="writer-html5" lang="en">
 <head>
-  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Deconvolution and Decomposition of Mouse Cortex Visium Data using Spotiphy &mdash; Spotiphy 0.1.3 documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="_static/nbsphinx-code-cells.css?v=2aa19091" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css" />
+      <link rel="stylesheet" type="text/css" href="_static/nbsphinx-code-cells.css" />
 
   
     <link rel="shortcut icon" href="_static/logo.ico"/>
-      <script src="_static/jquery.js?v=5d32c60e"></script>
-      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=360bc84d"></script>
-      <script src="_static/doctools.js?v=9a2dae69"></script>
-      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Decomposition Analysis" href="Spotiphy_Decomposition_Analysis_tutorial.html" />
-    <link rel="prev" title="Tutorials" href="tutorials.html" /> 
+    <link rel="next" title="Conversion of Spotiphy-Derived iscRNA Data to Seurat or SparseEset Object for Downstream Analysis" href="r_tutorial_2.html" />
+    <link rel="prev" title="Single-cell RNA-seq Data Input Preparation from a Seurat Object" href="r_tutorial_1.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -51,6 +54,7 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="tutorials.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="r_tutorial_1.html">Single-cell RNA-seq Data Input Preparation from a Seurat Object</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Deconvolution and Decomposition of Mouse Cortex Visium Data using Spotiphy</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#Contents">Contents</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Environment-Setup:-Package-Installation-and-Loading">Environment Setup: Package Installation and Loading</a></li>
@@ -62,6 +66,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#Imputation:-Creation-of-Pseudo-Single-cell-resolution-Image">Imputation: Creation of Pseudo Single-cell resolution Image</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="r_tutorial_2.html">Conversion of Spotiphy-Derived iscRNA Data to Seurat or SparseEset Object for Downstream Analysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Spotiphy_Decomposition_Analysis_tutorial.html">Decomposition Analysis</a></li>
 </ul>
 </li>
@@ -71,6 +76,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="scRNA%20Reference.html">scRNA Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Deconvolution%20and%20Decomposition.html">Deconvolution and Decomposition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Segmentation.html">Segmentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Visualization.html">Visualization</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">About</span></p>
@@ -104,13 +110,13 @@
            <div itemprop="articleBody">
              
   <section id="Deconvolution-and-Decomposition-of-Mouse-Cortex-Visium-Data-using-Spotiphy">
-<h1>Deconvolution and Decomposition of Mouse Cortex Visium Data using Spotiphy<a class="headerlink" href="#Deconvolution-and-Decomposition-of-Mouse-Cortex-Visium-Data-using-Spotiphy" title="Link to this heading"></a></h1>
+<h1>Deconvolution and Decomposition of Mouse Cortex Visium Data using Spotiphy<a class="headerlink" href="#Deconvolution-and-Decomposition-of-Mouse-Cortex-Visium-Data-using-Spotiphy" title="Permalink to this heading"></a></h1>
 <ul class="simple">
 <li><p>by Ziqian Zheng <a class="reference external" href="mailto:zzheng92&#37;&#52;&#48;wisc&#46;edu">zzheng92<span>&#64;</span>wisc<span>&#46;</span>edu</a> and Jiyuan Yang <a class="reference external" href="mailto:jiyuan&#46;yang&#37;&#52;&#48;stjude&#46;org">jiyuan<span>&#46;</span>yang<span>&#64;</span>stjude<span>&#46;</span>org</a>.</p></li>
 <li><p>Last update: Mar 7th 2025</p></li>
 </ul>
 <section id="Contents">
-<h2>Contents<a class="headerlink" href="#Contents" title="Link to this heading"></a></h2>
+<h2>Contents<a class="headerlink" href="#Contents" title="Permalink to this heading"></a></h2>
 <ol class="arabic simple">
 <li><p>Environment Setup: Package Installation and Loading</p></li>
 <li><p>Data Preparation: Loading and Processing</p></li>
@@ -122,7 +128,7 @@
 </ol>
 </section>
 <section id="Environment-Setup:-Package-Installation-and-Loading">
-<h2>Environment Setup: Package Installation and Loading<a class="headerlink" href="#Environment-Setup:-Package-Installation-and-Loading" title="Link to this heading"></a></h2>
+<h2>Environment Setup: Package Installation and Loading<a class="headerlink" href="#Environment-Setup:-Package-Installation-and-Loading" title="Permalink to this heading"></a></h2>
 <p>If you’re using you local environment, please ensure that <code class="docutils literal notranslate"><span class="pre">spotiphy</span></code> is correctly installed by following the instructions on its <a class="reference external" href="https://github.com/jyyulab/Spotiphy">GitHub page</a>.</p>
 <p>If you’re using Google Colab, please execute the following code block to install <code class="docutils literal notranslate"><span class="pre">spotiphy</span></code> and all its dependencies. To ensure the code runs smoothly in Google Colab, we will manually eliminate some unnecessary Jupyter variables.</p>
 <p><strong>😮Important:</strong> To get enough RAM, <a class="reference external" href="https://colab.research.google.com/signup">Colab Pro</a> might be needed.</p>
@@ -135,10 +141,10 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
-<span class="n">IN_COLAB</span> <span class="o">=</span> <span class="s2">&quot;google.colab&quot;</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span>
-<span class="k">if</span> <span class="n">IN_COLAB</span><span class="p">:</span>
-    <span class="err">!</span><span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">qq</span> <span class="n">spotiphy</span>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span>import sys
+IN_COLAB = &quot;google.colab&quot; in sys.modules
+if IN_COLAB:
+    !pip install -qq spotiphy
 </pre></div>
 </div>
 </div>
@@ -146,15 +152,15 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">spotiphy</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">pickle</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mpl</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">scanpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sc</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">cv2</span>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">spotiphy</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">pickle</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">matplotlib</span> <span class="k">as</span> <span class="nn">mpl</span>
+<span class="kn">import</span> <span class="nn">scanpy</span> <span class="k">as</span> <span class="nn">sc</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">cv2</span>
 </pre></div>
 </div>
 </div>
@@ -172,13 +178,13 @@
 </div>
 </section>
 <section id="Data-Preparation:-Loading-and-Processing">
-<h2>Data Preparation: Loading and Processing<a class="headerlink" href="#Data-Preparation:-Loading-and-Processing" title="Link to this heading"></a></h2>
+<h2>Data Preparation: Loading and Processing<a class="headerlink" href="#Data-Preparation:-Loading-and-Processing" title="Permalink to this heading"></a></h2>
 <p>Check if the example datasets exist. If not, download them from GitHub.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">requests</span>
 <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="s1">&#39;data/&#39;</span><span class="p">):</span>
     <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="s1">&#39;data/&#39;</span><span class="p">)</span>
 
@@ -281,7 +287,7 @@ scatterplots.py (392): No data for colormapping provided via &#39;c&#39;. Parame
 </div>
 </section>
 <section id="Deconvolution:-Marker-Gene-Selection-and-scRNA-Reference-Construction">
-<h2>Deconvolution: Marker Gene Selection and scRNA Reference Construction<a class="headerlink" href="#Deconvolution:-Marker-Gene-Selection-and-scRNA-Reference-Construction" title="Link to this heading"></a></h2>
+<h2>Deconvolution: Marker Gene Selection and scRNA Reference Construction<a class="headerlink" href="#Deconvolution:-Marker-Gene-Selection-and-scRNA-Reference-Construction" title="Permalink to this heading"></a></h2>
 <p>Initialize the spatial transcriptomics and scRNA data. Specifically,</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">adata_sc</span></code> and <code class="docutils literal notranslate"><span class="pre">adata_st</span></code> are normalized</p></li>
@@ -378,7 +384,7 @@ Find common genes: 0.03s
 </div>
 </section>
 <section id="Deconvolution:-Cellular-Proportion-Estimation">
-<h2>Deconvolution: Cellular Proportion Estimation<a class="headerlink" href="#Deconvolution:-Cellular-Proportion-Estimation" title="Link to this heading"></a></h2>
+<h2>Deconvolution: Cellular Proportion Estimation<a class="headerlink" href="#Deconvolution:-Cellular-Proportion-Estimation" title="Permalink to this heading"></a></h2>
 <p>For performing the deconvolution, we calculate the posterior distribution of certain parameters within a probabilistic generative model using <code class="docutils literal notranslate"><span class="pre">`Pyro</span></code> &lt;<a class="reference external" href="https://pyro.ai/">https://pyro.ai/</a>&gt;`__.</p>
 <p>Parameters of the function <code class="docutils literal notranslate"><span class="pre">estimation_proportion</span></code>:</p>
 <ul class="simple">
@@ -451,7 +457,7 @@ Find common genes: 0.03s
 </div>
 </section>
 <section id="Deconvolution:-Cell-Number-Estimation-Using-Segmentation">
-<h2>Deconvolution: Cell Number Estimation Using Segmentation<a class="headerlink" href="#Deconvolution:-Cell-Number-Estimation-Using-Segmentation" title="Link to this heading"></a></h2>
+<h2>Deconvolution: Cell Number Estimation Using Segmentation<a class="headerlink" href="#Deconvolution:-Cell-Number-Estimation-Using-Segmentation" title="Permalink to this heading"></a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">Stardist</span></code> package is used to segment nuclei from H&amp;E staining images, after which the number of nuclei in each spot is counted. Note that the image and segmentation step is not required if only deconvolution results are needed.</p>
 <p>Parameters use in function <code class="docutils literal notranslate"><span class="pre">Segmentation</span></code>:</p>
 <ul class="simple">
@@ -520,7 +526,7 @@ Using default values: prob_thresh=0.692478, nms_thresh=0.3.
 </div>
 </section>
 <section id="Decomposition:-Expression-Breakdown-of-Each-Spot-to-Single-cell-Resolution">
-<h2>Decomposition: Expression Breakdown of Each Spot to Single-cell Resolution<a class="headerlink" href="#Decomposition:-Expression-Breakdown-of-Each-Spot-to-Single-cell-Resolution" title="Link to this heading"></a></h2>
+<h2>Decomposition: Expression Breakdown of Each Spot to Single-cell Resolution<a class="headerlink" href="#Decomposition:-Expression-Breakdown-of-Each-Spot-to-Single-cell-Resolution" title="Permalink to this heading"></a></h2>
 <p>To decompose all genes in the spatial transcriptomics data, both scRNA-seq data and spatial transcriptomics data must be reloaded. <code class="docutils literal notranslate"><span class="pre">n_cell</span></code> represents the number of cells in each spot, with four opinions available:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">n_cell_df['cell_count'].values</span></code>. The default setting, which uses the number of nuclei derived from segmentation results.</p></li>
@@ -593,7 +599,7 @@ Saved file to output folder. Time use 3.80
 </div>
 </section>
 <section id="Imputation:-Creation-of-Pseudo-Single-cell-resolution-Image">
-<h2>Imputation: Creation of Pseudo Single-cell resolution Image<a class="headerlink" href="#Imputation:-Creation-of-Pseudo-Single-cell-resolution-Image" title="Link to this heading"></a></h2>
+<h2>Imputation: Creation of Pseudo Single-cell resolution Image<a class="headerlink" href="#Imputation:-Creation-of-Pseudo-Single-cell-resolution-Image" title="Permalink to this heading"></a></h2>
 <p>The H&amp;E staining image only highlights nuclei, we first infer the boundary of each cell. Specifically, the area of each cell is gradually expended outward from the center of its nucleus. The expansion stopped when one of the following conditions is met:</p>
 <ul class="simple">
 <li><p>The cell area exceeds <code class="docutils literal notranslate"><span class="pre">max_area</span></code>.</p></li>
@@ -778,8 +784,8 @@ Saving the image.
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="tutorials.html" class="btn btn-neutral float-left" title="Tutorials" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="Spotiphy_Decomposition_Analysis_tutorial.html" class="btn btn-neutral float-right" title="Decomposition Analysis" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="r_tutorial_1.html" class="btn btn-neutral float-left" title="Single-cell RNA-seq Data Input Preparation from a Seurat Object" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="r_tutorial_2.html" class="btn btn-neutral float-right" title="Conversion of Spotiphy-Derived iscRNA Data to Seurat or SparseEset Object for Downstream Analysis" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

@@ -1,7 +1,7 @@
 .. _r_tutorial_1:
 
 Single-cell RNA-seq Data Input Preparation from a Seurat Object
-====================
+================================================================================
 
 .. code-block:: r
 

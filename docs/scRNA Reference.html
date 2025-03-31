@@ -1,23 +1,26 @@
-
-
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" data-content_root="./">
+<html class="writer-html5" lang="en">
 <head>
-  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>scRNA Reference &mdash; Spotiphy 0.1.3 documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css" />
 
   
     <link rel="shortcut icon" href="_static/logo.ico"/>
-      <script src="_static/jquery.js?v=5d32c60e"></script>
-      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=360bc84d"></script>
-      <script src="_static/doctools.js?v=9a2dae69"></script>
-      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -52,8 +55,16 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">scRNA Reference</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">scRNA Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#sc_reference.construct_sc_ref"><code class="docutils literal notranslate"><span class="pre">construct_sc_ref()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#sc_reference.initialization"><code class="docutils literal notranslate"><span class="pre">initialization()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#sc_reference.marker_selection"><code class="docutils literal notranslate"><span class="pre">marker_selection()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#sc_reference.plot_heatmap"><code class="docutils literal notranslate"><span class="pre">plot_heatmap()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#sc_reference.plot_sc_ref"><code class="docutils literal notranslate"><span class="pre">plot_sc_ref()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="Deconvolution%20and%20Decomposition.html">Deconvolution and Decomposition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Segmentation.html">Segmentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Visualization.html">Visualization</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">About</span></p>
@@ -85,8 +96,105 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="scrna-reference">
-<h1>scRNA Reference<a class="headerlink" href="#scrna-reference" title="Link to this heading"></a></h1>
+  <section id="module-sc_reference">
+<span id="scrna-reference"></span><h1>scRNA Reference<a class="headerlink" href="#module-sc_reference" title="Permalink to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="sc_reference.construct_sc_ref">
+<span class="sig-prename descclassname"><span class="pre">sc_reference.</span></span><span class="sig-name descname"><span class="pre">construct_sc_ref</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adata_sc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AnnData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sc_reference.html#construct_sc_ref"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sc_reference.construct_sc_ref" title="Permalink to this definition"></a></dt>
+<dd><p>Construct the scRNA reference from scRNA data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>adata_sc</strong> – scRNA data.</p></li>
+<li><p><strong>key_type</strong> – The key that is used to extract cell type information from adata_sc.obs.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>scRNA reference. Numpy assay with dimension n_type*n_gene</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sc_reference.initialization">
+<span class="sig-prename descclassname"><span class="pre">sc_reference.</span></span><span class="sig-name descname"><span class="pre">initialization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adata_sc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AnnData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">adata_st</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AnnData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_genes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">200</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_cells</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">200</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_std</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize_st</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filtering</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sc_reference.html#initialization"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sc_reference.initialization" title="Permalink to this definition"></a></dt>
+<dd><p>Filter single cell data and spatial data, and normalize the data to count per million (CPM).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>adata_sc</strong> (<em>anndata.AnnData</em>) – Single cell data.</p></li>
+<li><p><strong>adata_st</strong> (<em>anndata.AnnData</em>) – Spatial data.</p></li>
+<li><p><strong>min_genes</strong> (<em>int</em>) – Minimum number of genes expressed required for a cell to pass filtering.</p></li>
+<li><p><strong>min_cells</strong> (<em>int</em>) – Minimum number of cells expressed required for a gene to pass filtering.</p></li>
+<li><p><strong>min_std</strong> (<em>float</em>) – Minimum std of counts required for a gene to pass filtering after CPM normalization.</p></li>
+<li><p><strong>normalize_st</strong> (<em>bool</em>) – If False, spatial data is also normalized to one million. Otherwise, normalized_st should
+be np.ndarray, representing the number of cells in each spot, and the expression of each spot is normalized
+to n_cell million.</p></li>
+<li><p><strong>filtering</strong> (<em>bool</em>) – Whether to filter the genes in adata_sc.</p></li>
+<li><p><strong>verbose</strong> (<em>int</em>) – Verbose mode.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sc_reference.marker_selection">
+<span class="sig-prename descclassname"><span class="pre">sc_reference.</span></span><span class="sig-name descname"><span class="pre">marker_selection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adata_sc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AnnData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold_cover</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.6</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold_p</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold_fold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_select</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">40</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sc_reference.html#marker_selection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sc_reference.marker_selection" title="Permalink to this definition"></a></dt>
+<dd><p>Find marker genes based on pairwise ratio test.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>adata_sc</strong> – scRNA data (Anndata).</p></li>
+<li><p><strong>key_type</strong> – The key that is used to extract cell type information from adata_sc.obs.</p></li>
+<li><p><strong>threshold_cover</strong> – Minimum proportion of non-zero reads of a marker gene in assigned cell type.</p></li>
+<li><p><strong>threshold_p</strong> – Maximum p-value for a gene to be marker gene.</p></li>
+<li><p><strong>threshold_fold</strong> – Minimum fold change for a gene to be marker gene.</p></li>
+<li><p><strong>n_select</strong> – Number of marker genes selected for each cell type.</p></li>
+<li><p><strong>verbose</strong> – 0: silent. 1: print the number of marker genes of each cell type.</p></li>
+<li><p><strong>return_dict</strong> – If true, return a dictionary of marker genes, where the keys are the name of the cell types.</p></li>
+<li><p><strong>q</strong> – Quantile of the fold-change that we considered.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of the marker genes or a dictionary of marker genes, where the keys are the name of the cell types.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sc_reference.plot_heatmap">
+<span class="sig-prename descclassname"><span class="pre">sc_reference.</span></span><span class="sig-name descname"><span class="pre">plot_heatmap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adata_sc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fig_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(10,</span> <span class="pre">4)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dpi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">300</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sc_reference.html#plot_heatmap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sc_reference.plot_heatmap" title="Permalink to this definition"></a></dt>
+<dd><p>Plot the heatmap of the mean expression.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>adata_sc</strong> – scRNA data (Anndata).</p></li>
+<li><p><strong>key_type</strong> – The key that is used to extract cell type information from adata_sc.obs.</p></li>
+<li><p><strong>fig_size</strong> – Initial size of the figure.</p></li>
+<li><p><strong>dpi</strong> – Dots per inch (DPI) of the figure.</p></li>
+<li><p><strong>save</strong> – Whether to save the heatmap.</p></li>
+<li><p><strong>out_dir</strong> – Output directory.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sc_reference.plot_sc_ref">
+<span class="sig-prename descclassname"><span class="pre">sc_reference.</span></span><span class="sig-name descname"><span class="pre">plot_sc_ref</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sc_ref</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fig_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(10,</span> <span class="pre">4)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dpi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">300</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sc_reference.html#plot_sc_ref"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sc_reference.plot_sc_ref" title="Permalink to this definition"></a></dt>
+<dd><p>Plot the heatmap of the single cell reference</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sc_ref</strong> – scRNA reference. np.ndarray n_type*n_gene.</p></li>
+<li><p><strong>type_list</strong> – List of the cell types.</p></li>
+<li><p><strong>fig_size</strong> – Initial size of the figure.</p></li>
+<li><p><strong>dpi</strong> – Dots per inch (DPI) of the figure.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 
 
