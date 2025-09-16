@@ -1,29 +1,26 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Deconvolution and Decomposition of Mouse Cortex Visium Data using Spotiphy &mdash; Spotiphy 0.1.3 documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css" />
-      <link rel="stylesheet" type="text/css" href="_static/nbsphinx-code-cells.css" />
+  <title>Deconvolution and Decomposition of Mouse Cortex Visium Data using Spotiphy &mdash; Spotiphy 0.2.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/nbsphinx-code-cells.css?v=2aa19091" />
 
   
     <link rel="shortcut icon" href="_static/logo.ico"/>
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
-        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=938c9ccc"></script>
+      <script src="_static/doctools.js?v=9a2dae69"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -110,13 +107,13 @@
            <div itemprop="articleBody">
              
   <section id="Deconvolution-and-Decomposition-of-Mouse-Cortex-Visium-Data-using-Spotiphy">
-<h1>Deconvolution and Decomposition of Mouse Cortex Visium Data using Spotiphy<a class="headerlink" href="#Deconvolution-and-Decomposition-of-Mouse-Cortex-Visium-Data-using-Spotiphy" title="Permalink to this heading"></a></h1>
+<h1>Deconvolution and Decomposition of Mouse Cortex Visium Data using Spotiphy<a class="headerlink" href="#Deconvolution-and-Decomposition-of-Mouse-Cortex-Visium-Data-using-Spotiphy" title="Link to this heading"></a></h1>
 <ul class="simple">
 <li><p>by Ziqian Zheng <a class="reference external" href="mailto:zzheng92&#37;&#52;&#48;wisc&#46;edu">zzheng92<span>&#64;</span>wisc<span>&#46;</span>edu</a> and Jiyuan Yang <a class="reference external" href="mailto:jiyuan&#46;yang&#37;&#52;&#48;stjude&#46;org">jiyuan<span>&#46;</span>yang<span>&#64;</span>stjude<span>&#46;</span>org</a>.</p></li>
-<li><p>Last update: Mar 7th 2025</p></li>
+<li><p>Last update: Sep 15th 2025</p></li>
 </ul>
 <section id="Contents">
-<h2>Contents<a class="headerlink" href="#Contents" title="Permalink to this heading"></a></h2>
+<h2>Contents<a class="headerlink" href="#Contents" title="Link to this heading"></a></h2>
 <ol class="arabic simple">
 <li><p>Environment Setup: Package Installation and Loading</p></li>
 <li><p>Data Preparation: Loading and Processing</p></li>
@@ -128,7 +125,7 @@
 </ol>
 </section>
 <section id="Environment-Setup:-Package-Installation-and-Loading">
-<h2>Environment Setup: Package Installation and Loading<a class="headerlink" href="#Environment-Setup:-Package-Installation-and-Loading" title="Permalink to this heading"></a></h2>
+<h2>Environment Setup: Package Installation and Loading<a class="headerlink" href="#Environment-Setup:-Package-Installation-and-Loading" title="Link to this heading"></a></h2>
 <p>If you’re using you local environment, please ensure that <code class="docutils literal notranslate"><span class="pre">spotiphy</span></code> is correctly installed by following the instructions on its <a class="reference external" href="https://github.com/jyyulab/Spotiphy">GitHub page</a>.</p>
 <p>If you’re using Google Colab, please execute the following code block to install <code class="docutils literal notranslate"><span class="pre">spotiphy</span></code> and all its dependencies. To ensure the code runs smoothly in Google Colab, we will manually eliminate some unnecessary Jupyter variables.</p>
 <p><strong>😮Important:</strong> To get enough RAM, <a class="reference external" href="https://colab.research.google.com/signup">Colab Pro</a> might be needed.</p>
@@ -138,38 +135,42 @@
 </ul>
 <p>To solve this issue, simply ignore this error and <strong>restart the session</strong> (Click <em>Runtime</em>, then click <em>Restart Session</em>). Then you will be able to load the packages correctly.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span>import sys
-IN_COLAB = &quot;google.colab&quot; in sys.modules
-if IN_COLAB:
-    !pip install -qq spotiphy
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="n">IN_COLAB</span> <span class="o">=</span> <span class="s2">&quot;google.colab&quot;</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span>
+<span class="k">if</span> <span class="n">IN_COLAB</span><span class="p">:</span>
+    <span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>-qq<span class="w"> </span>spotiphy
 </pre></div>
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">spotiphy</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">pickle</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">matplotlib</span> <span class="k">as</span> <span class="nn">mpl</span>
-<span class="kn">import</span> <span class="nn">scanpy</span> <span class="k">as</span> <span class="nn">sc</span>
-<span class="kn">import</span> <span class="nn">torch</span>
-<span class="kn">import</span> <span class="nn">cv2</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;..&quot;</span><span class="p">)</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">spotiphy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pickle</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mpl</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scanpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sc</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">cv2</span>
 </pre></div>
 </div>
 </div>
 <p>Specify the output folder.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">results_folder</span> <span class="o">=</span> <span class="s1">&#39;Spotiphy_Result/&#39;</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">results_folder</span> <span class="o">=</span> <span class="s2">&quot;Spotiphy_Result/&quot;</span>
 <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">results_folder</span><span class="p">):</span>
     <span class="c1"># Create result folder if it does not exist</span>
     <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">results_folder</span><span class="p">)</span>
@@ -178,26 +179,32 @@ if IN_COLAB:
 </div>
 </section>
 <section id="Data-Preparation:-Loading-and-Processing">
-<h2>Data Preparation: Loading and Processing<a class="headerlink" href="#Data-Preparation:-Loading-and-Processing" title="Permalink to this heading"></a></h2>
+<h2>Data Preparation: Loading and Processing<a class="headerlink" href="#Data-Preparation:-Loading-and-Processing" title="Link to this heading"></a></h2>
 <p>Check if the example datasets exist. If not, download them from GitHub.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">requests</span>
-<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="s1">&#39;data/&#39;</span><span class="p">):</span>
-    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="s1">&#39;data/&#39;</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
 
-<span class="n">data_path</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;data/scRNA_mouse_brain.h5ad&#39;</span><span class="p">,</span> <span class="s1">&#39;data/ST_mouse_brain.h5ad&#39;</span><span class="p">,</span>
-             <span class="s1">&#39;data/img_mouse_brain.png&#39;</span><span class="p">]</span>
-<span class="n">urls</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;https://raw.githubusercontent.com/jyyulab/Spotiphy/main/tutorials/data/scRNA_mouse_brain.h5ad&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;https://raw.githubusercontent.com/jyyulab/Spotiphy/main/tutorials/data/ST_mouse_brain.h5ad&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;https://raw.githubusercontent.com/jyyulab/Spotiphy/main/tutorials/data/img_mouse_brain.png&#39;</span><span class="p">]</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="s2">&quot;data/&quot;</span><span class="p">):</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="s2">&quot;data/&quot;</span><span class="p">)</span>
+
+<span class="n">data_path</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;data/scRNA_mouse_brain.h5ad&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;data/ST_mouse_brain.h5ad&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;data/img_mouse_brain.png&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+<span class="n">urls</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;https://raw.githubusercontent.com/jyyulab/Spotiphy/main/tutorials/data/scRNA_mouse_brain.h5ad&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;https://raw.githubusercontent.com/jyyulab/Spotiphy/main/tutorials/data/ST_mouse_brain.h5ad&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;https://raw.githubusercontent.com/jyyulab/Spotiphy/main/tutorials/data/img_mouse_brain.png&quot;</span><span class="p">,</span>
+<span class="p">]</span>
 
 <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">path</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">data_path</span><span class="p">):</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
         <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">urls</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">allow_redirects</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
             <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
         <span class="k">del</span> <span class="n">response</span>
 </pre></div>
@@ -205,15 +212,14 @@ if IN_COLAB:
 </div>
 <p>Load the scRNA data, visium data and the corresponding H&amp;E staining image.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">adata_sc</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">read_h5ad</span><span class="p">(</span><span class="s2">&quot;data/scRNA_mouse_brain.h5ad&quot;</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata_sc</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">read_h5ad</span><span class="p">(</span><span class="s2">&quot;data/scRNA_mouse_brain.h5ad&quot;</span><span class="p">)</span>
 <span class="n">adata_st</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">read_h5ad</span><span class="p">(</span><span class="s2">&quot;data/ST_mouse_brain.h5ad&quot;</span><span class="p">)</span>
-<span class="n">adata_st</span><span class="o">.</span><span class="n">var_names_make_unique</span><span class="p">()</span>
 <span class="n">img</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="s2">&quot;data/img_mouse_brain.png&quot;</span><span class="p">)</span>
 
-<span class="c1"># Another option for loading Visium data is to use the following function and point the directory to the 10x Visium raw data folder.</span>
+<span class="c1"># Another opinion for loading Visium data is to use the following function and point the directory to the 10x Visium raw data folder.</span>
 <span class="c1"># adata_st = sc.read_visium(&quot;data/ST_mouse_brain/outs&quot;)</span>
 </pre></div>
 </div>
@@ -228,12 +234,13 @@ if IN_COLAB:
 </pre></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
-<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">key_type</span> <span class="o">=</span> <span class="s1">&#39;celltype&#39;</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">key_type</span> <span class="o">=</span> <span class="s2">&quot;celltype&quot;</span>
 <span class="n">type_list</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">adata_sc</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="n">key_type</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)))</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;There are </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">type_list</span><span class="p">)</span><span class="si">}</span><span class="s1"> cell types: </span><span class="si">{</span><span class="n">type_list</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;There are </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">type_list</span><span class="p">)</span><span class="si">}</span><span class="s2"> cell types: </span><span class="si">{</span><span class="n">type_list</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">adata_st</span><span class="o">.</span><span class="n">var_names_make_unique</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -247,26 +254,30 @@ There are 14 cell types: [&#39;Astro&#39;, &#39;CA&#39;, &#39;DG&#39;, &#39;L2/3
 </div>
 <p>Convert the spatial coordinates into integer values.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
-<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">adata_st</span><span class="o">.</span><span class="n">obsm</span><span class="p">[</span><span class="s1">&#39;spatial&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">adata_st</span><span class="o">.</span><span class="n">obsm</span><span class="p">[</span><span class="s1">&#39;spatial&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata_st</span><span class="o">.</span><span class="n">obsm</span><span class="p">[</span><span class="s2">&quot;spatial&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">adata_st</span><span class="o">.</span><span class="n">obsm</span><span class="p">[</span><span class="s2">&quot;spatial&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
 <span class="c1"># print(adata_st.obsm[&#39;spatial&#39;])</span>
 </pre></div>
 </div>
 </div>
 <p>Verify all inputs carefully before proceeding.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
-<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">pyplot</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">pyplot</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
 <span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">spatial</span><span class="p">(</span><span class="n">adata_st</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;in_tissue&quot;</span><span class="p">,</span> <span class="n">frameon</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-<span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">umap</span><span class="p">(</span><span class="n">adata_sc</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span> <span class="n">key_type</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">frameon</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-<span class="n">axs</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>  <span class="c1"># In default, cv2 uses BGR. So we convert BGR to RGB.</span>
-<span class="n">axs</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+<span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">umap</span><span class="p">(</span><span class="n">adata_sc</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">key_type</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">frameon</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span>
+    <span class="n">img</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span>
+<span class="p">)</span>  <span class="c1"># In default, cv2 uses BGR. So we convert BGR to RGB.</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s2">&quot;off&quot;</span><span class="p">)</span>
 <span class="n">mpl</span><span class="o">.</span><span class="n">pyplot</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
-<span class="n">mpl</span><span class="o">.</span><span class="n">pyplot</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">results_folder</span><span class="si">}</span><span class="s1">figurepath+figurename.jpg&#39;</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">400</span><span class="p">)</span>
+<span class="n">mpl</span><span class="o">.</span><span class="n">pyplot</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span>
+    <span class="n">results_folder</span> <span class="o">+</span> <span class="s2">&quot;figurepath+figurename.jpg&quot;</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s2">&quot;tight&quot;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">400</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -287,7 +298,7 @@ scatterplots.py (392): No data for colormapping provided via &#39;c&#39;. Parame
 </div>
 </section>
 <section id="Deconvolution:-Marker-Gene-Selection-and-scRNA-Reference-Construction">
-<h2>Deconvolution: Marker Gene Selection and scRNA Reference Construction<a class="headerlink" href="#Deconvolution:-Marker-Gene-Selection-and-scRNA-Reference-Construction" title="Permalink to this heading"></a></h2>
+<h2>Deconvolution: Marker Gene Selection and scRNA Reference Construction<a class="headerlink" href="#Deconvolution:-Marker-Gene-Selection-and-scRNA-Reference-Construction" title="Link to this heading"></a></h2>
 <p>Initialize the spatial transcriptomics and scRNA data. Specifically,</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">adata_sc</span></code> and <code class="docutils literal notranslate"><span class="pre">adata_st</span></code> are normalized</p></li>
@@ -295,10 +306,10 @@ scatterplots.py (392): No data for colormapping provided via &#39;c&#39;. Parame
 <li><p>only the common genes shared by <code class="docutils literal notranslate"><span class="pre">adata_sc</span></code> and <code class="docutils literal notranslate"><span class="pre">adata_st</span></code> are kept</p></li>
 </ul>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
-<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">adata_sc</span><span class="p">,</span> <span class="n">adata_st</span> <span class="o">=</span> <span class="n">spotiphy</span><span class="o">.</span><span class="n">initialization</span><span class="p">(</span><span class="n">adata_sc</span><span class="p">,</span> <span class="n">adata_st</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata_sc</span><span class="p">,</span> <span class="n">adata_st</span> <span class="o">=</span> <span class="n">spotiphy</span><span class="o">.</span><span class="n">initialization</span><span class="p">(</span><span class="n">adata_sc</span><span class="p">,</span> <span class="n">adata_st</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -307,10 +318,10 @@ scatterplots.py (392): No data for colormapping provided via &#39;c&#39;. Parame
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Convert expression matrix to array: 0.65s
-Normalization: 2.1s
-Filtering: 2.66s
-Find common genes: 0.03s
+Convert expression matrix to array: 0.42s
+Normalization: 1.25s
+Filtering: 1.59s
+Find common genes: 0.02s
 </pre></div></div>
 </div>
 <p>Select marker genes based on pairwise statistical tests. The selected marker genes are saved as a CSV file.</p>
@@ -324,19 +335,25 @@ Find common genes: 0.03s
 </ul>
 <p>The parameters specified in the following code block provide a good starting point.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
-<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">marker_gene_dict</span> <span class="o">=</span> <span class="n">spotiphy</span><span class="o">.</span><span class="n">sc_reference</span><span class="o">.</span><span class="n">marker_selection</span><span class="p">(</span><span class="n">adata_sc</span><span class="p">,</span> <span class="n">key_type</span><span class="o">=</span><span class="n">key_type</span><span class="p">,</span> <span class="n">return_dict</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                                                          <span class="n">n_select</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">threshold_p</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">threshold_fold</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span>
-                                                          <span class="n">q</span><span class="o">=</span><span class="mf">0.15</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">marker_gene_dict</span> <span class="o">=</span> <span class="n">spotiphy</span><span class="o">.</span><span class="n">sc_reference</span><span class="o">.</span><span class="n">marker_selection</span><span class="p">(</span>
+    <span class="n">adata_sc</span><span class="p">,</span>
+    <span class="n">key_type</span><span class="o">=</span><span class="n">key_type</span><span class="p">,</span>
+    <span class="n">return_dict</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">n_select</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+    <span class="n">threshold_p</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+    <span class="n">threshold_fold</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span>
+    <span class="n">q</span><span class="o">=</span><span class="mf">0.15</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="n">marker_gene</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="n">marker_gene_label</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="k">for</span> <span class="n">type_</span> <span class="ow">in</span> <span class="n">type_list</span><span class="p">:</span>
     <span class="n">marker_gene</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">marker_gene_dict</span><span class="p">[</span><span class="n">type_</span><span class="p">])</span>
-    <span class="n">marker_gene_label</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">type_</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">marker_gene_dict</span><span class="p">[</span><span class="n">type_</span><span class="p">]))</span>
-<span class="n">marker_gene_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;gene&#39;</span><span class="p">:</span><span class="n">marker_gene</span><span class="p">,</span> <span class="s1">&#39;label&#39;</span><span class="p">:</span><span class="n">marker_gene_label</span><span class="p">})</span>
-<span class="n">marker_gene_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">results_folder</span><span class="o">+</span><span class="s1">&#39;marker_gene.csv&#39;</span><span class="p">)</span>
+    <span class="n">marker_gene_label</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">type_</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">marker_gene_dict</span><span class="p">[</span><span class="n">type_</span><span class="p">]))</span>
+<span class="n">marker_gene_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">&quot;gene&quot;</span><span class="p">:</span> <span class="n">marker_gene</span><span class="p">,</span> <span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="n">marker_gene_label</span><span class="p">})</span>
+<span class="n">marker_gene_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">results_folder</span><span class="si">}</span><span class="s2">marker_gene.csv&quot;</span><span class="p">)</span>
 <span class="c1"># Filter scRNA and spatial matrices with marker genes</span>
 <span class="n">adata_sc_marker</span> <span class="o">=</span> <span class="n">adata_sc</span><span class="p">[:,</span> <span class="n">marker_gene</span><span class="p">]</span>
 <span class="n">adata_st_marker</span> <span class="o">=</span> <span class="n">adata_st</span><span class="p">[:,</span> <span class="n">marker_gene</span><span class="p">]</span>
@@ -350,11 +367,13 @@ Find common genes: 0.03s
 <li><p>If there are limited marker genes for each cell type, try setting <code class="docutils literal notranslate"><span class="pre">threshold_fold=1.2</span></code> or adjust as needed.</p></li>
 </ul>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
-<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sc_ref</span> <span class="o">=</span> <span class="n">spotiphy</span><span class="o">.</span><span class="n">construct_sc_ref</span><span class="p">(</span><span class="n">adata_sc_marker</span><span class="p">,</span> <span class="n">key_type</span><span class="o">=</span><span class="n">key_type</span><span class="p">)</span>
-<span class="n">spotiphy</span><span class="o">.</span><span class="n">sc_reference</span><span class="o">.</span><span class="n">plot_heatmap</span><span class="p">(</span><span class="n">adata_sc_marker</span><span class="p">,</span> <span class="n">key_type</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">out_dir</span><span class="o">=</span><span class="n">results_folder</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc_ref</span> <span class="o">=</span> <span class="n">spotiphy</span><span class="o">.</span><span class="n">construct_sc_ref</span><span class="p">(</span><span class="n">adata_sc_marker</span><span class="p">,</span> <span class="n">key_type</span><span class="o">=</span><span class="n">key_type</span><span class="p">)</span>
+<span class="n">spotiphy</span><span class="o">.</span><span class="n">sc_reference</span><span class="o">.</span><span class="n">plot_heatmap</span><span class="p">(</span>
+    <span class="n">adata_sc_marker</span><span class="p">,</span> <span class="n">key_type</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">out_dir</span><span class="o">=</span><span class="n">results_folder</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -363,7 +382,7 @@ Find common genes: 0.03s
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-14it [00:00, 841.51it/s]
+14it [00:00, 1272.90it/s]
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -373,18 +392,13 @@ Find common genes: 0.03s
 <img alt="_images/Spotiphy_tutorial_22_1.png" src="_images/Spotiphy_tutorial_22_1.png" />
 </div>
 </div>
-<p>Another option will be input your customized marker gene list. Use the following code:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;filename.txt&quot;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-    <span class="n">marker_gene</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-<span class="n">marker_gene</span> <span class="o">=</span> <span class="n">marker_gene</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">marker_gene</span><span class="p">)</span>
-<span class="n">adata_sc_marker</span> <span class="o">=</span> <span class="n">adata_sc</span><span class="p">[:,</span> <span class="n">marker_gene</span><span class="p">]</span>
-<span class="n">adata_st_marker</span> <span class="o">=</span> <span class="n">adata_st</span><span class="p">[:,</span> <span class="n">marker_gene</span><span class="p">]</span>
+<p>Another opinion will be input your customized marker gene list. Use the following code:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">#marker_gene = pd.read_csv(results_folder+&#39;customized_marker_genes.csv&#39;, header=0)</span>
 </pre></div>
 </div>
 </section>
 <section id="Deconvolution:-Cellular-Proportion-Estimation">
-<h2>Deconvolution: Cellular Proportion Estimation<a class="headerlink" href="#Deconvolution:-Cellular-Proportion-Estimation" title="Permalink to this heading"></a></h2>
+<h2>Deconvolution: Cellular Proportion Estimation<a class="headerlink" href="#Deconvolution:-Cellular-Proportion-Estimation" title="Link to this heading"></a></h2>
 <p>For performing the deconvolution, we calculate the posterior distribution of certain parameters within a probabilistic generative model using <code class="docutils literal notranslate"><span class="pre">`Pyro</span></code> &lt;<a class="reference external" href="https://pyro.ai/">https://pyro.ai/</a>&gt;`__.</p>
 <p>Parameters of the function <code class="docutils literal notranslate"><span class="pre">estimation_proportion</span></code>:</p>
 <ul class="simple">
@@ -397,17 +411,26 @@ Find common genes: 0.03s
 <li><p><code class="docutils literal notranslate"><span class="pre">n_epoch</span></code>: Number of training epoch.</p></li>
 </ul>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
-<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">device</span> <span class="o">=</span> <span class="s1">&#39;cuda&#39;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s1">&#39;cpu&#39;</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">device</span> <span class="o">=</span> <span class="s2">&quot;cuda&quot;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;cpu&quot;</span>
 <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">adata_st_marker</span><span class="o">.</span><span class="n">X</span><span class="p">)</span>
-<span class="n">cell_proportion</span> <span class="o">=</span> <span class="n">spotiphy</span><span class="o">.</span><span class="n">deconvolution</span><span class="o">.</span><span class="n">estimation_proportion</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">adata_sc_marker</span><span class="p">,</span> <span class="n">sc_ref</span><span class="p">,</span> <span class="n">type_list</span><span class="p">,</span> <span class="n">key_type</span><span class="p">,</span> <span class="n">n_epoch</span><span class="o">=</span><span class="mi">8000</span><span class="p">,</span>
-                                                               <span class="n">plot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">batch_prior</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+<span class="n">cell_proportion</span> <span class="o">=</span> <span class="n">spotiphy</span><span class="o">.</span><span class="n">deconvolution</span><span class="o">.</span><span class="n">estimation_proportion</span><span class="p">(</span>
+    <span class="n">X</span><span class="p">,</span>
+    <span class="n">adata_sc_marker</span><span class="p">,</span>
+    <span class="n">sc_ref</span><span class="p">,</span>
+    <span class="n">type_list</span><span class="p">,</span>
+    <span class="n">key_type</span><span class="p">,</span>
+    <span class="n">n_epoch</span><span class="o">=</span><span class="mi">8000</span><span class="p">,</span>
+    <span class="n">plot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">batch_prior</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="n">adata_st</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="n">type_list</span><span class="p">]</span> <span class="o">=</span> <span class="n">cell_proportion</span>
 <span class="c1"># Save the cellular proportions for future usage</span>
-<span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">results_folder</span><span class="o">+</span><span class="s1">&#39;proportion.npy&#39;</span><span class="p">,</span> <span class="n">cell_proportion</span><span class="p">)</span>
-<span class="n">adata_st</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="n">type_list</span><span class="p">]</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">results_folder</span><span class="si">}</span><span class="s1">proportion.csv&#39;</span><span class="p">)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">results_folder</span> <span class="o">+</span> <span class="s2">&quot;proportion.npy&quot;</span><span class="p">,</span> <span class="n">cell_proportion</span><span class="p">)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">results_folder</span> <span class="o">+</span> <span class="s2">&quot;proportion.csv&quot;</span><span class="p">,</span> <span class="n">adata_st</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="n">type_list</span><span class="p">],</span> <span class="n">delimiter</span><span class="o">=</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -416,7 +439,7 @@ Find common genes: 0.03s
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-100%|██████████| 8000/8000 [02:58&lt;00:00, 44.81it/s]
+100%|██████████| 8000/8000 [01:17&lt;00:00, 103.71it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -431,20 +454,32 @@ Find common genes: 0.03s
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-3969168415.py (5): Trying to modify attribute `.obs` of view, initializing view as actual.
+2325827637.py (14): Trying to modify attribute `.obs` of view, initializing view as actual.
 </pre></div></div>
 </div>
 <p>Generate heatmaps of cellular proportions.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
-<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">vmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="n">adata_st</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="n">type_list</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="mf">0.98</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-<span class="n">vmax</span><span class="p">[</span><span class="n">vmax</span><span class="o">&lt;</span><span class="mf">0.05</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.05</span>
-<span class="k">with</span> <span class="n">mpl</span><span class="o">.</span><span class="n">rc_context</span><span class="p">({</span><span class="s1">&#39;figure.figsize&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="s1">&#39;figure.dpi&#39;</span><span class="p">:</span> <span class="mi">400</span><span class="p">,</span> <span class="s1">&#39;xtick.labelsize&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}):</span>
-    <span class="n">ax</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">spatial</span><span class="p">(</span><span class="n">adata_st</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;viridis&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">type_list</span><span class="p">,</span> <span class="n">img_key</span><span class="o">=</span><span class="s1">&#39;hires&#39;</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">vmax</span><span class="p">),</span>
-                       <span class="n">size</span><span class="o">=</span><span class="mf">1.3</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ncols</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">alpha_img</span><span class="o">=</span><span class="mf">0.4</span><span class="p">)</span>
-    <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_figure</span><span class="p">()</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">results_folder</span><span class="si">}</span><span class="s1">Spotiphy_deconvolution.jpg&#39;</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">vmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="n">adata_st</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="n">type_list</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="mf">0.98</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">vmax</span><span class="p">[</span><span class="n">vmax</span> <span class="o">&lt;</span> <span class="mf">0.05</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.05</span>
+<span class="k">with</span> <span class="n">mpl</span><span class="o">.</span><span class="n">rc_context</span><span class="p">(</span>
+    <span class="p">{</span><span class="s2">&quot;figure.figsize&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="s2">&quot;figure.dpi&quot;</span><span class="p">:</span> <span class="mi">400</span><span class="p">,</span> <span class="s2">&quot;xtick.labelsize&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
+<span class="p">):</span>
+    <span class="n">ax</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">spatial</span><span class="p">(</span>
+        <span class="n">adata_st</span><span class="p">,</span>
+        <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;viridis&quot;</span><span class="p">,</span>
+        <span class="n">color</span><span class="o">=</span><span class="n">type_list</span><span class="p">,</span>
+        <span class="n">img_key</span><span class="o">=</span><span class="s2">&quot;hires&quot;</span><span class="p">,</span>
+        <span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">vmax</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">vmax</span><span class="p">),</span>
+        <span class="n">size</span><span class="o">=</span><span class="mf">1.3</span><span class="p">,</span>
+        <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">ncols</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+        <span class="n">alpha_img</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_figure</span><span class="p">()</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">results_folder</span><span class="si">}</span><span class="s2">Spotiphy_deconvolution.jpg&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -457,7 +492,7 @@ Find common genes: 0.03s
 </div>
 </section>
 <section id="Deconvolution:-Cell-Number-Estimation-Using-Segmentation">
-<h2>Deconvolution: Cell Number Estimation Using Segmentation<a class="headerlink" href="#Deconvolution:-Cell-Number-Estimation-Using-Segmentation" title="Permalink to this heading"></a></h2>
+<h2>Deconvolution: Cell Number Estimation Using Segmentation<a class="headerlink" href="#Deconvolution:-Cell-Number-Estimation-Using-Segmentation" title="Link to this heading"></a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">Stardist</span></code> package is used to segment nuclei from H&amp;E staining images, after which the number of nuclei in each spot is counted. Note that the image and segmentation step is not required if only deconvolution results are needed.</p>
 <p>Parameters use in function <code class="docutils literal notranslate"><span class="pre">Segmentation</span></code>:</p>
 <ul class="simple">
@@ -470,20 +505,23 @@ Find common genes: 0.03s
 <li><p><code class="docutils literal notranslate"><span class="pre">enhancement</span></code>: An image enhancement feature for pre-processing input images. Users can enable or disable this feature by setting the parameter to <code class="docutils literal notranslate"><span class="pre">True</span></code> or <code class="docutils literal notranslate"><span class="pre">False</span></code>. It is recommended to compare the segmentation outputs with enhancement ON and OFF. Preliminary comparisons indicate that enhanced HE images can significantly reduce the false negative rate of StarDist, allowing for the detection of more accurate nuclei.</p></li>
 </ul>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
-<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">results_folder</span><span class="si">}</span><span class="s1">segmentation/&#39;</span><span class="p">):</span>
-    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">results_folder</span><span class="si">}</span><span class="s1">segmentation/&#39;</span><span class="p">)</span>
-<span class="n">Segmentation</span> <span class="o">=</span> <span class="n">spotiphy</span><span class="o">.</span><span class="n">segmentation</span><span class="o">.</span><span class="n">Segmentation</span><span class="p">(</span><span class="n">img</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]],</span> <span class="n">adata_st</span><span class="o">.</span><span class="n">obsm</span><span class="p">[</span><span class="s1">&#39;spatial&#39;</span><span class="p">],</span>
-                                                  <span class="n">n_tiles</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-                                                  <span class="n">out_dir</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">results_folder</span><span class="si">}</span><span class="s1">segmentation/&#39;</span><span class="p">,</span>
-                                                  <span class="n">enhancement</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">Segmentation</span><span class="o">.</span><span class="n">segment_nucleus</span><span class="p">(</span><span class="n">save</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">n_cell_df</span> <span class="o">=</span> <span class="n">Segmentation</span><span class="o">.</span><span class="n">n_cell_df</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">results_folder</span><span class="si">}</span><span class="s2">segmentation/&quot;</span><span class="p">):</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">results_folder</span><span class="si">}</span><span class="s2">segmentation/&quot;</span><span class="p">)</span>
+<span class="n">segmentation</span> <span class="o">=</span> <span class="n">spotiphy</span><span class="o">.</span><span class="n">segmentation</span><span class="o">.</span><span class="n">Segmentation</span><span class="p">(</span>
+    <span class="n">img</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]],</span>
+    <span class="n">adata_st</span><span class="o">.</span><span class="n">obsm</span><span class="p">[</span><span class="s2">&quot;spatial&quot;</span><span class="p">],</span>
+    <span class="n">n_tiles</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="n">out_dir</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">results_folder</span><span class="si">}</span><span class="s2">segmentation/&quot;</span><span class="p">,</span>
+    <span class="n">enhancement</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">segmentation</span><span class="o">.</span><span class="n">segment_nucleus</span><span class="p">(</span><span class="n">save</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">n_cell_df</span> <span class="o">=</span> <span class="n">segmentation</span><span class="o">.</span><span class="n">n_cell_df</span>
 <span class="c1"># Save the segmentation for future usage</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">n_cell_df</span><span class="p">)</span>
-<span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">results_folder</span><span class="si">}</span><span class="s1">segmentation/n_cell_per_spot.csv&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">results_folder</span><span class="si">}</span><span class="s2">segmentation/n_cell_per_spot.csv&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -504,16 +542,19 @@ Using default values: prob_thresh=0.692478, nms_thresh=0.3.
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-100%|██████████| 4/4 [00:03&lt;00:00,  1.17it/s]
+100%|██████████| 4/4 [00:02&lt;00:00,  1.87it/s]
 </pre></div></div>
 </div>
 <p>Plot a small section of the segmented results for examination.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
-<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Segmentation</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">save</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">crop</span><span class="o">=</span><span class="p">(</span><span class="mi">2000</span><span class="p">,</span> <span class="mi">2500</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">1500</span><span class="p">),</span>
-                  <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">results_folder</span><span class="si">}</span><span class="s1">segmentation/segmentation_sample.jpg&#39;</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">segmentation</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+    <span class="n">save</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">crop</span><span class="o">=</span><span class="p">(</span><span class="mi">2000</span><span class="p">,</span> <span class="mi">2500</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">1500</span><span class="p">),</span>
+    <span class="n">path</span><span class="o">=</span><span class="n">results_folder</span> <span class="o">+</span> <span class="s2">&quot;segmentation/segmentation_sample.jpg&quot;</span><span class="p">,</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -526,7 +567,7 @@ Using default values: prob_thresh=0.692478, nms_thresh=0.3.
 </div>
 </section>
 <section id="Decomposition:-Expression-Breakdown-of-Each-Spot-to-Single-cell-Resolution">
-<h2>Decomposition: Expression Breakdown of Each Spot to Single-cell Resolution<a class="headerlink" href="#Decomposition:-Expression-Breakdown-of-Each-Spot-to-Single-cell-Resolution" title="Permalink to this heading"></a></h2>
+<h2>Decomposition: Expression Breakdown of Each Spot to Single-cell Resolution<a class="headerlink" href="#Decomposition:-Expression-Breakdown-of-Each-Spot-to-Single-cell-Resolution" title="Link to this heading"></a></h2>
 <p>To decompose all genes in the spatial transcriptomics data, both scRNA-seq data and spatial transcriptomics data must be reloaded. <code class="docutils literal notranslate"><span class="pre">n_cell</span></code> represents the number of cells in each spot, with four opinions available:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">n_cell_df['cell_count'].values</span></code>. The default setting, which uses the number of nuclei derived from segmentation results.</p></li>
@@ -536,46 +577,45 @@ Using default values: prob_thresh=0.692478, nms_thresh=0.3.
 </ul>
 <p>For more details, please refer to the <a class="reference external" href="https://jyyulab.github.io/Spotiphy/deconvolution.html#deconvolution.decomposition">document</a>.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
-<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">adata_sc_orig</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">read_h5ad</span><span class="p">(</span><span class="s2">&quot;data/scRNA_mouse_brain.h5ad&quot;</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata_sc_orig</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">read_h5ad</span><span class="p">(</span><span class="s2">&quot;data/scRNA_mouse_brain.h5ad&quot;</span><span class="p">)</span>
 <span class="n">adata_st_orig</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">read_h5ad</span><span class="p">(</span><span class="s2">&quot;data/ST_mouse_brain.h5ad&quot;</span><span class="p">)</span>
 <span class="n">adata_st_orig</span><span class="o">.</span><span class="n">var_names_make_unique</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
-<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Read in the saved segmentation results.</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Read in the saved segmentation results.</span>
 <span class="c1"># n_cell_df = pd.read_csv(results_folder+&#39;segmentation/n_cell_df.csv&#39;, header=0)</span>
-<span class="n">n_cell</span> <span class="o">=</span> <span class="n">n_cell_df</span><span class="p">[</span><span class="s1">&#39;cell_count&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
-<span class="n">adata_st_decomposed</span> <span class="o">=</span> <span class="n">spotiphy</span><span class="o">.</span><span class="n">deconvolution</span><span class="o">.</span><span class="n">decomposition</span><span class="p">(</span><span class="n">adata_st_orig</span><span class="p">,</span> <span class="n">adata_sc_orig</span><span class="p">,</span> <span class="n">key_type</span><span class="p">,</span>
-                                                           <span class="n">cell_proportion</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">out_dir</span><span class="o">=</span><span class="n">results_folder</span><span class="p">,</span>
-                                                           <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">spot_location</span><span class="o">=</span><span class="n">adata_st_orig</span><span class="o">.</span><span class="n">obsm</span><span class="p">[</span><span class="s1">&#39;spatial&#39;</span><span class="p">],</span>
-                                                           <span class="n">filtering_gene</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                                                           <span class="n">n_cell</span><span class="o">=</span><span class="n">n_cell</span><span class="p">,</span>
-                                                           <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;ST_decomposition.h5ad&#39;</span><span class="p">)</span>
+<span class="n">n_cell</span> <span class="o">=</span> <span class="n">n_cell_df</span><span class="p">[</span><span class="s2">&quot;cell_count&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+<span class="n">adata_st_decomposed</span> <span class="o">=</span> <span class="n">spotiphy</span><span class="o">.</span><span class="n">deconvolution</span><span class="o">.</span><span class="n">decomposition</span><span class="p">(</span>
+    <span class="n">adata_st_orig</span><span class="p">,</span>
+    <span class="n">adata_sc_orig</span><span class="p">,</span>
+    <span class="n">key_type</span><span class="p">,</span>
+    <span class="n">cell_proportion</span><span class="p">,</span>
+    <span class="n">save</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">out_dir</span><span class="o">=</span><span class="n">results_folder</span><span class="p">,</span>
+    <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">spot_location</span><span class="o">=</span><span class="n">adata_st_orig</span><span class="o">.</span><span class="n">obsm</span><span class="p">[</span><span class="s2">&quot;spatial&quot;</span><span class="p">],</span>
+    <span class="n">filtering_gene</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">n_cell</span><span class="o">=</span><span class="n">n_cell</span><span class="p">,</span>
+    <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;ST_decomposition.h5ad&quot;</span><span class="p">,</span>
+<span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-deconvolution.py (710): elementwise comparison failed; returning scalar instead, but in the future will perform elementwise comparison
-</pre></div></div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Prepared proportion data. Time use 0.03
-Initialized scRNA and ST data. Time use 5.66
+Prepared proportion data. Time use 0.02
+Initialized scRNA and ST data. Time use 3.30
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -583,7 +623,7 @@ Initialized scRNA and ST data. Time use 5.66
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-14it [00:00, 37.82it/s]
+14it [00:00, 49.40it/s]
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -591,15 +631,15 @@ Initialized scRNA and ST data. Time use 5.66
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Processed scRNA and ST data. Time use 2.52
-Decomposition complete. Time use 1.58
+Processed scRNA and ST data. Time use 1.17
+Decomposition complete. Time use 0.89
 Constructed ST decomposition data file. Time use 0.32
-Saved file to output folder. Time use 3.80
+Saved file to output folder. Time use 2.62
 </pre></div></div>
 </div>
 </section>
 <section id="Imputation:-Creation-of-Pseudo-Single-cell-resolution-Image">
-<h2>Imputation: Creation of Pseudo Single-cell resolution Image<a class="headerlink" href="#Imputation:-Creation-of-Pseudo-Single-cell-resolution-Image" title="Permalink to this heading"></a></h2>
+<h2>Imputation: Creation of Pseudo Single-cell resolution Image<a class="headerlink" href="#Imputation:-Creation-of-Pseudo-Single-cell-resolution-Image" title="Link to this heading"></a></h2>
 <p>The H&amp;E staining image only highlights nuclei, we first infer the boundary of each cell. Specifically, the area of each cell is gradually expended outward from the center of its nucleus. The expansion stopped when one of the following conditions is met:</p>
 <ul class="simple">
 <li><p>The cell area exceeds <code class="docutils literal notranslate"><span class="pre">max_area</span></code>.</p></li>
@@ -608,16 +648,34 @@ Saved file to output folder. Time use 3.80
 <li><p><code class="docutils literal notranslate"><span class="pre">delta</span></code> represent the incremental expansion distance in each iteration.</p></li>
 </ul>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
 </pre></div>
 </div>
-<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">search_direction</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">],</span>
-                    <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
-<span class="n">boundary_dict</span> <span class="o">=</span> <span class="n">spotiphy</span><span class="o">.</span><span class="n">segmentation</span><span class="o">.</span><span class="n">cell_boundary</span><span class="p">(</span><span class="n">Segmentation</span><span class="o">.</span><span class="n">nucleus_df</span><span class="p">[[</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
-                                                    <span class="n">img_size</span><span class="o">=</span><span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span> <span class="n">max_dist</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span> <span class="n">max_area</span><span class="o">=</span><span class="mi">580</span><span class="p">,</span>
-                                                    <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">search_direction</span><span class="o">=</span><span class="n">search_direction</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">search_direction</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+    <span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+<span class="p">]</span>
+<span class="n">boundary_dict</span> <span class="o">=</span> <span class="n">spotiphy</span><span class="o">.</span><span class="n">segmentation</span><span class="o">.</span><span class="n">cell_boundary</span><span class="p">(</span>
+    <span class="n">segmentation</span><span class="o">.</span><span class="n">nucleus_df</span><span class="p">[[</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+    <span class="n">img_size</span><span class="o">=</span><span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span>
+    <span class="n">max_dist</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span>
+    <span class="n">max_area</span><span class="o">=</span><span class="mi">580</span><span class="p">,</span>
+    <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">search_direction</span><span class="o">=</span><span class="n">search_direction</span><span class="p">,</span>
+    <span class="n">delta</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="c1"># Save the dictionary of the cell boundaries for future usage</span>
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">results_folder</span><span class="si">}</span><span class="s1">segmentation/boundary_dict.pkl&#39;</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">results_folder</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;segmentation/boundary_dict.pkl&quot;</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
     <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">boundary_dict</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -627,8 +685,8 @@ Saved file to output folder. Time use 3.80
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-100%|██████████| 12/12 [00:06&lt;00:00,  1.89it/s]
-100%|██████████| 4100/4100 [00:05&lt;00:00, 697.62it/s]
+100%|██████████| 12/12 [00:03&lt;00:00,  3.83it/s]
+100%|██████████| 4100/4100 [00:02&lt;00:00, 1374.21it/s]
 </pre></div></div>
 </div>
 <p>Assign cell types to nuclei in the spatial image through the following steps:</p>
@@ -638,28 +696,36 @@ Saved file to output folder. Time use 3.80
 <li><p>Function <code class="docutils literal notranslate"><span class="pre">cell_proportion_smooth</span></code>: Allocate cell types to nuclei located outside the spatial spots.</p></li>
 </ul>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
 </pre></div>
 </div>
-<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">cell_number</span> <span class="o">=</span> <span class="n">spotiphy</span><span class="o">.</span><span class="n">deconvolution</span><span class="o">.</span><span class="n">proportion_to_count</span><span class="p">(</span><span class="n">cell_proportion</span><span class="p">,</span> <span class="n">n_cell_df</span><span class="p">[</span><span class="s1">&#39;cell_count&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
-                                                         <span class="n">multiple_spots</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">Segmentation</span><span class="o">.</span><span class="n">nucleus_df</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="n">spotiphy</span><span class="o">.</span><span class="n">deconvolution</span><span class="o">.</span><span class="n">assign_type_spot</span><span class="p">(</span><span class="n">Segmentation</span><span class="o">.</span><span class="n">nucleus_df</span><span class="p">,</span> <span class="n">Segmentation</span><span class="o">.</span><span class="n">n_cell_df</span><span class="p">,</span>
-                                            <span class="n">cell_number</span><span class="p">,</span> <span class="n">type_list</span><span class="p">))</span>
-<span class="n">Segmentation</span><span class="o">.</span><span class="n">nucleus_df</span><span class="p">,</span> <span class="n">cell_proportion_smooth</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="n">spotiphy</span><span class="o">.</span><span class="n">deconvolution</span><span class="o">.</span><span class="n">assign_type_out</span><span class="p">(</span><span class="n">Segmentation</span><span class="o">.</span><span class="n">nucleus_df</span><span class="p">,</span> <span class="n">cell_proportion</span><span class="p">,</span>
-                                           <span class="n">Segmentation</span><span class="o">.</span><span class="n">spot_center</span><span class="p">,</span> <span class="n">type_list</span><span class="p">,</span> <span class="n">band_width</span><span class="o">=</span><span class="mi">150</span><span class="p">))</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cell_number</span> <span class="o">=</span> <span class="n">spotiphy</span><span class="o">.</span><span class="n">deconvolution</span><span class="o">.</span><span class="n">proportion_to_count</span><span class="p">(</span>
+    <span class="n">cell_proportion</span><span class="p">,</span> <span class="n">n_cell_df</span><span class="p">[</span><span class="s2">&quot;cell_count&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">multiple_spots</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+<span class="n">segmentation</span><span class="o">.</span><span class="n">nucleus_df</span> <span class="o">=</span> <span class="n">spotiphy</span><span class="o">.</span><span class="n">deconvolution</span><span class="o">.</span><span class="n">assign_type_spot</span><span class="p">(</span>
+    <span class="n">segmentation</span><span class="o">.</span><span class="n">nucleus_df</span><span class="p">,</span> <span class="n">segmentation</span><span class="o">.</span><span class="n">n_cell_df</span><span class="p">,</span> <span class="n">cell_number</span><span class="p">,</span> <span class="n">type_list</span>
+<span class="p">)</span>
+<span class="n">segmentation</span><span class="o">.</span><span class="n">nucleus_df</span><span class="p">,</span> <span class="n">cell_proportion_smooth</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">spotiphy</span><span class="o">.</span><span class="n">deconvolution</span><span class="o">.</span><span class="n">assign_type_out</span><span class="p">(</span>
+        <span class="n">segmentation</span><span class="o">.</span><span class="n">nucleus_df</span><span class="p">,</span>
+        <span class="n">cell_proportion</span><span class="p">,</span>
+        <span class="n">segmentation</span><span class="o">.</span><span class="n">spot_center</span><span class="p">,</span>
+        <span class="n">type_list</span><span class="p">,</span>
+        <span class="n">band_width</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <p>Define the class <code class="docutils literal notranslate"><span class="pre">plot_visium</span></code> to generate the pseudo image. Plot the image legend.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
 </pre></div>
 </div>
-<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">plot_visium</span> <span class="o">=</span> <span class="n">spotiphy</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">Plot_Visium</span><span class="p">(</span><span class="n">segmentation</span><span class="o">=</span><span class="n">Segmentation</span><span class="p">,</span> <span class="n">boundary_dict</span><span class="o">=</span><span class="n">boundary_dict</span><span class="p">,</span>
-                                        <span class="n">type_list</span><span class="o">=</span><span class="n">type_list</span><span class="p">)</span>
-<span class="n">plot_visium</span><span class="o">.</span><span class="n">plot_legend</span><span class="p">(</span><span class="n">save</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">results_folder</span><span class="si">}</span><span class="s1">legend.png&#39;</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_visium</span> <span class="o">=</span> <span class="n">spotiphy</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">Plot_Visium</span><span class="p">(</span>
+    <span class="n">segmentation</span><span class="o">=</span><span class="n">segmentation</span><span class="p">,</span> <span class="n">boundary_dict</span><span class="o">=</span><span class="n">boundary_dict</span><span class="p">,</span> <span class="n">type_list</span><span class="o">=</span><span class="n">type_list</span>
+<span class="p">)</span>
+<span class="n">plot_visium</span><span class="o">.</span><span class="n">plot_legend</span><span class="p">(</span><span class="n">save</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">results_folder</span><span class="si">}</span><span class="s2">legend.png&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -678,12 +744,71 @@ Saved file to output folder. Time use 3.80
 </ul>
 <p>For example, to generate a pseudo image containing only cells inside the spatial spots, use the following settings.</p>
 <div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># To generate a pseudo image containing only cells inside the spatial spots, use the following settings.</span>
+<span class="n">plot_visium</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+    <span class="n">background</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">save</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">results_folder</span><span class="si">}</span><span class="s2">pseudo_image_in.png&quot;</span><span class="p">,</span>
+    <span class="n">spot_color</span><span class="o">=</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">),</span>
+    <span class="n">shape</span><span class="o">=</span><span class="s2">&quot;cell&quot;</span><span class="p">,</span>
+    <span class="n">cell</span><span class="o">=</span><span class="s2">&quot;in&quot;</span><span class="p">,</span>
+    <span class="n">boundary</span><span class="o">=</span><span class="s2">&quot;in&quot;</span><span class="p">,</span>
+    <span class="n">dpi</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Adding cells.
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+100%|██████████| 4100/4100 [00:03&lt;00:00, 1362.18it/s]
+14it [00:00, 39.58it/s]
+11005it [00:00, ?it/s]
+100%|██████████| 11005/11005 [00:00&lt;00:00, 695123.95it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Adding spots.
+Saving the image.
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Spotiphy_tutorial_43_3.png" src="_images/Spotiphy_tutorial_43_3.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
 </pre></div>
 </div>
-<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># To generate a pseudo image containing only cells inside the spatial spots, use the following settings.</span>
-<span class="n">plot_visium</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">background</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">results_folder</span><span class="si">}</span><span class="s1">pseudo_image_in.png&#39;</span><span class="p">,</span> <span class="n">spot_color</span><span class="o">=</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">),</span>
-                 <span class="n">shape</span><span class="o">=</span><span class="s1">&#39;cell&#39;</span><span class="p">,</span> <span class="n">cell</span><span class="o">=</span><span class="s1">&#39;in&#39;</span><span class="p">,</span> <span class="n">boundary</span><span class="o">=</span><span class="s1">&#39;in&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># To display all cells as circles without the cell boundaries, use the following settings.</span>
+<span class="n">plot_visium</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+    <span class="n">background</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">save</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">results_folder</span><span class="si">}</span><span class="s2">pseudo_image_both_circle.png&quot;</span><span class="p">,</span>
+    <span class="n">spot_color</span><span class="o">=</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">),</span>
+    <span class="n">shape</span><span class="o">=</span><span class="s2">&quot;circle&quot;</span><span class="p">,</span>
+    <span class="n">cell</span><span class="o">=</span><span class="s2">&quot;both&quot;</span><span class="p">,</span>
+    <span class="n">boundary</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">dpi</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -700,46 +825,8 @@ Adding cells.
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-100%|██████████| 4100/4100 [00:06&lt;00:00, 611.14it/s]
-14it [00:00, 34.23it/s]
-100%|██████████| 10747/10747 [00:00&lt;00:00, 343055.99it/s]
-</pre></div></div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Adding spots.
-Saving the image.
-</pre></div></div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
-</pre></div>
-</div>
-<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># To display all cells as circles without the cell boundaries, use the following settings.</span>
-<span class="n">plot_visium</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">background</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">results_folder</span><span class="si">}</span><span class="s1">pseudo_image_both_circle.png&#39;</span><span class="p">,</span>
-                 <span class="n">spot_color</span><span class="o">=</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">),</span> <span class="n">shape</span><span class="o">=</span><span class="s1">&#39;circle&#39;</span><span class="p">,</span> <span class="n">cell</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">boundary</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">dpi</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Adding cells.
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-10747it [00:00, 180755.18it/s]
-100%|██████████| 10747/10747 [00:00&lt;?, ?it/s]
+11005it [00:00, 611603.34it/s]
+100%|██████████| 11005/11005 [00:00&lt;?, ?it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -751,7 +838,7 @@ Adding spots.
 Saving the image.
 </pre></div></div>
 </div>
-<div class="nboutput nblast docutils container">
+<div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area stderr docutils container">
@@ -759,21 +846,20 @@ Saving the image.
 
 </pre></div></div>
 </div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Spotiphy_tutorial_44_4.png" src="_images/Spotiphy_tutorial_44_4.png" />
+</div>
+</div>
 <p>The updated class <code class="docutils literal notranslate"><span class="pre">Segmentation</span></code> can be saved for future usage.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
 </pre></div>
 </div>
-<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">results_folder</span><span class="o">+</span><span class="sa">f</span><span class="s1">&#39;segmentation/Segmentation.pkl&#39;</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
-    <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">Segmentation</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">results_folder</span><span class="si">}</span><span class="s2">segmentation/segmentation.pkl&quot;</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+    <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">segmentation</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -791,7 +877,7 @@ Saving the image.
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2023, Yu Lab, St. Jude Children&#39;s Research Hospital.</p>
+    <p>&#169; Copyright 2025, Yu Lab, St. Jude Children&#39;s Research Hospital.</p>
   </div>
 
    

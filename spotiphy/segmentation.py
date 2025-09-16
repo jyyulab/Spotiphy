@@ -9,13 +9,24 @@ import os
 from scipy.signal import convolve2d
 from tqdm import tqdm
 import cv2
-os.environ['CUDA_LAUNCH_BLOCKING'] = '1'
+from typing import List, Dict, Tuple, Union
+
+os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
 
 
 class Segmentation:
-    def __init__(self, img, spot_center: np.ndarray, out_dir: str = '', prob_thresh: float = 0.2,
-                 nms_thresh: float = 0.5, spot_radius: float = 36.5, n_tiles=(8, 8, 1), 
-                 enhancement=False, enhancement_params=None):
+    def __init__(
+        self,
+        img: np.ndarray,
+        spot_center: np.ndarray,
+        out_dir: str = "",
+        prob_thresh: float = 0.2,
+        nms_thresh: float = 0.5,
+        spot_radius: float = 36.5,
+        n_tiles: Tuple[int, int, int] = (8, 8, 1),
+        enhancement: bool = False,
+        enhancement_params: dict = None,
+    ):
         """
         Args:
             img (numpy.ndarray):. Three channel stained image. In default, it should be hematoxylin and eosin (H&E) stained
@@ -32,21 +43,26 @@ class Segmentation:
             enhancement_params: Optional, the parameter in the enhancement procedure. If not provided, use default. (testing)
 
         """
-        self.enhancement_params = enhancement_params if enhancement_params else {'cla_wt': 0.2}
+        self.enhancement_params = (
+            enhancement_params if enhancement_params else {"cla_wt": 0.2}
+        )
         if enhancement:
-            self.img = self._apply_enhancement(img, **self.enhancement_params)
+            self.img = self.apply_enhancement(
+                img, cla_wt=self.enhancement_params.get("cla_wt", 0.2)
+            )
         else:
             self.img = img
 
         if spot_center is not None:
-            assert spot_center.shape[1] == 2, "spot_center must have exact two columns."
+            if spot_center.shape[1] != 2:
+                raise ValueError("spot_center must have exactly two columns.")
         self.spot_center = np.array(spot_center)
         self.prob_thresh = prob_thresh
         self.nms_thresh = nms_thresh
         self.spot_radius = spot_radius
         if out_dir and not os.path.exists(out_dir):
             os.mkdir(out_dir)
-        self.out_dir = out_dir + '/' if out_dir else ''
+        self.out_dir = out_dir + "/" if out_dir else ""
         # Segmentation results
         self.label, self.nucleus_boundary, self.probability = None, None, None
         self.n_cell_df = None
@@ -55,10 +71,12 @@ class Segmentation:
         self.n_tiles = n_tiles
         if version.parse(tf.__version__) >= version.parse("2.9.0"):
             tf.keras.Model.predict = change_predict_defaults(tf.keras.Model.predict)
-            print(f"Suppress the output of tensorflow prediction for tensorflow version {tf.version.VERSION}>=2.9.0.")
+            print(
+                f"Suppress the output of tensorflow prediction for tensorflow version {tf.version.VERSION}>=2.9.0."
+            )
 
     @staticmethod
-    def _apply_enhancement(img, cla_wt: float):
+    def apply_enhancement(img: np.ndarray, cla_wt: float) -> np.ndarray:
         """Apply CLAHE and bilateral filtering to enhance the image.
 
         Args:
@@ -70,7 +88,9 @@ class Segmentation:
         """
 
         def _bilateral(img):
-            bilateral_filtered = cv2.bilateralFilter(img, d=9, sigmaColor=75, sigmaSpace=75)
+            bilateral_filtered = cv2.bilateralFilter(
+                img, d=9, sigmaColor=75, sigmaSpace=75
+            )
             return bilateral_filtered
 
         def _clahe(img):
@@ -85,17 +105,21 @@ class Segmentation:
         def _CLA_BIL(img, cla_wt):
             clahe_img = _clahe(img)
             bil_img = _bilateral(img)
-            combined_result = cv2.addWeighted(clahe_img, cla_wt, bil_img, 1-cla_wt, 0)
+            combined_result = cv2.addWeighted(clahe_img, cla_wt, bil_img, 1 - cla_wt, 0)
             return combined_result
-        
+
         img = _CLA_BIL(img, cla_wt)
 
         return img
 
-
     @staticmethod
-    def stardist_2D_versatile_he(img, prob_thresh: float = 0.2, nms_thresh: float = 0.5, n_tiles=(8, 8, 1),
-                                 verbose: bool = True):
+    def stardist_2D_versatile_he(
+        img: np.ndarray,
+        prob_thresh: float = 0.2,
+        nms_thresh: float = 0.5,
+        n_tiles: Tuple[int, int, int] = (8, 8, 1),
+        verbose: bool = True,
+    ) -> Tuple[np.ndarray, dict]:
         """Segmentation function provided by Stardist.
 
         Args:
@@ -120,14 +144,23 @@ class Segmentation:
 
         axis_norm = (0, 1, 2)  # normalize channels jointly
         img = normalize(img, 1, 99.8, axis=axis_norm)
-        model = StarDist2D.from_pretrained('2D_versatile_he')
-        label, details = model.predict_instances(img, nms_thresh=nms_thresh, prob_thresh=prob_thresh, n_tiles=n_tiles,
-                                                 show_tile_progress=verbose)
+        model = StarDist2D.from_pretrained("2D_versatile_he")
+        label, details = model.predict_instances(
+            img,
+            nms_thresh=nms_thresh,
+            prob_thresh=prob_thresh,
+            n_tiles=n_tiles,
+            show_tile_progress=verbose,
+        )
         return label, details
 
     @staticmethod
-    def n_cell_in_spot(nucleus_center: np.ndarray, spot_center: np.ndarray, spot_radius: float,
-                       nucleus_df: pd.DataFrame = None) -> pd.DataFrame:
+    def n_cell_in_spot(
+        nucleus_center: np.ndarray,
+        spot_center: np.ndarray,
+        spot_radius: float,
+        nucleus_df: pd.DataFrame = None,
+    ) -> pd.DataFrame:
         """Find the number of cells in each spot.
 
         If the center of a nucleus is inside the spot, we assume that the cell is in the spot.
@@ -143,48 +176,79 @@ class Segmentation:
             Column 'centers' represents the coordinates of the nucleus centers.
         """
         n_spot = len(spot_center)
-        n_cell_df = pd.DataFrame({'cell_count': [0] * n_spot, 'Nucleus centers': None, 'Nucleus indices':None})
-        distance = np.sum((spot_center[:, :, np.newaxis] - nucleus_center.T) ** 2, axis=1)
+        n_cell_df = pd.DataFrame(
+            {
+                "cell_count": [0] * n_spot,
+                "Nucleus centers": None,
+                "Nucleus indices": None,
+            }
+        )
+        distance = np.sum(
+            (spot_center[:, :, np.newaxis] - nucleus_center.T) ** 2, axis=1
+        )
         if nucleus_df is not None:
-            nucleus_df['in_spot'] = False
+            nucleus_df["in_spot"] = False
         for i in range(n_spot):
-            nucleus_index = np.where(distance[i] < spot_radius ** 2)[0]
+            nucleus_index = np.where(distance[i] < spot_radius**2)[0]
             n_cell_df.iloc[i, 0] = len(nucleus_index)
-            n_cell_df.at[i, 'Nucleus centers'] = nucleus_center[nucleus_index] if len(nucleus_index) else np.array([])
-            n_cell_df.at[i, 'Nucleus indices'] = nucleus_index
+            n_cell_df.at[i, "Nucleus centers"] = (
+                nucleus_center[nucleus_index] if len(nucleus_index) else np.array([])
+            )
+            n_cell_df.at[i, "Nucleus indices"] = nucleus_index
             if nucleus_df is not None:
-                nucleus_df.loc[nucleus_index, 'in_spot'] = True
+                nucleus_df.loc[nucleus_index, "in_spot"] = True
         return n_cell_df
 
-    def segment_nucleus(self, save=True):
+    def segment_nucleus(self, save: bool = True) -> None:
         """Conduct the segmentation using StarDist pretrained model.
 
         Args:
             save: Whether to save the segmentation results.
         """
-        self.label, details = self.stardist_2D_versatile_he(self.img, nms_thresh=self.nms_thresh,
-                                                            prob_thresh=self.prob_thresh, n_tiles=self.n_tiles)
-        nucleus_boundary, nucleus_center, self.probability = details['coord'], details['points'], details['prob']
+        self.label, details = self.stardist_2D_versatile_he(
+            self.img,
+            nms_thresh=self.nms_thresh,
+            prob_thresh=self.prob_thresh,
+            n_tiles=self.n_tiles,
+        )
+        nucleus_boundary, nucleus_center, self.probability = (
+            details["coord"],
+            details["points"],
+            details["prob"],
+        )
         nucleus_boundary = np.transpose(nucleus_boundary, [0, 2, 1])
         self.nucleus_boundary = nucleus_boundary[:, :, [1, 0]]
-        self.nucleus_df = pd.DataFrame({'x': nucleus_center[:, 1], 'y': nucleus_center[:, 0]})
-        self.n_cell_df = self.n_cell_in_spot(self.nucleus_df[['x', 'y']].values, self.spot_center, self.spot_radius,
-                                             self.nucleus_df)
+        self.nucleus_df = pd.DataFrame(
+            {"x": nucleus_center[:, 1], "y": nucleus_center[:, 0]}
+        )
+        self.n_cell_df = self.n_cell_in_spot(
+            self.nucleus_df[["x", "y"]].values,
+            self.spot_center,
+            self.spot_radius,
+            self.nucleus_df,
+        )
         self.is_segmented = True
         if save:
             self.save_results()
 
-    def save_results(self):
-        """Save segmentation results.
-        """
+    def save_results(self) -> None:
+        """Save segmentation results."""
         assert self.is_segmented, "Please conduct segmentation first."
-        np.save(f'{self.out_dir}segmentation_label.npy', self.label)
-        np.save(f'{self.out_dir}segmentation_boundary.npy', self.nucleus_boundary)
-        np.save(f'{self.out_dir}nucleus_df.csv', self.nucleus_df)
-        np.save(f'{self.out_dir}segmentation_probability.npy', self.probability)
-        self.n_cell_df.to_csv(f'{self.out_dir}n_cell_df.csv')
+        np.save(f"{self.out_dir}segmentation_label.npy", self.label)
+        np.save(f"{self.out_dir}segmentation_boundary.npy", self.nucleus_boundary)
+        np.save(f"{self.out_dir}nucleus_df.csv", self.nucleus_df)
+        np.save(f"{self.out_dir}segmentation_probability.npy", self.probability)
+        self.n_cell_df.to_csv(f"{self.out_dir}n_cell_df.csv")
 
-    def plot(self, fig_size=(10, 4.5), dpi=300, crop=None, cmap_segmented='hot', save=False, path=None):
+    def plot(
+        self,
+        fig_size: Tuple[int, float] = (10, 4.5),
+        dpi: int = 300,
+        crop: Union[Tuple[int, int, int, int], None] = None,
+        cmap_segmented: str = "hot",
+        save: bool = False,
+        path: str = None,
+    ) -> None:
         """Plot the segmentation results.
 
         It is recommended to adjust the stardist parameters nms_thresh and prob_thresh based on this plot.
@@ -203,16 +267,16 @@ class Segmentation:
             img = self.img
             img_segmented = self.label
         else:
-            img = self.img[crop[0]:crop[1], crop[2]:crop[3]]
-            img_segmented = self.label[crop[0]:crop[1], crop[2]:crop[3]]
+            img = self.img[crop[0] : crop[1], crop[2] : crop[3]]
+            img_segmented = self.label[crop[0] : crop[1], crop[2] : crop[3]]
         ax[0].imshow(img)
         ax[0].set_title("Original image")
         ax[1].imshow(img_segmented, cmap=cmap_segmented)
         ax[1].set_title("Segmented image")
-        ax[0].axis('off')
-        ax[1].axis('off')
+        ax[0].axis("off")
+        ax[1].axis("off")
         if save:
-            plt.savefig(path, bbox_inches='tight')
+            plt.savefig(path, bbox_inches="tight")
         plt.show()
 
 
@@ -226,12 +290,22 @@ def change_predict_defaults(predict_function):
     Args:
         predict_function: tensorflow.keras.Model.predict
     """
+
     def wrapper(instance, x, verbose=0, **kwargs):
         return predict_function(instance, x, verbose=verbose, **kwargs)
+
     return wrapper
 
 
-def cell_boundary(nucleus_location, img_size, max_dist, max_area, search_direction, verbose=0, delta=1):
+def cell_boundary(
+    nucleus_location: np.ndarray,
+    img_size: Tuple[int, int],
+    max_dist: float,
+    max_area: float,
+    search_direction: List[List[int]],
+    verbose: int = 0,
+    delta: int = 1,
+) -> dict:
     """
     Infer the cell boundary.
 
@@ -250,82 +324,92 @@ def cell_boundary(nucleus_location, img_size, max_dist, max_area, search_directi
     img_cell = np.zeros(img_size)
     n_nuclei = len(nucleus_location)
     n_pixel = [0] * n_nuclei
-    nuclei_left = set(range(1, n_nuclei+1))
+    nuclei_left = set(range(1, n_nuclei + 1))
 
     radius = 0
     while nuclei_left and radius < max_dist:
         radius += delta
         if verbose:
-            print('r: '+str(radius)+'\tThere are ' + str(len(nuclei_left)) + ' nuclei left.')
+            print(
+                "r: "
+                + str(radius)
+                + "\tThere are "
+                + str(len(nuclei_left))
+                + " nuclei left."
+            )
         pixel_check = []
-        for dx in range(-radius-1, radius+2):
-            for dy in range(-radius-1, radius+2):
-                if (radius-delta)**2 <= dx**2+dy**2 <= radius**2:
+        for dx in range(-radius - 1, radius + 2):
+            for dy in range(-radius - 1, radius + 2):
+                if (radius - delta) ** 2 <= dx**2 + dy**2 <= radius**2:
                     pixel_check += [[dx, dy]]
 
         nuclei_remove = set()
         for i in nuclei_left:
             border_temp = []
-            c_y = int(nucleus_location[i-1, 0])
-            c_x = int(nucleus_location[i-1, 1])
+            c_y = int(nucleus_location[i - 1, 0])
+            c_x = int(nucleus_location[i - 1, 1])
             flag = True  # Whether the expended space are all occupied by background or other cells.
             for dx, dy in pixel_check:
                 x1 = c_x + dx
                 y1 = c_y + dy
-                if 0 <= x1 <= img_cell.shape[0]-1 and 0 <= y1 <= img_cell.shape[1]-1 and dx**2+dy**2 <= radius**2:
+                if (
+                    0 <= x1 <= img_cell.shape[0] - 1
+                    and 0 <= y1 <= img_cell.shape[1] - 1
+                    and dx**2 + dy**2 <= radius**2
+                ):
                     if img_cell[x1, y1] == 0:
                         img_cell[x1, y1] = i
                         border_temp += [[x1, y1]]
                     if img_cell[x1, y1] == i:
                         flag = False
-            n_pixel[i-1] += len(border_temp)
-            if n_pixel[i-1] > max_area or (len(border_temp) == 0 and flag):
+            n_pixel[i - 1] += len(border_temp)
+            if n_pixel[i - 1] > max_area or (len(border_temp) == 0 and flag):
                 nuclei_remove.add(i)
         for i in nuclei_remove:
             nuclei_left.remove(i)
 
     img_cell_boundaries = np.zeros((img_cell.shape[0], img_cell.shape[1], 3))
-    individual_boundary = {i:[] for i in range(n_nuclei+1)}
-    # for x in tqdm(range(len(img_cell))):
-    #     for y in range(len(img_cell[0])):
-    #         idx = img_cell[x, y]
-    #         for k in range(len(search_direction)):
-    #             x1, y1 = x + search_direction[k][0], y + search_direction[k][1]
-    #             if 0 <= x1 <= img_cell.shape[0]-1 and 0 <= y1 <= img_cell.shape[1]-1 and img_cell[x1, y1] != idx:
-    #                 img_cell_boundaries[x, y] = [150, 150, 150]
-    #                 individual_boundary[idx] += [[x, y]]
-    #                 break
+    individual_boundary = {i: [] for i in range(n_nuclei + 1)}
 
     search_direction = np.array(search_direction)
     boundary_img = np.zeros_like(img_cell)
     for dx, dy in tqdm(search_direction):
         d = max([abs(dx), abs(dy)])
-        kernel = np.zeros((2*d+1, 2*d+1))
-        kernel[dy+d, dx+d] = 1
+        kernel = np.zeros((2 * d + 1, 2 * d + 1))
+        kernel[dy + d, dx + d] = 1
         kernel[d, d] = -1
-        convolved = convolve2d(img_cell, kernel, mode='same')
+        convolved = convolve2d(img_cell, kernel, mode="same")
         boundary_img += np.where(convolved != 0, 1, 0)
     img_cell_boundaries[boundary_img > 0] = [150, 150, 150]
-    # for i in tqdm(range(n_nuclei+1)):
-    #     y, x = np.where((img_cell == i) & (boundary_img > 0))
-    #     individual_boundary[i] += list(zip(x, y))
     for x in tqdm(range(len(img_cell))):
         for y in range(len(img_cell[0])):
             if boundary_img[x, y] > 0:
                 individual_boundary[img_cell[x, y]] += [[x, y]]
 
     img_cell_boundaries = img_cell_boundaries.astype(np.int32)
-    individual_boundary = {i: np.array(individual_boundary[i]) for i in range(n_nuclei+1)}
-    d = {'img_cell': img_cell, 'cell_boundary': img_cell_boundaries, 'size': n_pixel,
-         'individual_boundary': individual_boundary}
+    individual_boundary = {
+        i: np.array(individual_boundary[i]) for i in range(n_nuclei + 1)
+    }
+    d = {
+        "img_cell": img_cell,
+        "cell_boundary": img_cell_boundaries,
+        "size": n_pixel,
+        "individual_boundary": individual_boundary,
+    }
     return d
 
 
-def add_boundary(img, boundary):
+def add_boundary(img: np.ndarray, boundary: np.ndarray) -> np.ndarray:
+    """
+    Add boundary overlay to image.
+    Args:
+        img: Input image (np.ndarray).
+        boundary: Boundary mask (np.ndarray).
+    Returns:
+        Image with boundary overlay.
+    """
     img = img.copy()
-    assert img.shape[:2] == boundary.shape[:2]
-    for i in range(len(img)):
-        for j in range(len(img[0])):
-            if boundary[i, j, 0] > 0:
-                img[i, j] = [50, 50, 50]
+    if img.shape[:2] != boundary.shape[:2]:
+        raise ValueError("Image and boundary must have the same spatial dimensions.")
+    img[boundary[..., 0] > 0] = [50, 50, 50]
     return img
