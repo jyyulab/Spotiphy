@@ -1,13 +1,22 @@
-.Rhistory
-pyproject.toml
+# IDE and editor folders
 .idea/
+.vscode/
+
+# Python cache and build artifacts
+spotiphy/__pycache__/
+spotiphy.egg-info/
+dist/
+docs/build/
+
+# Project-specific folders
 Simulations/
 archive/
 Paper/
-dist/
 dist archive/
-spotiphy.egg-info/
-tutorials/results/
+
+# Jupyter and R history
+.Rhistory
 tutorials/Prepare tutorial data.ipynb
-spotiphy.egg-info/
-docs/build/
+
+# Tutorial results and data
+tutorials/results/

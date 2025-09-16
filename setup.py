@@ -16,19 +16,21 @@ required_packages = [
     "torch",
     "pyro-ppl==1.8.4",
     "opencv-python>=4.7",
-    "jupyter"
+    "jupyter",
 ]
 
 setup(
-    name='spotiphy',
-    version='0.1.2',
-    packages=['spotiphy'],
-    url='https://github.com/jyyulab/Spotiphy',
-    license='Apache-2.0',
-    author='Ziqian Zheng',
-    author_email='zzheng92@wisc.edu',
-    description='An integrated pipeline designed to deconvolute and decompose spatial transcriptomics data, '
-                'and produce pseudo single-cell resolution images.',
+    name="spotiphy",
+    version="0.2.1",
+    packages=["spotiphy"],
+    url="https://github.com/jyyulab/Spotiphy",
+    license="Apache-2.0",
+    author="Ziqian Zheng, Jiyuan Yang",
+    author_email="zzheng92@wisc.edu",
+    description="An integrated pipeline designed to deconvolute and decompose spatial transcriptomics data, "
+    "and produce pseudo single-cell resolution images.",
     python_requires=">=3.9",
-    install_requires=required_packages
+    install_requires=required_packages,
+    long_description=open("README.md", encoding="utf-8").read(),
+    long_description_content_type="text/markdown",
 )

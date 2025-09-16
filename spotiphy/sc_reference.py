@@ -6,30 +6,43 @@ import pandas as pd
 from tqdm import tqdm
 from scipy import stats
 import time
+from typing import List, Dict, Tuple, Union
+from typing import List, Dict, Union
 
 
-def initialization(adata_sc: anndata.AnnData, adata_st: anndata.AnnData, min_genes: int = 200, min_cells: int = 200,
-                   min_std: float = 20, normalize_st=None, filtering=True, verbose=0):
-    """Filter single cell data and spatial data, and normalize the data to count per million (CPM).
+def initialization(
+    adata_sc: anndata.AnnData,
+    adata_st: anndata.AnnData,
+    min_genes: int = 200,
+    min_cells: int = 200,
+    min_std: float = 20,
+    normalize_st: np.ndarray = None,
+    filtering: bool = True,
+    verbose: int = 0,
+) -> Tuple[anndata.AnnData, anndata.AnnData]:
+    """
+    Filter single cell and spatial data, normalize to CPM, and optionally filter genes/cells.
 
     Args:
-        adata_sc (anndata.AnnData): Single cell data.
-        adata_st (anndata.AnnData): Spatial data.
-        min_genes (int): Minimum number of genes expressed required for a cell to pass filtering.
-        min_cells (int): Minimum number of cells expressed required for a gene to pass filtering.
-        min_std (float): Minimum std of counts required for a gene to pass filtering after CPM normalization.
-        normalize_st (bool): If False, spatial data is also normalized to one million. Otherwise, normalized_st should
-            be np.ndarray, representing the number of cells in each spot, and the expression of each spot is normalized
-            to n_cell million.
-        filtering (bool): Whether to filter the genes in adata_sc.
-        verbose (int): Verbose mode.
+        adata_sc: Single cell data (AnnData).
+        adata_st: Spatial data (AnnData).
+        min_genes: Minimum genes per cell for filtering.
+        min_cells: Minimum cells per gene for filtering.
+        min_std: Minimum std for gene filtering after CPM normalization.
+        normalize_st: If None, spatial data is normalized to one million. If ndarray, represents cell counts per spot.
+        filtering: Whether to filter genes/cells in adata_sc.
+        verbose: Verbosity level.
 
+    Returns:
+        Tuple of filtered and normalized (adata_sc, adata_st).
     """
     time_start = time.time()
-    X = adata_sc.X if type(adata_sc.X) is np.ndarray else adata_sc.X.toarray()
-    Y = adata_st.X if type(adata_st.X) is np.ndarray else adata_st.X.toarray()
+    X = adata_sc.X if isinstance(adata_sc.X, np.ndarray) else adata_sc.X.toarray()
+    Y = adata_st.X if isinstance(adata_st.X, np.ndarray) else adata_st.X.toarray()
     if verbose == 1:
-        print(f"Convert expression matrix to array: {np.round(time.time()-time_start, 2)}s")
+        print(
+            f"Convert expression matrix to array: {np.round(time.time()-time_start, 2)}s"
+        )
         time_start = time.time()
 
     # CPM normalization
@@ -37,7 +50,10 @@ def initialization(adata_sc: anndata.AnnData, adata_st: anndata.AnnData, min_gen
     if normalize_st is None:
         Y = Y * 1e6 / Y.sum(axis=1, keepdims=True)
     else:
-        assert np.shape(normalize_st) == (len(adata_st),)
+        if not isinstance(normalize_st, np.ndarray) or normalize_st.shape != (
+            len(adata_st),
+        ):
+            raise ValueError("normalize_st must be a numpy array with shape (n_spots,)")
         Y = Y * 1e6 / Y.sum(axis=1, keepdims=True) * normalize_st[:, np.newaxis]
     if verbose == 1:
         print(f"Normalization: {np.round(time.time()-time_start, 2)}s")
@@ -45,8 +61,6 @@ def initialization(adata_sc: anndata.AnnData, adata_st: anndata.AnnData, min_gen
     adata_st.X = Y
 
     # Initial filtering
-    # One can also achieve the same result by using sc.pp.filter_cells(adata_sc1, min_genes=min_genes) and
-    # sc.pp.filter_genes(adata_sc1, min_cells=min_cells). However, the code below is faster based on our test.
     if filtering:
         cell_f1 = np.sum(X > 0, axis=1) > min_genes
         gene_f1 = np.sum(X > 0, axis=0) > min_cells
@@ -69,31 +83,45 @@ def initialization(adata_sc: anndata.AnnData, adata_st: anndata.AnnData, min_gen
     return adata_sc, adata_st
 
 
-def marker_selection(adata_sc: anndata.AnnData, key_type: str, threshold_cover=0.6, threshold_p=0.1,
-                     threshold_fold=1.5, n_select=40, verbose=0, return_dict=False, q=0):
-    """Find marker genes based on pairwise ratio test.
+def marker_selection(
+    adata_sc: anndata.AnnData,
+    key_type: str,
+    threshold_cover: float = 0.6,
+    threshold_p: float = 0.1,
+    threshold_fold: float = 1.5,
+    n_select: int = 40,
+    verbose: int = 0,
+    return_dict: bool = False,
+    q: float = 0.0,
+) -> Union[List[str], Dict[str, List[str]]]:
+    """
+    Find marker genes based on pairwise ratio test.
 
     Args:
-        adata_sc: scRNA data (Anndata).
-        key_type: The key that is used to extract cell type information from adata_sc.obs.
-        threshold_cover: Minimum proportion of non-zero reads of a marker gene in assigned cell type.
-        threshold_p: Maximum p-value for a gene to be marker gene.
-        threshold_fold: Minimum fold change for a gene to be marker gene.
-        n_select: Number of marker genes selected for each cell type.
-        verbose: 0: silent. 1: print the number of marker genes of each cell type.
-        return_dict: If true, return a dictionary of marker genes, where the keys are the name of the cell types.
-        q: Quantile of the fold-change that we considered.
+        adata_sc: scRNA data (AnnData).
+        key_type: Key for cell type in adata_sc.obs.
+        threshold_cover: Min proportion of non-zero reads in cell type.
+        threshold_p: Max p-value for marker gene.
+        threshold_fold: Min fold change for marker gene.
+        n_select: Number of marker genes per cell type.
+        verbose: Verbosity level.
+        return_dict: If True, return dict of marker genes by cell type.
+        q: Quantile for fold-change selection.
 
     Returns:
-       List of the marker genes or a dictionary of marker genes, where the keys are the name of the cell types.
+        List or dict of marker genes.
     """
-    X = adata_sc.X if type(adata_sc.X) is np.ndarray else adata_sc.X.toarray()
+    X = adata_sc.X if isinstance(adata_sc.X, np.ndarray) else adata_sc.X.toarray()
 
     # Derive mean and std matrix
     type_list = sorted(list(adata_sc.obs[key_type].unique()))  # list of the cell type.
     n_gene, n_type = adata_sc.shape[1], len(type_list)
-    expression_mu = np.zeros((n_type, n_gene))  # Mean expression of each gene in each cell type.
-    expression_sd = np.zeros((n_type, n_gene))  # Standard deviation of expression of each gene in each cell type.
+    expression_mu = np.zeros(
+        (n_type, n_gene)
+    )  # Mean expression of each gene in each cell type.
+    expression_sd = np.zeros(
+        (n_type, n_gene)
+    )  # Standard deviation of expression of each gene in each cell type.
     n_cell_by_type = np.zeros(n_type)
     data_type = []  # The expression data categorized by cell types.
     for i in range(n_type):
@@ -108,16 +136,20 @@ def marker_selection(adata_sc: anndata.AnnData, key_type: str, threshold_cover=0
     # t test
     fold_change = np.zeros((n_type, n_gene))
     p_value = np.zeros((n_type, n_gene))
-    type_index_max = np.argmax(expression_mu, axis=0)  # Cell type index with the maximum mean expression of each gene
+    type_index_max = np.argmax(
+        expression_mu, axis=0
+    )  # Cell type index with the maximum mean expression of each gene
     for i in range(n_gene):
         mu0 = expression_mu[type_index_max[i], i]
         sd0 = expression_sd[type_index_max[i], i]
         n0 = n_cell_by_type[type_index_max[i]]
-        A = sd0 ** 2 / n0 + expression_sd[:, i] ** 2 / n_cell_by_type
-        B = (sd0 ** 2 / n0)**2/(n0-1) + (expression_sd[:, i] ** 2 / n_cell_by_type)**2/(n_cell_by_type-1)
+        A = sd0**2 / n0 + expression_sd[:, i] ** 2 / n_cell_by_type
+        B = (sd0**2 / n0) ** 2 / (n0 - 1) + (
+            expression_sd[:, i] ** 2 / n_cell_by_type
+        ) ** 2 / (n_cell_by_type - 1)
         t_stat = (mu0 - expression_mu[:, i]) / np.sqrt(A)
-        fold_change[:, i] = mu0/expression_mu[:, i]
-        df = A**2/B
+        fold_change[:, i] = mu0 / expression_mu[:, i]
+        df = A**2 / B
         p_value[:, i] = stats.t.sf(abs(t_stat), df)
 
     # determine the marker genes
@@ -127,11 +159,17 @@ def marker_selection(adata_sc: anndata.AnnData, key_type: str, threshold_cover=0
     marker_gene = dict() if return_dict else []
     for i in range(n_type):
         # fraction of non-zero reads in current datatype
-        cover_fraction = np.sum(data_type[i][:, type_index_max == i] > 0, axis=0) / n_cell_by_type[i]
+        cover_fraction = (
+            np.sum(data_type[i][:, type_index_max == i] > 0, axis=0) / n_cell_by_type[i]
+        )
         p_value_temp = p_value_sort[-2, type_index_max == i]  # second-largest p-value
         # fold_change_temp = fold_change_sort[1, type_index_max == i]  # second-smallest fold change
-        fold_change_temp = fold_change_sort[max(1, int(np.round(q*(n_type-1)))), type_index_max == i]
-        selected = np.logical_and(cover_fraction >= threshold_cover, p_value_temp < threshold_p)
+        fold_change_temp = fold_change_sort[
+            max(1, int(np.round(q * (n_type - 1)))), type_index_max == i
+        ]
+        selected = np.logical_and(
+            cover_fraction >= threshold_cover, p_value_temp < threshold_p
+        )
         selected = np.logical_and(fold_change_temp >= threshold_fold, selected)
         gene_name_temp = gene_name[type_index_max == i][selected]
 
@@ -144,22 +182,24 @@ def marker_selection(adata_sc: anndata.AnnData, key_type: str, threshold_cover=0
         else:
             marker_gene.extend(list(selected_gene))
         if verbose == 1:
-            print(f'{type_list[i]}: {len(list(selected_gene)):d}')
+            print(f"{type_list[i]}: {len(list(selected_gene)):d}")
         elif len(list(selected_gene)) < 5:
-            print(f'Warning: Only {len(list(selected_gene)):d} genes are selected for {type_list[i]}.')
+            print(
+                f"Warning: Only {len(list(selected_gene)):d} genes are selected for {type_list[i]}."
+            )
     return marker_gene
 
 
-def construct_sc_ref(adata_sc: anndata.AnnData, key_type: str):
+def construct_sc_ref(adata_sc: anndata.AnnData, key_type: str) -> np.ndarray:
     """
     Construct the scRNA reference from scRNA data.
 
     Args:
-        adata_sc: scRNA data.
-        key_type: The key that is used to extract cell type information from adata_sc.obs.
+        adata_sc: scRNA data (AnnData).
+        key_type: Key for cell type in adata_sc.obs.
 
     Returns:
-        scRNA reference. Numpy assay with dimension n_type*n_gene
+        scRNA reference (np.ndarray, shape n_type x n_gene).
     """
     type_list = sorted(list(adata_sc.obs[key_type].unique()))
     n_gene, n_type = adata_sc.shape[1], len(type_list)
@@ -167,54 +207,68 @@ def construct_sc_ref(adata_sc: anndata.AnnData, key_type: str):
     X = np.array(adata_sc.X)
     for i, cell_type in tqdm(enumerate(type_list)):
         sc_X_temp = np.sum(X[adata_sc.obs[key_type] == cell_type], axis=0)
-        sc_ref[i] = sc_X_temp/np.sum(sc_X_temp)
+        sc_ref[i] = sc_X_temp / np.sum(sc_X_temp)
     return sc_ref
 
 
-def plot_sc_ref(sc_ref, type_list, fig_size=(10, 4), dpi=300):
+def plot_sc_ref(
+    sc_ref: np.ndarray,
+    type_list: List[str],
+    fig_size: Tuple[int, int] = (10, 4),
+    dpi: int = 300,
+) -> None:
     """
-    Plot the heatmap of the single cell reference
+    Plot the heatmap of the single cell reference.
 
     Args:
-        sc_ref: scRNA reference. np.ndarray n_type*n_gene.
-        type_list: List of the cell types.
-        fig_size: Initial size of the figure.
-        dpi: Dots per inch (DPI) of the figure.
+        sc_ref: scRNA reference (np.ndarray, n_type x n_gene).
+        type_list: List of cell types.
+        fig_size: Figure size.
+        dpi: Dots per inch.
     """
-    fig_size_adjust = (fig_size[0], fig_size[1]*sc_ref.shape[0]/20)
+    fig_size_adjust = (fig_size[0], fig_size[1] * sc_ref.shape[0] / 20)
     plt.figure(figsize=fig_size_adjust, dpi=dpi)
     sc_ref_df = pd.DataFrame(sc_ref, index=type_list)
     sns.heatmap(sc_ref_df, robust=True)
     plt.show()
 
 
-def plot_heatmap(adata_sc, key_type, fig_size=(10, 4), dpi=300, save=False, out_dir=""):
+def plot_heatmap(
+    adata_sc: anndata.AnnData,
+    key_type: str,
+    fig_size: Tuple[int, int] = (10, 4),
+    dpi: int = 300,
+    save: bool = False,
+    out_dir: str = "",
+) -> None:
     """
     Plot the heatmap of the mean expression.
 
     Args:
-        adata_sc: scRNA data (Anndata).
-        key_type: The key that is used to extract cell type information from adata_sc.obs.
-        fig_size: Initial size of the figure.
-        dpi: Dots per inch (DPI) of the figure.
+        adata_sc: scRNA data (AnnData).
+        key_type: Key for cell type in adata_sc.obs.
+        fig_size: Figure size.
+        dpi: Dots per inch.
         save: Whether to save the heatmap.
         out_dir: Output directory.
     """
-    X = adata_sc.X if type(adata_sc.X) is np.ndarray else adata_sc.X.toarray()
+    X = adata_sc.X if isinstance(adata_sc.X, np.ndarray) else adata_sc.X.toarray()
     type_list = sorted(list(adata_sc.obs[key_type].unique()))  # list of the cell type.
     n_gene, n_type = adata_sc.shape[1], len(type_list)
-    expression_mu = np.zeros((n_type, n_gene))  # Mean expression of each gene in each cell type.
+    expression_mu = np.zeros(
+        (n_type, n_gene)
+    )  # Mean expression of each gene in each cell type.
 
     for i in range(n_type):
         data_temp = X[adata_sc.obs[key_type] == type_list[i]]
         expression_mu[i] = np.mean(data_temp, axis=0)
     del X
 
-    expression_mu = expression_mu/np.max(expression_mu, axis=0)
-    fig_size_adjust = (fig_size[0], fig_size[1]*n_type/20)
+    expression_mu = expression_mu / np.max(expression_mu, axis=0)
+    fig_size_adjust = (fig_size[0], fig_size[1] * n_type / 20)
     plt.figure(figsize=fig_size_adjust, dpi=dpi)
     sc_ref_df = pd.DataFrame(expression_mu, index=type_list)
     sns.heatmap(sc_ref_df, robust=True)
     if save:
-        plt.savefig(out_dir+'heatmap.jpg', bbox_inches='tight')
+        plt.savefig(out_dir + "heatmap.jpg", bbox_inches="tight")
     plt.show()

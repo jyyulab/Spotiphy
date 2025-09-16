@@ -9,40 +9,38 @@
 
 ![Spotiphy_cover](https://github.com/jyyulab/Spotiphy/blob/5e7209b1b9e5524417c95ebfdc1ee9ee601587b0/figures/Cover%20image_NMETH-A55722_2.jpg)
 
-Spotiphy is a Python-based pipeline designed to enhance our understanding of biological tissues by integrating sequencing-based spatial transcriptomics data, scRNA-seq data, and high-resolution histological images. Employing a probabilistic model, Bayesian inference, and advanced image processing techniques, Spotiphy primarily executes three key tasks:
-- **Deconvolution**: Spotiphy estimates the abundance of each cell type in each capture area of spatial tissue.
-- **Decomposition**: Spotiphy decomposes spatial transcriptomics data to the single-cell level.
-- **Pseudo single-cell resolution image**: Spotiphy generates a pseudo single-cell resolution image to reconstruct cell neighbors.
+**Spotiphy** is a Python package for integrating sequencing-based spatial transcriptomics, scRNA-seq data, and high-resolution histological images. Using a probabilistic generative model, Bayesian inference, and advanced image processing, Spotiphy performs three key tasks:
 
-With these outputs, Spotiphy facilitates numerous downstream analyses. For more detailed information, please refer to the associated research paper.
+- **Deconvolution** – Estimate the abundance of each cell type in every spatial capture area.  
+- **Decomposition** – Resolve bulk spatial transcriptomics data down to the single-cell level.  
+- **Pseudo single-cell image reconstruction** – Generate images with pseudo single-cell resolution, enabling reconstruction of cell neighborhoods.  
+
+These outputs enable a wide range of downstream analyses. For further details, see our [Nature Methods publication](https://www.nature.com/articles/s41592-025-02622-5).
 
 ![Spotiphy_overview](https://github.com/jyyulab/Spotiphy/blob/d62e05cb677ef6177acbda660b029ee0de1e82b3/figures/Spotiphy_overview.png)
 
-## Tutorials and documents
+## 📚 Tutorials & Documentation  
 
-The following tutorial are available:
+Currently available tutorial:  
+- **Mouse cortex analysis**: [Documentation](https://colab.research.google.com/github/jyyulab/Spotiphy/blob/main/tutorials/Spotiphy_tutorial_1.ipynb) | [Google Colab](https://colab.research.google.com/github/jyyulab/Spotiphy/blob/main/tutorials/Spotiphy_tutorial_1.ipynb)  
 
-+ Deconvolution and decomposition of mouse cortex with Spotiphy [[document](https://colab.research.google.com/github/jyyulab/Spotiphy/blob/main/tutorials/Spotiphy_tutorial_1.ipynb)][[Google Colab](https://colab.research.google.com/github/jyyulab/Spotiphy/blob/main/tutorials/Spotiphy_tutorial_1.ipynb)]
+Full documentation is available at [jyyulab.github.io/Spotiphy](https://jyyulab.github.io/Spotiphy).  
 
-
-For more details, please refer to the [documents](https://jyyulab.github.io/Spotiphy).
-
-## Installation
+## ⚙️ Installation 
 
 [//]: # (### Requirements)
 [//]: # (+ Linux/UNIX/Windows system)
 [//]: # (+ Python >= 3.9)
 [//]: # (+ pytorch == 1.7.1)
 
-To install Spotiphy, it is recommended to create a separate conda environment. This approach helps to manage 
-dependencies and avoid conflicts with other packages.
+We recommend using a dedicated conda environment:  
 ```bash
 conda create -n Spotiphy-env python=3.9
 conda activate Spotiphy-env
 ```
 
 Spotiphy is built based on [Pytorch](https://pytorch.org/). Although installing Spotiphy automatically includes PyTorch,
-it is recommended that users manually install PyTorch [(link)](https://pytorch.org/get-started/locally/) to allow for 
+it is recommended that users manually [(install PyTorch)](https://pytorch.org/get-started/locally/) to allow for 
 more flexibility, particularly for those who wish to utilize CUDA capabilities.
 We offer two methods for installing the Spotiphy package:
 + **Install from GitHub**: This method allows you to install the latest version directly from the source code hosted on 
@@ -62,14 +60,24 @@ import spotiphy
 ```
 
 
-## Frequently asked questions
-Answers to frequently asked questions can be found [here](https://jyyulab.github.io/Spotiphy/questions.html).
+## ❓ FAQ & Support
+Frequently asked questions: [Spotiphy FAQ](https://jyyulab.github.io/Spotiphy/questions.html).
 
-Should you have any further questions, feel free to start a [discussion](https://github.com/jyyulab/Spotiphy/discussions) or reach out directly to the package authors:
+For further assistance, start a [GitHub Discussion](https://github.com/jyyulab/Spotiphy/discussions) or contact the authors:
 + Ziqian Zheng - [zzheng92@wisc.edu](mailto:zzheng92@wisc.edu)
 + Jiyuan Yang - [jiyuan.yang@stjude.org](mailto:jiyuan.yang@stjude.org)
 
 
 ## Cite Spotiphy:
+```tex
+@article{yang2025spotiphy,
+  title={Spotiphy enables single-cell spatial whole transcriptomics across an entire section},
+  author={Yang, Jiyuan and Zheng, Ziqian and Jiao, Yun and Yu, Kaiwen and Bhatara, Sheetal and Yang, Xu and Natarajan, Sivaraman and Zhang, Jiahui and Pan, Qingfei and Easton, John and others},
+  journal={Nature Methods},
+  pages={1--13},
+  year={2025},
+  publisher={Nature Publishing Group US New York}
+}
+```
+[Nature Methods article](https://www.nature.com/articles/s41592-025-02622-5)
 
-https://www.nature.com/articles/s41592-025-02622-5
