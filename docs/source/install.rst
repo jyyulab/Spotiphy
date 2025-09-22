@@ -1,7 +1,7 @@
 Installation
 =====================
 
-To install Spotiphy, it is recommended to create a separate conda environment. This approach helps to manage
+To install Spotiphy, we recommend creating a separate conda environment. This helps manage
 dependencies and avoid conflicts with other packages.
 
 .. code-block::
@@ -9,28 +9,45 @@ dependencies and avoid conflicts with other packages.
     conda create -n Spotiphy-env python=3.9
     conda activate Spotiphy-env
 
+Dependencies
+---------------------
 
-Spotiphy is built based on `Pytorch <https://pytorch.org/>`_. Although installing Spotiphy automatically includes PyTorch,
-it is recommended that users manually install PyTorch `link <https://pytorch.org/get-started/locally/>`_ to allow for
-more flexibility, particularly for those who wish to utilize CUDA capabilities.
+Spotiphy is built on top of `PyTorch <https://pytorch.org/>`_ and `TensorFlow <https://www.tensorflow.org/>`.  
+These must be installed manually before installing Spotiphy.
 
-We offer two methods for installing the Spotiphy package:
+.. code-block:: bash
 
-+ **Install from GitHub**: This method allows you to install the latest version directly from the source code hosted on GitHub.
+    # macOS with Apple Silicon
+    conda install -c apple tensorflow-deps -y
+    pip install tensorflow-macos==2.16.2 tensorflow-metal==1.2.0
+    pip install torch
 
-.. code-block::
+    # Windows
+    pip install torch  # Or follow https://pytorch.org/get-started/locally/ to enable CUDA support
+    pip install tensorflow==2.16.2
 
-    pip install git+https://github.com/jyyulab/Spotiphy.git
+Spotiphy Installation
+---------------------
 
-+ **Install from PyPI**: This approach is for installing the Spotiphy package from the Python Package Index (PyPI), which is more streamlined for users who prefer standard package installations.
+After installing the dependencies, Spotiphy itself can be installed in one of two ways:
 
-.. code-block::
++ **From GitHub**: Installs the latest development version directly from the source code.
 
-    pip install spotiphy==0.1.3
+  .. code-block:: bash
 
+      pip install git+https://github.com/jyyulab/Spotiphy.git
 
-To test the Installation, try to import Spotiphy in Python.
++ **From PyPI**: Installs the stable release from the Python Package Index (recommended for most users).
 
-.. code-block::
+  .. code-block:: bash
+
+      pip install spotiphy==0.3.0
+
+Verification
+---------------------
+
+To test the installation, try importing Spotiphy in Python:
+
+.. code-block:: python
 
     import spotiphy
