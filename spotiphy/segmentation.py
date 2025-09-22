@@ -179,10 +179,10 @@ class Segmentation:
         n_cell_df = pd.DataFrame(
             {
                 "cell_count": [0] * n_spot,
-                "Nucleus centers": None,
-                "Nucleus indices": None,
+                "Nucleus centers": [None] * n_spot,
+                "Nucleus indices": [None] * n_spot,
             }
-        )
+        ).astype({"Nucleus centers": "object", "Nucleus indices": "object"})
         distance = np.sum(
             (spot_center[:, :, np.newaxis] - nucleus_center.T) ** 2, axis=1
         )
@@ -190,11 +190,9 @@ class Segmentation:
             nucleus_df["in_spot"] = False
         for i in range(n_spot):
             nucleus_index = np.where(distance[i] < spot_radius**2)[0]
-            n_cell_df.iloc[i, 0] = len(nucleus_index)
-            n_cell_df.at[i, "Nucleus centers"] = (
-                nucleus_center[nucleus_index] if len(nucleus_index) else np.array([])
-            )
-            n_cell_df.at[i, "Nucleus indices"] = nucleus_index
+            n_cell_df.loc[i, "cell_count"] = int(nucleus_index.size)
+            n_cell_df.at[i, "Nucleus centers"] = nucleus_center[nucleus_index].tolist()
+            n_cell_df.at[i, "Nucleus indices"] = nucleus_index.tolist()
             if nucleus_df is not None:
                 nucleus_df.loc[nucleus_index, "in_spot"] = True
         return n_cell_df

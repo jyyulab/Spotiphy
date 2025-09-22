@@ -39,19 +39,26 @@ conda create -n Spotiphy-env python=3.9
 conda activate Spotiphy-env
 ```
 
-Spotiphy is built based on [Pytorch](https://pytorch.org/). Although installing Spotiphy automatically includes PyTorch,
-it is recommended that users manually [(install PyTorch)](https://pytorch.org/get-started/locally/) to allow for 
-more flexibility, particularly for those who wish to utilize CUDA capabilities.
-We offer two methods for installing the Spotiphy package:
-+ **Install from GitHub**: This method allows you to install the latest version directly from the source code hosted on 
-GitHub.
+Spotiphy is built based on [Pytorch](https://pytorch.org/) and [TensorFlow](https://www.tensorflow.org/), which must be installed manually before use.
+```bash
+# macOS with Apple Silicon
+conda install -c apple tensorflow-deps -y
+pip install tensorflow-macos==2.16.2 tensorflow-metal==1.2.0
+pip install torch
+
+# Windows
+pip install torch  # Or follow https://pytorch.org/get-started/locally/ to install with CUDA support
+pip install tensorflow==2.16.2
+```
+
+After installing the dependencies, Spotiphy itself can be installed in one of the following ways:
++ **From GitHub**: Installs the latest development version directly from the source code.
 ```bash
 pip install git+https://github.com/jyyulab/Spotiphy.git
 ```
-+ **Install from PyPI**: This approach is for installing the Spotiphy package from the Python Package Index 
-(PyPI), which is more streamlined for users who prefer standard package installations.
++ **From PyPI**: Installs the stable release from the Python Package Index (recommended for most users).
 ```bash
-pip install spotiphy
+pip install spotiphy==0.3.0
 ```
 
 To test the Installation, try to import Spotiphy in Python.
