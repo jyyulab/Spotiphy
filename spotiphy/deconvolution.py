@@ -914,12 +914,13 @@ def decomposition(
     save: bool = True,
     out_dir: str = "",
     threshold: float = 0.1,
-    n_cell: Optional[np.ndarray] = None,
+    n_cell: Optional[Union[np.ndarray, str]] = None,
     spot_location: Optional[np.ndarray] = None,
     filtering_gene: bool = False,
     filename: str = "ST_decomposition.h5ad",
     verbose: int = 0,
     use_original_proportion: bool = False,
+    gene_count_per_cell: int = 5000,
 ) -> anndata.AnnData:
     """Decompose ST.
 
@@ -931,7 +932,8 @@ def decomposition(
         save: If True, save the generated adata_st as a file.
         out_dir: Output directory.
         threshold: If n_cell is none, discard cell types with proportion less than threshold.
-        n_cell: Number of cells in each spot.
+        n_cell: Number of cells in each spot. If None, discard cell types with proportion less than threshold. If "estimate", estimate
+            the number of cells based on the gene count.
         spot_location: Coordinates of the spots.
         filtering_gene: Whether filter the genes in sc_reference.initialization.
         filename: Name of the saved file.
@@ -952,9 +954,28 @@ def decomposition(
     cell_proportion_temp = cell_proportion.copy()
     if n_cell is None:
         select = cell_proportion_temp >= threshold
-        cell_proportion_temp[cell_proportion_temp < threshold] = 0
         cell_proportion_temp = cell_proportion_temp / (
             np.sum(cell_proportion_temp, axis=1, keepdims=True) + 1e-6
+        )
+    elif isinstance(n_cell, str) and n_cell == "estimate":
+        gene_count = (
+            adata_st.X if type(adata_st.X) is np.ndarray else adata_st.X.toarray()
+        )
+        gene_count = np.sum(gene_count, axis=1)
+        n_cell = (gene_count / gene_count_per_cell).astype(np.int32)
+        cell_count = np.zeros((len(spot_location), n_type))
+        for i in range(len(spot_location)):
+            cell_count[i] = proportion_to_count(cell_proportion_temp[i], n_cell[i])
+        cell_count = cell_count.astype(np.int32)
+        select = []
+        for i in range(n_type):
+            select_temp = []
+            for j in range(len(cell_count)):
+                if cell_count[j, i] > 0:
+                    select_temp += [j] * cell_count[j, i]
+            select += [np.array(select_temp)]
+        cell_proportion_temp = cell_count / (
+            np.sum(cell_count, axis=1, keepdims=True) + 1e-6
         )
     else:
         cell_count = np.zeros((len(spot_location), n_type))

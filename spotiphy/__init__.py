@@ -1,4 +1,4 @@
-from . import segmentation, sc_reference, deconvolution, plot, load_visium_hd
+from . import segmentation, sc_reference, deconvolution, plot, utils_visiumhd
 from .sc_reference import (
     initialization,
     marker_selection,
@@ -6,7 +6,7 @@ from .sc_reference import (
     plot_sc_ref,
 )
 from .deconvolution import deconvolute, simulation
-from .load_visium_hd import load_visium_hd_to_anndata
+from .utils_visiumhd import load_visium_hd_to_anndata
 
 __all__ = [
     "segmentation",
@@ -16,5 +16,5 @@ __all__ = [
     "plot_sc_ref",
     "deconvolute",
     "simulation",
-    "load_visium_hd",
+    "load_visium_hd_to_anndata",
 ]
