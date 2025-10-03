@@ -58,7 +58,7 @@ pip install git+https://github.com/jyyulab/Spotiphy.git
 ```
 + **From PyPI**: Installs the stable release from the Python Package Index (recommended for most users).
 ```bash
-pip install spotiphy==0.3.0
+pip install spotiphy==0.3.1
 ```
 
 To test the Installation, try to import Spotiphy in Python.
