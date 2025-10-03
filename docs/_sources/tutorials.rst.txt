@@ -7,6 +7,7 @@ Tutorials
    :maxdepth: 2
 
    r_tutorial_1
-   ../../Spotiphy_tutorial
+   Spotiphy_tutorial
    r_tutorial_2
-   ../../Spotiphy_Decomposition_Analysis_tutorial
+   Spotiphy_Decomposition_Analysis_tutorial
+   Spotiphy_tutorial_visiumhd
